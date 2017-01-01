@@ -1,0 +1,48 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.0.{build}
+# you can use {branch} name in version format too
+# version: 1.0.{build}-{branch}
+    
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2015
+
+environment:
+  # Don't report back to the mothership
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+
+#-----------------------------------------------------------------#
+# Build configuration.                                            #
+#-----------------------------------------------------------------#
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+build: off
+
+before_build:
+  - appveyor-retry dotnet restore -v Minimal
+
+build_script:
+  - dotnet build "src\Bibliotheca.Server.Gateway.Api" -c %CONFIGURATION%
+  - dotnet build "src\Bibliotheca.Server.Gateway.Core" -c %CONFIGURATION%
+
+#-----------------------------------------------------------------#
+# Test configuration.                                             #
+#-----------------------------------------------------------------#
+
+test: off
