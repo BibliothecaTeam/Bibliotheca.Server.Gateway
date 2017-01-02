@@ -14,12 +14,15 @@ using Bibliotheca.Server.Gateway.Core.DependencyInjections;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
+using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
     public class Startup
     {
         public IConfigurationRoot Configuration { get; }
+
+        protected bool UseServiceDiscovery { get; set; } = true;
 
         public Startup(IHostingEnvironment env)
         {
@@ -88,6 +91,11 @@ namespace Bibliotheca.Server.Gateway.Api
             ISearchService searchService
         )
         {
+            if (UseServiceDiscovery)
+            {
+                RegisterClient();
+            }
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
@@ -121,6 +129,33 @@ namespace Bibliotheca.Server.Gateway.Api
 
             app.UseSwagger();
             app.UseSwaggerUi();
+        }
+
+        private void RegisterClient()
+        {
+            var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
+            var clientOptions = new ClientOptions
+            {
+                ServiceId = serviceDiscoveryConfiguration["ServiceId"],
+                ServiceName = serviceDiscoveryConfiguration["ServiceName"],
+                AgentAddress = serviceDiscoveryConfiguration["AgentAddress"],
+                Datacenter = serviceDiscoveryConfiguration["Datacenter"],
+                ClientPort = GetPort()
+            };
+            var serviceDiscovery = new ServiceDiscoveryClient();
+            serviceDiscovery.Register(clientOptions);
+        }
+
+        private int GetPort()
+        {
+            var address = Configuration["server.urls"];
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                var url = new Uri(address);
+                return url.Port;
+            }
+
+            return 5000;
         }
     }
 }
