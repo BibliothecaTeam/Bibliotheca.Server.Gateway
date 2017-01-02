@@ -15,6 +15,7 @@ using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
+using System.Collections.Generic;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -134,28 +135,22 @@ namespace Bibliotheca.Server.Gateway.Api
         private void RegisterClient()
         {
             var serviceDiscoveryConfiguration = Configuration.GetSection("ServiceDiscovery");
-            var clientOptions = new ClientOptions
-            {
-                ServiceId = serviceDiscoveryConfiguration["ServiceId"],
-                ServiceName = serviceDiscoveryConfiguration["ServiceName"],
-                AgentAddress = serviceDiscoveryConfiguration["AgentAddress"],
-                Datacenter = serviceDiscoveryConfiguration["Datacenter"],
-                ClientPort = GetPort()
-            };
+
+            var tags = new List<string>();
+            var tagsSection = serviceDiscoveryConfiguration.GetSection("ServiceTags");
+            tagsSection.Bind(tags);
+
             var serviceDiscovery = new ServiceDiscoveryClient();
-            serviceDiscovery.Register(clientOptions);
-        }
-
-        private int GetPort()
-        {
-            var address = Configuration["server.urls"];
-            if (!string.IsNullOrWhiteSpace(address))
+            serviceDiscovery.Register((options) =>
             {
-                var url = new Uri(address);
-                return url.Port;
-            }
-
-            return 5000;
+                options.ServiceOptions.Id = serviceDiscoveryConfiguration["ServiceId"];
+                options.ServiceOptions.Name = serviceDiscoveryConfiguration["ServiceName"];
+                options.ServiceOptions.Address = serviceDiscoveryConfiguration["ServiceAddress"];
+                options.ServiceOptions.Port = Convert.ToInt32(serviceDiscoveryConfiguration["ServicePort"]);
+                options.ServiceOptions.HttpHealthCheck = serviceDiscoveryConfiguration["ServiceHttpHealthCheck"];
+                options.ServiceOptions.Tags = tags;
+                options.ServerOptions.Address = serviceDiscoveryConfiguration["ServerAddress"];
+            });
         }
     }
 }
