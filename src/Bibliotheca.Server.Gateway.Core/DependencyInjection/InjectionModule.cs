@@ -12,6 +12,7 @@ using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Options;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Autofac.Core;
+using Bibliotheca.Server.Indexer.Client;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -30,6 +31,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         {
             RegisterServices(builder);
             RegisterDepositoryClients(builder);
+            RegisterIndexerClients(builder);
         }
 
         private void RegisterServices(ContainerBuilder builder)
@@ -46,7 +48,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         {
             var baseAddressParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
-                    (pi, ctx) => GetDepositoryServiceAddress(ctx));
+                    (pi, ctx) => GetServiceAddress(ctx, "depository"));
 
             var customHeadersParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
@@ -56,14 +58,28 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
 
-            builder.RegisterType<ProjectsClient>().As<IProjectsClient>()
+            builder.RegisterType<BranchesClient>().As<IBranchesClient>()
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
 
-            builder.RegisterType<ProjectsClient>().As<IProjectsClient>()
+            builder.RegisterType<DocumentsClient>().As<IDocumentsClient>()
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
+        }
 
+        private void RegisterIndexerClients(ContainerBuilder builder)
+        {
+            var baseAddressParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
+                    (pi, ctx) => GetServiceAddress(ctx, "indexer"));
+
+            var customHeadersParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => GetHttpHeaders(ctx));
+
+            builder.RegisterType<SearchClient>().As<ISearchClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
         }
 
         private static IDictionary<string, StringValues> GetHttpHeaders(IComponentContext c)
@@ -80,20 +96,20 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             return headers;
         }
 
-        private static string GetDepositoryServiceAddress(IComponentContext c)
+        private static string GetServiceAddress(IComponentContext c, string serviceTag)
         {
             var serviceDiscoveryQuery = c.Resolve<IServiceDiscoveryQuery>();
             var applicationParameters = c.Resolve<IOptions<ApplicationParameters>>();
 
             var depositoryClients = serviceDiscoveryQuery.GetServices(
                 new ServerOptions { Address = applicationParameters.Value.ServiceDiscovery.ServerAddress },
-                new string[] { "depository" }
+                new string[] { serviceTag }
             ).GetAwaiter().GetResult();
 
             var service = depositoryClients?.FirstOrDefault();
             if (service == null)
             {
-                throw new DepositoryServiceNotAvailableException("Depository service is not running!");
+                throw new DepositoryServiceNotAvailableException($"Microservice with tag '{serviceTag}' service is not running!");
             }
 
             var address = $"http://{service.Address}:{service.Port}/api/";

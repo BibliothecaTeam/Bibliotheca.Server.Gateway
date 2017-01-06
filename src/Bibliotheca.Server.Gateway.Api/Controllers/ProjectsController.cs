@@ -12,18 +12,46 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     [Route("api/projects")]
     public class ProjectsController : Controller
     {
-        private readonly IProjectsService _projectService;
+        private readonly IProjectsService _projectsService;
 
-        public ProjectsController(IProjectsService projectService)
+        public ProjectsController(IProjectsService projectsService)
         {
-            _projectService = projectService;
+            _projectsService = projectsService;
         }
 
         [HttpGet()]
         public async Task<IList<ProjectDto>> Get()
         {
-            var projects = await _projectService.GetProjectsAsync();
+            var projects = await _projectsService.GetProjectsAsync();
             return projects;
+        }
+
+        [HttpGet("{projectId}")]
+        public async Task<ProjectDto> Get(string projectId)
+        {
+            var project = await _projectsService.GetProjectAsync(projectId);
+            return project;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] ProjectDto project)
+        {
+            await _projectsService.CreateProjectAsync(project);
+            return Created($"/projects/{project.Id}", project);
+        }
+
+        [HttpPut("{projectId}")]
+        public async Task<IActionResult> Put(string projectId, [FromBody] ProjectDto project)
+        {
+            await _projectsService.UpdateProjectAsync(projectId, project);
+            return Ok();
+        }
+
+        [HttpDelete("{projectId}")]
+        public async Task<IActionResult> Delete(string projectId)
+        {
+            await _projectsService.DeleteProjectAsync(projectId);
+            return Ok();
         }
     }
 }
