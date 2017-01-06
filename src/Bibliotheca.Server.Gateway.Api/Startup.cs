@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.DependencyInjections;
-using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using System.Collections.Generic;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -33,6 +33,7 @@ namespace Bibliotheca.Server.Gateway.Api
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -77,13 +78,14 @@ namespace Bibliotheca.Server.Gateway.Api
                 options.SingleApiVersion(new Info
                 {
                     Version = "v1",
-                    Title = "Bibliotheca API",
-                    Description = "Full API for Bibliotheca",
+                    Title = "Bibliotheca Gateway API",
+                    Description = "Bibliotheca service which is responsible for communication with microservices.",
                     TermsOfService = "None"
                 });
             });
 
             services.AddServiceDiscovery();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return services.AddApplicationModules(Configuration);
         }
@@ -91,8 +93,7 @@ namespace Bibliotheca.Server.Gateway.Api
         public void Configure(
             IApplicationBuilder app,
             IHostingEnvironment env,
-            ILoggerFactory loggerFactory,
-            ISearchService searchService
+            ILoggerFactory loggerFactory
         )
         {
             if (UseServiceDiscovery)
@@ -103,11 +104,6 @@ namespace Bibliotheca.Server.Gateway.Api
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            if (!string.IsNullOrWhiteSpace(Configuration["AzureSearchApiKey"]))
-            {
-                searchService.CreateOrUpdateIndexAsync().Wait();
-            }
 
             app.UseExceptionHandler();
 
