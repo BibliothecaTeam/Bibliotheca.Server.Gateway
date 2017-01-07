@@ -20,7 +20,7 @@
     "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.8",
     "Bibliotheca.Server.Depository.Abstractions": "1.0.1",
     "Bibliotheca.Server.Depository.Client": "1.0.2",
-    "Bibliotheca.Server.Indexer.Client": "1.0.2"
+    "Bibliotheca.Server.Indexer.Client": "1.0.5"
   },
 
   "buildOptions": {
