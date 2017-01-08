@@ -6,6 +6,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public interface ITableOfContentsService
     {
-        Task<IList<ChapterItem>> GetTableOfConents(string projectId, string branchName);
+        Task<IList<ChapterItemDto>> GetTableOfConents(string projectId, string branchName);
     }
 }

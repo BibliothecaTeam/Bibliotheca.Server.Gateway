@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IList<ChapterItem>> Get(string projectId, string branchName)
+        public async Task<IList<ChapterItemDto>> Get(string projectId, string branchName)
         {
             var rootChapterNodes = await _tableOfContentsService.GetTableOfConents(projectId, branchName);
             return rootChapterNodes;

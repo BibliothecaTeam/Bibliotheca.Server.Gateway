@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 {
-    public class ChapterItem
+    public class ChapterItemDto
     {
-        public ChapterItem()
+        public ChapterItemDto()
         {
-            Children = new List<ChapterItem>();
+            Children = new List<ChapterItemDto>();
         }
 
-        public ChapterItem(ChapterItem node) : this()
+        public ChapterItemDto(ChapterItemDto node) : this()
         {
             Name = node.Name;
             Url = node.Url;
@@ -19,6 +19,6 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 
         public string Url { get; set; }
 
-        public IList<ChapterItem> Children { get; private set; }
+        public IList<ChapterItemDto> Children { get; private set; }
     }
 }

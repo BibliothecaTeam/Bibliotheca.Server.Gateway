@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public interface IProjectsService
     {
-        Task<IList<ProjectDto>> GetProjectsAsync();
+        Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter);
 
         Task<ProjectDto> GetProjectAsync(string projectId);
 

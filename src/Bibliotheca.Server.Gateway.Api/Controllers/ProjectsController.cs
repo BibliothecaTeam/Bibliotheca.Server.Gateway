@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,9 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IList<ProjectDto>> Get()
+        public async Task<FilteredResutsDto<ProjectDto>> Get([FromQuery] ProjectsFilterDto filter)
         {
-            var projects = await _projectsService.GetProjectsAsync();
+            var projects = await _projectsService.GetProjectsAsync(filter);
             return projects;
         }
 

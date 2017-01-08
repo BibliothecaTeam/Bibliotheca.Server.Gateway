@@ -23,7 +23,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             _memoryCache = memoryCache;
         }
 
-        public async Task<IList<ChapterItem>> GetTableOfConents(string projectId, string branchName)
+        public async Task<IList<ChapterItemDto>> GetTableOfConents(string projectId, string branchName)
         {
             var branch = await _branchesClient.Get(projectId, branchName);
 
@@ -44,15 +44,15 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
         }
 
-        private IList<ChapterItem> GetChapterItems(Dictionary<object, object> mkDocsConfiguration)
+        private IList<ChapterItemDto> GetChapterItems(Dictionary<object, object> mkDocsConfiguration)
         {
             var pages = mkDocsConfiguration["pages"];
 
             var listOfPages = pages as List<object>;
-            ChapterItem parentItem = new ChapterItem();
+            var parentItem = new ChapterItemDto();
             AddChildItems(parentItem, listOfPages);
 
-            var rootChapterItems = new List<ChapterItem>();
+            var rootChapterItems = new List<ChapterItemDto>();
             foreach (var item in parentItem.Children)
             {
                 rootChapterItems.Add(item);
@@ -61,7 +61,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return rootChapterItems;
         }
 
-        private void AddChildItems(ChapterItem parentItem, List<object> pages)
+        private void AddChildItems(ChapterItemDto parentItem, List<object> pages)
         {
             foreach (var page in pages)
             {
@@ -70,7 +70,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 {
                     var value = subPages[key];
 
-                    ChapterItem node = new ChapterItem();
+                    var node = new ChapterItemDto();
                     node.Name = key.ToString();
                     parentItem.Children.Add(node);
 
@@ -87,12 +87,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
         }
 
-        public bool TryGetToc(out IList<ChapterItem> toc)
+        public bool TryGetToc(out IList<ChapterItemDto> toc)
         {
             return _memoryCache.TryGetValue(_tocCacheKey, out toc);
         }
 
-        public void AddToc(IList<ChapterItem> toc)
+        public void AddToc(IList<ChapterItemDto> toc)
         {
             _memoryCache.Set(_tocCacheKey, toc,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
