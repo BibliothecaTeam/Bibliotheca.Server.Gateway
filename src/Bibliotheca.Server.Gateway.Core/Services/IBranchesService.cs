@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public interface IBranchesService
     {
-        Task<IList<BranchDto>> GetBranchesAsync(string projectId);
+        Task<IList<ExtendedBranchDto>> GetBranchesAsync(string projectId);
 
-        Task<BranchDto> GetBranchAsync(string projectId, string branchName);
+        Task<ExtendedBranchDto> GetBranchAsync(string projectId, string branchName);
 
         Task CreateBranchAsync(string projectId, BranchDto branch);
 

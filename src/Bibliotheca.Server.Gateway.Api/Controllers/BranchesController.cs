@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +21,14 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IList<BranchDto>> Get(string projectId)
+        public async Task<IList<ExtendedBranchDto>> Get(string projectId)
         {
             var branches = await _branchesService.GetBranchesAsync(projectId);
             return branches;
         }
 
         [HttpGet("{branchName}")]
-        public async Task<BranchDto> Get(string projectId, string branchName)
+        public async Task<ExtendedBranchDto> Get(string projectId, string branchName)
         {
             var branch = await _branchesService.GetBranchAsync(projectId, branchName);
             return branch;
