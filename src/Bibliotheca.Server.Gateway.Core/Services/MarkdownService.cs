@@ -6,7 +6,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         public string ConvertToHtml(string markdown)
         {
-            var html = Markdown.ToHtml(markdown);
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build();
+            var html = Markdown.ToHtml(markdown, pipeline);
             return html;
         }
     }

@@ -54,6 +54,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             {
                 extendedBranchDto.DocsDir = mkDocsConfiguration["docs_dir"].ToString();
             }
+            else
+            {
+                extendedBranchDto.DocsDir = "docs";
+            }
 
             if (mkDocsConfiguration.ContainsKey("site_name"))
             {
