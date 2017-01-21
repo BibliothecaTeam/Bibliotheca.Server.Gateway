@@ -10,7 +10,10 @@ namespace Bibliotheca.Server.Gateway.Api
         public static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("hosting.json", optional: true)
                 .AddCommandLine(args)
+                .AddEnvironmentVariables()
                 .Build();
 
             var host = new WebHostBuilder()
