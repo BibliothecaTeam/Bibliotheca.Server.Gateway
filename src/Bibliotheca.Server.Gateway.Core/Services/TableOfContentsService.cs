@@ -86,7 +86,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
                     if (value is string)
                     {
-                        node.Url = $"{docsDir}:{value}";
+                        var url = $"{docsDir}:{value}";
+                        node.Url = url.Replace("/", ":"); 
                     }
                     else
                     {
