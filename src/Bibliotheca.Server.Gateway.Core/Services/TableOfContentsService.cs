@@ -48,9 +48,19 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             var pages = mkDocsConfiguration["pages"];
 
+            var docsDir = "docs";
+            if(mkDocsConfiguration.ContainsKey("docs_dir"))
+            {
+                var mkDocsdir = mkDocsConfiguration["docs_dir"].ToString();
+                if(!string.IsNullOrWhiteSpace(mkDocsdir))
+                {
+                    docsDir = mkDocsdir;
+                }
+            }
+
             var listOfPages = pages as List<object>;
             var parentItem = new ChapterItemDto();
-            AddChildItems(parentItem, listOfPages);
+            AddChildItems(parentItem, listOfPages, docsDir);
 
             var rootChapterItems = new List<ChapterItemDto>();
             foreach (var item in parentItem.Children)
@@ -61,7 +71,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return rootChapterItems;
         }
 
-        private void AddChildItems(ChapterItemDto parentItem, List<object> pages)
+        private void AddChildItems(ChapterItemDto parentItem, List<object> pages, string docsDir)
         {
             foreach (var page in pages)
             {
@@ -76,13 +86,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
                     if (value is string)
                     {
-                        var url = value.ToString();
+                        var url = Path.Combine(docsDir, value.ToString());
                         node.Url = url.Replace("/", ":");
                     }
                     else
                     {
                         List<object> nodes = value as List<object>;
-                        AddChildItems(node, nodes);
+                        AddChildItems(node, nodes, docsDir);
                     }
                 }
             }

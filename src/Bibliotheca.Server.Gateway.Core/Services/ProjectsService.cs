@@ -90,13 +90,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             if (filter.Tags != null)
             {
-                var tagsNormalized = new List<string>(filter.Tags.Count);
-                foreach (var item in filter.Tags)
-                {
-                    tagsNormalized.Add(item.ToUpper());
-                }
-
-                query = query.Where(t2 => tagsNormalized.Any(t1 => t2.Tags.Contains(t1)));
+                query = query.Where(t2 => filter.Tags.Any(t1 => t2.Tags.Contains(t1)));
             }
 
             return query;
@@ -112,7 +106,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     groupsNormalized.Add(item.ToUpper());
                 }
 
-                query = query.Where(x => groupsNormalized.Contains(x.Group));
+                query = query.Where(x => groupsNormalized.Contains(x.Group.ToUpper()));
             }
 
             return query;

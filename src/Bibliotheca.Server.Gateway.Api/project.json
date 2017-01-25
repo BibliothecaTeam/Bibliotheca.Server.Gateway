@@ -26,7 +26,7 @@
     "Bibliotheca.Server.Mvc.Middleware.Authorization": "1.0.3",
     "Bibliotheca.Server.Mvc.Middleware.Diagnostics": "1.0.3",
     "Bibliotheca.Server.Depository.Abstractions": "1.0.2",
-    "Bibliotheca.Server.Indexer.Abstractions": "1.0.3",
+    "Bibliotheca.Server.Indexer.Abstractions": "1.0.4",
     "Bibliotheca.Server.Gateway.Core": "1.1.1"
   },
 
