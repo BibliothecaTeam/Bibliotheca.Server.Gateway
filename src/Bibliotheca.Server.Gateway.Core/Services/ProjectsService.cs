@@ -34,6 +34,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
             IEnumerable<ProjectDto> query = projects;
             query = FilterByName(filter, query);
+            query = FilterByDescription(filter, query);
             query = FilterByGroups(filter, query);
             query = FilterByTags(filter, query);
 
@@ -117,7 +118,18 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if (!string.IsNullOrWhiteSpace(filter.Query))
             {
                 var filterQueryNormalized = filter.Query.ToUpper();
-                query = query.Where(x => x.Name.Contains(filterQueryNormalized));
+                query = query.Where(x => x.Name.ToUpper().Contains(filterQueryNormalized));
+            }
+
+            return query;
+        }
+
+        private static IEnumerable<ProjectDto> FilterByDescription(ProjectsFilterDto filter, IEnumerable<ProjectDto> query)
+        {
+            if (!string.IsNullOrWhiteSpace(filter.Query))
+            {
+                var filterQueryNormalized = filter.Query.ToUpper();
+                query = query.Where(x => x.Description.ToUpper().Contains(filterQueryNormalized));
             }
 
             return query;
