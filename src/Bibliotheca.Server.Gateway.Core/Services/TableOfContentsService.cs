@@ -11,8 +11,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class TableOfContentsService : ITableOfContentsService
     {
-        private const string _tocCacheKey = "toc";
-
         private readonly IBranchesClient _branchesClient;
 
         private readonly IMemoryCache _memoryCache;
@@ -25,12 +23,22 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task<IList<ChapterItemDto>> GetTableOfConents(string projectId, string branchName)
         {
-            var branch = await _branchesClient.Get(projectId, branchName);
+            List<ChapterItemDto> toc = null;
+            string cacheKey = GetCacheKey(projectId, branchName);
 
-            var mkDocsConfiguration = ReadMkDocsConfiguration(branch.MkDocsYaml);
-            var rootChapterItems = GetChapterItems(mkDocsConfiguration);
+            if(!_memoryCache.TryGetValue(cacheKey, out toc))
+            {
+                var branch = await _branchesClient.Get(projectId, branchName);
+                var mkDocsConfiguration = ReadMkDocsConfiguration(branch.MkDocsYaml);
+                toc = GetChapterItems(mkDocsConfiguration);
 
-            return rootChapterItems;
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
+                _memoryCache.Set(cacheKey, toc, cacheEntryOptions);
+            }
+
+            return toc;
         }
 
         private Dictionary<object, object> ReadMkDocsConfiguration(string yamlFileContent)
@@ -44,7 +52,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
         }
 
-        private IList<ChapterItemDto> GetChapterItems(Dictionary<object, object> mkDocsConfiguration)
+        private List<ChapterItemDto> GetChapterItems(Dictionary<object, object> mkDocsConfiguration)
         {
             var pages = mkDocsConfiguration["pages"];
 
@@ -98,15 +106,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
         }
 
-        public bool TryGetToc(out IList<ChapterItemDto> toc)
+        private string GetCacheKey(string projectId, string branchName)
         {
-            return _memoryCache.TryGetValue(_tocCacheKey, out toc);
-        }
-
-        public void AddToc(IList<ChapterItemDto> toc)
-        {
-            _memoryCache.Set(_tocCacheKey, toc,
-                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            return $"TableOfContentsService#{projectId}#{branchName}";
         }
     }
 }

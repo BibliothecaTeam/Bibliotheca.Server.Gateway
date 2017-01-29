@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,6 +6,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.Client;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Microsoft.Extensions.Caching.Memory;
 using YamlDotNet.Serialization;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
@@ -13,15 +15,31 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         private readonly IBranchesClient _branchesClient;
 
-        public BranchesService(IBranchesClient branchesClient)
+        private readonly IMemoryCache _memoryCache;
+
+        public BranchesService(IBranchesClient branchesClient, IMemoryCache memoryCache)
         {
             _branchesClient = branchesClient;
+            _memoryCache = memoryCache;
         }
 
         public async Task<IList<ExtendedBranchDto>> GetBranchesAsync(string projectId)
         {
-            var branches = await _branchesClient.Get(projectId);
-            return branches.Select(x => CreateExtendedBranchDto(x)).ToList();
+            List<ExtendedBranchDto> branches = null;
+            string cacheKey = GetCacheKey(projectId);
+
+            if(!_memoryCache.TryGetValue(cacheKey, out branches))
+            {
+                var branchesDto = await _branchesClient.Get(projectId);
+                branches = branchesDto.Select(x => CreateExtendedBranchDto(x)).ToList();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
+                _memoryCache.Set(cacheKey, branches, cacheEntryOptions);
+            }
+            
+            return branches;
         }
 
         public async Task<ExtendedBranchDto> GetBranchAsync(string projectId, string branchName)
@@ -76,6 +94,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var banchConfiguration = deserializer.Deserialize(reader) as Dictionary<object, object>;
                 return banchConfiguration;
             }
+        }
+
+        private string GetCacheKey(string projectId) 
+        {
+            return $"BranchesService#{projectId}";
         }
     }
 }

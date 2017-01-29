@@ -9,7 +9,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class GroupsService : IGroupsService
     {
-        private const string _groupsCacheKey = "groups";
+        private const string _groupsCacheKey = "GroupsService";
 
         private readonly IProjectsClient _projectsClient;
 

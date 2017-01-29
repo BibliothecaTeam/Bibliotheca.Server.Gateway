@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.Client;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -8,14 +10,29 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         private readonly IDocumentsClient _documentsClient;
 
-        public DocumentsService(IDocumentsClient documentsClient)
+        private readonly IMemoryCache _memoryCache;
+
+        public DocumentsService(IDocumentsClient documentsClient, IMemoryCache memoryCache)
         {
             _documentsClient = documentsClient;
+            _memoryCache = memoryCache;
         }
 
         public async Task<DocumentDto> GetDocumentAsync(string projectId, string branchName, string fileUri)
         {
-            var documentDto = await _documentsClient.Get(projectId, branchName, fileUri);
+            DocumentDto documentDto = null;
+            string cacheKey = GetCacheKey(projectId, branchName, fileUri);
+
+            if (!_memoryCache.TryGetValue(cacheKey, out documentDto))
+            {
+                documentDto = await _documentsClient.Get(projectId, branchName, fileUri);
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+
+                _memoryCache.Set(cacheKey, documentDto, cacheEntryOptions);
+            }
+
             return documentDto;
         }
 
@@ -32,6 +49,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public async Task DeleteDocumentAsync(string projectId, string branchName, string fileUri)
         {
             await _documentsClient.Delete(projectId, branchName, fileUri);
+        }
+
+        private string GetCacheKey(string projectId, string branchName, string fileUri)
+        {
+            return $"DocumentsService#{projectId}#{branchName}#{fileUri}";
         }
     }
 }

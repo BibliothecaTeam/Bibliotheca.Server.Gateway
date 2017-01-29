@@ -9,7 +9,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class TagsService : ITagsService
     {
-        private const string _tagsCacheKey = "tags";
+        private const string _tagsCacheKey = "TagsService";
 
         private readonly IProjectsClient _projectsClient;
 

@@ -11,7 +11,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class ProjectsService : IProjectsService
     {
-        private const string _allProjectsInformationCacheKey = "all-projects-information";
+        private const string _allProjectsInformationCacheKey = "ProjectsService";
 
         private readonly IProjectsClient _projectsClient;
 
