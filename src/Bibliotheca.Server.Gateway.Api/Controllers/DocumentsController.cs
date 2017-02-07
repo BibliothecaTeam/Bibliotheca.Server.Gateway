@@ -28,7 +28,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return document;
         }
 
-        [HttpGet("{fileUri}/content")]
+        [HttpGet("content/{fileUri}")]
         public async Task<FileResult> GetContent(string projectId, string branchName, string fileUri)
         {
             var document = await _documentsService.GetDocumentAsync(projectId, branchName, fileUri);
