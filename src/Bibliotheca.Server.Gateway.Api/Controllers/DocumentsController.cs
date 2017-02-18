@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
@@ -19,6 +20,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
+        }
+
+        [HttpGet]
+        public async Task<IList<BaseDocumentDto>> Get(string projectId, string branchName)
+        {
+            var documents = await _documentsService.GetDocumentsAsync(projectId, branchName);
+            return documents;
         }
 
         [HttpGet("{fileUri}")]

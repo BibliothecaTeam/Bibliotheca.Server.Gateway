@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.Client;
@@ -16,6 +17,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             _documentsClient = documentsClient;
             _memoryCache = memoryCache;
+        }
+
+        public async Task<IList<BaseDocumentDto>> GetDocumentsAsync(string projectId, string branchName)
+        {
+            var documentsDto = await _documentsClient.Get(projectId, branchName);
+            return documentsDto;
         }
 
         public async Task<DocumentDto> GetDocumentAsync(string projectId, string branchName, string fileUri)

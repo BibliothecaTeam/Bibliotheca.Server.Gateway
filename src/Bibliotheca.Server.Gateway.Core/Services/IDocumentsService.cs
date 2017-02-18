@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 
@@ -5,6 +6,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public interface IDocumentsService
     {
+        Task<IList<BaseDocumentDto>> GetDocumentsAsync(string projectId, string branchName);
+
         Task<DocumentDto> GetDocumentAsync(string projectId, string branchName, string fileUri);
 
         Task CreateDocumentAsync(string projectId, string branchName, DocumentDto document);
