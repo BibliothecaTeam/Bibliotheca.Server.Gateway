@@ -101,12 +101,11 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             var serviceDiscoveryQuery = c.Resolve<IServiceDiscoveryQuery>();
             var applicationParameters = c.Resolve<IOptions<ApplicationParameters>>();
 
-            var depositoryClients = serviceDiscoveryQuery.GetServices(
+            var service = serviceDiscoveryQuery.GetService(
                 new ServerOptions { Address = applicationParameters.Value.ServiceDiscovery.ServerAddress },
                 new string[] { serviceTag }
             ).GetAwaiter().GetResult();
 
-            var service = depositoryClients?.FirstOrDefault();
             if (service == null)
             {
                 throw new DepositoryServiceNotAvailableException($"Microservice with tag '{serviceTag}' service is not running!");

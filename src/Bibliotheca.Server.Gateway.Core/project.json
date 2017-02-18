@@ -17,7 +17,7 @@
     "HtmlAgilityPack": "1.4.9.5",
     "Autofac": "4.2.0",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
-    "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.8",
+    "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.9",
     "Bibliotheca.Server.Depository.Abstractions": "1.0.6",
     "Bibliotheca.Server.Depository.Client": "1.0.7",
     "Bibliotheca.Server.Indexer.Client": "1.0.9"

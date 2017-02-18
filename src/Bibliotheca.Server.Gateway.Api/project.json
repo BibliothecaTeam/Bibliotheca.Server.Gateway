@@ -22,7 +22,7 @@
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
     "Swashbuckle.SwaggerUi": "6.0.0-beta902",
     "Swashbuckle.SwaggerGen": "6.0.0-beta902",
-    "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.8",
+    "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.9",
     "Bibliotheca.Server.Mvc.Middleware.Authorization": "1.0.3",
     "Bibliotheca.Server.Mvc.Middleware.Diagnostics": "1.0.3",
     "Bibliotheca.Server.Depository.Abstractions": "1.0.6",
