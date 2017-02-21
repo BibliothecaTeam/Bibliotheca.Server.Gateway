@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.Client;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 using YamlDotNet.Serialization;
 
@@ -50,17 +51,32 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task CreateBranchAsync(string projectId, BranchDto branch)
         {
-            await _branchesClient.Post(projectId, branch);
+            var result = await _branchesClient.Post(projectId, branch);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new CreateBranchException("During creatint the new branch error occurs: " + content);
+            }
         }
 
         public async Task UpdateBranchAsync(string projectId, string branchName, BranchDto branch)
         {
-            await _branchesClient.Put(projectId, branchName, branch);
+            var result = await _branchesClient.Put(projectId, branchName, branch);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateBranchException("During updating the branch error occurs: " + content);
+            }
         }
         
         public async Task DeleteBranchAsync(string projectId, string branchName)
         {
-            await _branchesClient.Delete(projectId, branchName);
+            var result = await _branchesClient.Delete(projectId, branchName);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new DeleteBranchException("During deleteing the branch error occurs: " + content);
+            }
         }
 
         private ExtendedBranchDto CreateExtendedBranchDto(BranchDto branchDto)

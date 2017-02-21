@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheca.Server.Gateway.Api.Controllers
@@ -16,10 +18,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IMarkdownService _markdownService;
 
-        public DocumentsController(IDocumentsService documentsService, IMarkdownService markdownService)
+        private readonly IBranchesService _branchService;
+
+        public DocumentsController(IDocumentsService documentsService, IMarkdownService markdownService, IBranchesService branchService)
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
+            _branchService = branchService;
         }
 
         [HttpGet]
@@ -68,6 +73,32 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
         {
             await _documentsService.UpdateDocumentAsync(projectId, branchName, fileUri, document);
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(string projectId, string branchName, IFormFile file)
+        {
+            var branches = await _branchService.GetBranchesAsync(projectId);
+            if(branches.Any(x => x.Name == branchName))
+            {
+                await _branchService.DeleteBranchAsync(projectId, branchName);
+            }
+
+            await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
+            return Ok();
+        }
+
+        [HttpPut("filebody")]
+        public async Task<IActionResult> Put(string projectId, string branchName)
+        {
+            var branches = await _branchService.GetBranchesAsync(projectId);
+            if(branches.Any(x => x.Name == branchName))
+            {
+                await _branchService.DeleteBranchAsync(projectId, branchName);
+            }
+            
+            await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);
             return Ok();
         }
 

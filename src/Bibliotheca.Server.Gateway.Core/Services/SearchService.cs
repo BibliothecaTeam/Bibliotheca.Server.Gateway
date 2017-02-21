@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Indexer.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Indexer.Client;
 
@@ -28,12 +29,22 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task UploadDocumentsAsync(string projectId, string branchName, IEnumerable<DocumentIndexDto> documentDtos)
         {
-            await _searchClient.Post(projectId, branchName, documentDtos);
+            var result = await _searchClient.Post(projectId, branchName, documentDtos);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateSearchIndexException("During updating search index error occurs: " + content);
+            }
         }
 
         public async Task DeleteDocumentsAsync(string projectId, string branchName)
         {
-            await _searchClient.Delete(projectId, branchName);
+            var result = await _searchClient.Delete(projectId, branchName);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new DeleteSearchIndexException("During deleting search index error occurs: " + content);
+            }
         }
     }
 }

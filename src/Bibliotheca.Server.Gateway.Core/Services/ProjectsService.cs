@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Depository.Client;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
@@ -63,17 +64,32 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task CreateProjectAsync(ProjectDto project)
         {
-            await _projectsClient.Post(project);
+            var result = await _projectsClient.Post(project);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new CreateProjecttException("During creating project error occurs: " + content);
+            }
         }
 
         public async Task UpdateProjectAsync(string projectId, ProjectDto project)
         {
-            await _projectsClient.Put(projectId, project);
+            var result = await _projectsClient.Put(projectId, project);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateProjecttException("During updating project error occurs: " + content);
+            }
         }
 
         public async Task DeleteProjectAsync(string projectId)
         {
-            await _projectsClient.Delete(projectId);
+            var result = await _projectsClient.Delete(projectId);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateProjecttException("During updating project error occurs: " + content);
+            }
         }
 
         public bool TryGetProjects(out IList<ProjectDto> projects)

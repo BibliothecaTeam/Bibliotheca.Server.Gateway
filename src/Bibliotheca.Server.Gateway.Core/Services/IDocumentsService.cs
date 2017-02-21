@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 
@@ -13,6 +14,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task CreateDocumentAsync(string projectId, string branchName, DocumentDto document);
 
         Task UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document);
+
+        Task UploadBranchAsync(string projectId, string branchName, Stream body);
 
         Task DeleteDocumentAsync(string projectId, string branchName, string fileUri);
     }
