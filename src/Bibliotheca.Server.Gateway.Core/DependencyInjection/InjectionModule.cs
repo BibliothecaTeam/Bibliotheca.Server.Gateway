@@ -101,7 +101,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             var serviceDiscoveryQuery = c.Resolve<IServiceDiscoveryQuery>();
             var applicationParameters = c.Resolve<IOptions<ApplicationParameters>>();
 
-            var service = serviceDiscoveryQuery.GetService(
+            var service = serviceDiscoveryQuery.GetServiceAsync(
                 new ServerOptions { Address = applicationParameters.Value.ServiceDiscovery.ServerAddress },
                 new string[] { serviceTag }
             ).GetAwaiter().GetResult();
