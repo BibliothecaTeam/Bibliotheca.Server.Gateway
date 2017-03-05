@@ -72,6 +72,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
         {
+            byte[] mkdocsContent = null;
+            Dictionary<string, byte[]> filesContent = new Dictionary<string, byte[]>();
+
             using (var zipArchive = new ZipArchive(body))
             {
                 var entries = zipArchive.Entries;
@@ -91,14 +94,25 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                         var fileUri = GetPathWithoutRootDirectory(entry.FullName);
                         if(fileUri == "mkdocs.yml")
                         {
-                            await CreateBranchAsync(projectId, branchName, content);
+                            mkdocsContent = content;
                         }
                         else
                         {
-                            await UploadDocumnentAsync(projectId, branchName, fileUri, content);
+                            filesContent.Add(fileUri, content);
                         }
                     }
                 }
+            }
+
+            if(mkdocsContent == null)
+            {
+                throw new BranchConfigurationFileNotExistsException("Zip file have to contains mkdocs.yml file.");
+            }
+
+            await CreateBranchAsync(projectId, branchName, mkdocsContent);
+            foreach(var item in filesContent)
+            {
+                await UploadDocumnentAsync(projectId, branchName, item.Key, item.Value);
             }
         }
 
