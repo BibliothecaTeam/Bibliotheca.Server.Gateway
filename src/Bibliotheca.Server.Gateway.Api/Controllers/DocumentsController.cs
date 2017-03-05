@@ -20,11 +20,18 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IBranchesService _branchService;
 
-        public DocumentsController(IDocumentsService documentsService, IMarkdownService markdownService, IBranchesService branchService)
+        private readonly ISearchService _searchService;
+
+        public DocumentsController(
+            IDocumentsService documentsService, 
+            IMarkdownService markdownService, 
+            IBranchesService branchService,
+            ISearchService searchService)
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
             _branchService = branchService;
+            _searchService = searchService;
         }
 
         [HttpGet]
@@ -83,6 +90,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             if(branches.Any(x => x.Name == branchName))
             {
                 await _branchService.DeleteBranchAsync(projectId, branchName);
+                await _searchService.DeleteDocumentsAsync(projectId, branchName);
             }
 
             await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
@@ -96,6 +104,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             if(branches.Any(x => x.Name == branchName))
             {
                 await _branchService.DeleteBranchAsync(projectId, branchName);
+                await _searchService.DeleteDocumentsAsync(projectId, branchName);
             }
             
             await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);
