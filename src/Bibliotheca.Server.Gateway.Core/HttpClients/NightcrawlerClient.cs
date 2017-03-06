@@ -28,7 +28,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         public async Task<HttpResponseMessage> Post(string projectId, string branchName)
         {
             HttpClient client = GetClient();
-            var requestUri = Path.Combine(_baseAddress, $"api/queues/{projectId}/{branchName}");
+            var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
 
             _logger.LogInformation($"Nightcrawler client request (POST): {requestUri}");
             var httpResponseMessage = await client.PostAsync(requestUri, null);
@@ -39,7 +39,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         public async Task<IndexStatusDto> Get(string projectId, string branchName)
         {
             HttpClient client = GetClient();
-            var requestUri = Path.Combine(_baseAddress, $"api/queues/{projectId}/{branchName}");
+            var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
 
             _logger.LogInformation($"Nightcrawler client request (GET): {requestUri}");
             var responseString = await client.GetStringAsync(requestUri);
