@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Indexer.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Indexer.Client;
 
@@ -10,9 +11,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         private readonly ISearchClient _searchClient;
 
-        public SearchService(ISearchClient searchClient)
+        private readonly INightcrawlerClient _nightcrawlerClient;
+
+        public SearchService(ISearchClient searchClient, INightcrawlerClient nightcrawlerClient)
         {
             _searchClient = searchClient;
+            _nightcrawlerClient = nightcrawlerClient;
         }
 
         public async Task<DocumentSearchResultDto<DocumentIndexDto>> SearchAsync(FilterDto filter)
@@ -35,6 +39,22 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new UpdateSearchIndexException("During updating search index error occurs: " + content);
             }
+        }
+
+        public async Task RefreshIndexAsync(string projectId, string branchName)
+        {
+            var result = await _nightcrawlerClient.Post(projectId, branchName);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new RefreshSearchIndexException("During refrreshing search index error occurs: " + content);
+            }
+        }
+
+        public async Task<DataTransferObjects.IndexStatusDto> GetRefreshIndexStatusAsync(string projectId, string branchName)
+        {
+            var result = await _nightcrawlerClient.Get(projectId, branchName);
+            return result;
         }
 
         public async Task DeleteDocumentsAsync(string projectId, string branchName)

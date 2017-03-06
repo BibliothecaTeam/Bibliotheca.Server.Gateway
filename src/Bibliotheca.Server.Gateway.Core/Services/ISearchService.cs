@@ -12,6 +12,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         Task UploadDocumentsAsync(string projectId, string branchName, IEnumerable<DocumentIndexDto> documentDtos);
 
+        Task RefreshIndexAsync(string projectId, string branchName);
+
+        Task<DataTransferObjects.IndexStatusDto> GetRefreshIndexStatusAsync(string projectId, string branchName);
+
         Task DeleteDocumentsAsync(string projectId, string branchName);
     }
 }

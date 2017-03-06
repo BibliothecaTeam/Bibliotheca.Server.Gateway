@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Autofac.Core;
 using Bibliotheca.Server.Indexer.Client;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -32,6 +33,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             RegisterServices(builder);
             RegisterDepositoryClients(builder);
             RegisterIndexerClients(builder);
+            RegisterNightcrawlerClients(builder);
         }
 
         private void RegisterServices(ContainerBuilder builder)
@@ -42,6 +44,21 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+        }
+
+        private void RegisterNightcrawlerClients(ContainerBuilder builder)
+        {
+            var baseAddressParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
+                    (pi, ctx) => GetServiceAddress(ctx, "nightcrawler"));
+
+            var customHeadersParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => GetHttpHeaders(ctx));
+
+            builder.RegisterType<NightcrawlerClient>().As<INightcrawlerClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
         }
 
         private void RegisterDepositoryClients(ContainerBuilder builder)

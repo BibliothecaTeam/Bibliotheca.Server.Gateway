@@ -39,6 +39,20 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        [HttpPost("projects/{projectId}/branches/{branchName}/refresh")]
+        public async Task<IActionResult> Post(string projectId, string branchName)
+        {
+            await _searchService.RefreshIndexAsync(projectId, branchName);
+            return Ok();
+        }
+
+        [HttpPost("projects/{projectId}/branches/{branchName}/status")]
+        public async Task<Core.DataTransferObjects.IndexStatusDto> Get(string projectId, string branchName)
+        {
+            var result = await _searchService.GetRefreshIndexStatusAsync(projectId, branchName);
+            return result;
+        }
+
         [HttpDelete("projects/{projectId}/branches/{branchName}")]
         public async Task<IActionResult> Delete(string projectId, string branchName)
         {

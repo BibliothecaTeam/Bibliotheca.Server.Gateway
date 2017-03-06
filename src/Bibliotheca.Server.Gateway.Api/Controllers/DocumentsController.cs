@@ -90,7 +90,6 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             if(branches.Any(x => x.Name == branchName))
             {
                 await _branchService.DeleteBranchAsync(projectId, branchName);
-                await _searchService.DeleteDocumentsAsync(projectId, branchName);
             }
 
             await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
@@ -104,7 +103,6 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             if(branches.Any(x => x.Name == branchName))
             {
                 await _branchService.DeleteBranchAsync(projectId, branchName);
-                await _searchService.DeleteDocumentsAsync(projectId, branchName);
             }
             
             await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);

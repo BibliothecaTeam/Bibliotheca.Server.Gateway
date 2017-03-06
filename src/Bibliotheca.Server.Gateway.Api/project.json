@@ -27,7 +27,7 @@
     "Hangfire.MemoryStorage.Core": "1.4.0",
     "Bibliotheca.Server.ServiceDiscovery.ServiceClient": "1.0.12",
     "Bibliotheca.Server.Mvc.Middleware.Authorization": "1.0.3",
-    "Bibliotheca.Server.Mvc.Middleware.Diagnostics": "1.0.3",
+    "Bibliotheca.Server.Mvc.Middleware.Diagnostics": "1.0.4",
     "Bibliotheca.Server.Depository.Abstractions": "1.0.6",
     "Bibliotheca.Server.Indexer.Abstractions": "1.0.4",
     "Bibliotheca.Server.Gateway.Core": "1.1.1"
