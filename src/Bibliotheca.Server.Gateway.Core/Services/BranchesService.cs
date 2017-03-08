@@ -57,6 +57,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new CreateBranchException("During creatint the new branch error occurs: " + content);
             }
+
+            ClearCache(projectId);
         }
 
         public async Task UpdateBranchAsync(string projectId, string branchName, BranchDto branch)
@@ -67,6 +69,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new UpdateBranchException("During updating the branch error occurs: " + content);
             }
+
+            ClearCache(projectId);
         }
         
         public async Task DeleteBranchAsync(string projectId, string branchName)
@@ -77,6 +81,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new DeleteBranchException("During deleteing the branch error occurs: " + content);
             }
+
+            ClearCache(projectId);
         }
 
         private ExtendedBranchDto CreateExtendedBranchDto(BranchDto branchDto)
@@ -115,6 +121,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         private string GetCacheKey(string projectId) 
         {
             return $"BranchesService#{projectId}";
+        }
+
+        public void ClearCache(string projectId)
+        {
+            var cacheKey = GetCacheKey(projectId);
+            _memoryCache.Remove(cacheKey);
         }
     }
 }

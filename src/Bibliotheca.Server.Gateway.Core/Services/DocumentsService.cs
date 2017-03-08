@@ -154,7 +154,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return newPath;
         }
 
-        public async Task DeleteDocumentAsync(string projectId, string branchName, string fileUri)
+        private async Task DeleteDocumentAsync(string projectId, string branchName, string fileUri)
         {
             var result = await _documentsClient.Delete(projectId, branchName, fileUri);
             if(!result.IsSuccessStatusCode)

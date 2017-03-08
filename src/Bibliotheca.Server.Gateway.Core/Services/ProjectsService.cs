@@ -70,6 +70,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new CreateProjecttException("During creating project error occurs: " + content);
             }
+
+            ClearCache();
         }
 
         public async Task UpdateProjectAsync(string projectId, ProjectDto project)
@@ -80,6 +82,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new UpdateProjecttException("During updating project error occurs: " + content);
             }
+
+            ClearCache();
         }
 
         public async Task DeleteProjectAsync(string projectId)
@@ -90,17 +94,24 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new UpdateProjecttException("During updating project error occurs: " + content);
             }
+
+            ClearCache();
         }
 
-        public bool TryGetProjects(out IList<ProjectDto> projects)
+        private bool TryGetProjects(out IList<ProjectDto> projects)
         {
             return _memoryCache.TryGetValue(_allProjectsInformationCacheKey, out projects);
         }
 
-        public void AddProjects(IList<ProjectDto> projects)
+        private void AddProjects(IList<ProjectDto> projects)
         {
             _memoryCache.Set(_allProjectsInformationCacheKey, projects,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+        }
+
+        private void ClearCache()
+        {
+            _memoryCache.Remove(_allProjectsInformationCacheKey);
         }
 
         private static IEnumerable<ProjectDto> FilterByTags(ProjectsFilterDto filter, IEnumerable<ProjectDto> query)
