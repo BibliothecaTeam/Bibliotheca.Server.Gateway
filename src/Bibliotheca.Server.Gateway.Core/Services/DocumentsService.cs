@@ -116,6 +116,16 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
         }
 
+        public async Task DeleteDocumentAsync(string projectId, string branchName, string fileUri)
+        {
+            var result = await _documentsClient.Delete(projectId, branchName, fileUri);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new DeleteDocumentException("During deleting document error occurs: " + content);
+            }
+        }
+
         private async Task CreateBranchAsync(string projectId, string branchName, byte[] content)
         {
             string mkdocsContent = Encoding.UTF8.GetString(content);
@@ -152,16 +162,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
 
             return newPath;
-        }
-
-        private async Task DeleteDocumentAsync(string projectId, string branchName, string fileUri)
-        {
-            var result = await _documentsClient.Delete(projectId, branchName, fileUri);
-            if(!result.IsSuccessStatusCode)
-            {
-                var content = await result.Content.ReadAsStringAsync();
-                throw new DeleteDocumentException("During deleting document error occurs: " + content);
-            }
         }
 
         private string GetCacheKey(string projectId, string branchName, string fileUri)
