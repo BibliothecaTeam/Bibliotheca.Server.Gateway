@@ -27,7 +27,12 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var query = CreateQuery(filter);
-            var requestUri = Path.Combine(_baseAddress, $"search?{query}");
+
+            var requestUri = Path.Combine(_baseAddress, $"search");
+            if(!string.IsNullOrWhiteSpace(query))
+            {
+                requestUri += $"?{query}";
+            }
 
             _logger.LogInformation($"Indexer client request (GET): {requestUri}");
             var responseString = await client.GetStringAsync(requestUri);
@@ -41,7 +46,12 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var query = CreateQuery(filter);
-            var requestUri = Path.Combine(_baseAddress, $"search/projects/{projectId}/branches/{branchName}?{query}");
+
+            var requestUri = Path.Combine(_baseAddress, $"search/projects/{projectId}/branches/{branchName}");
+            if(!string.IsNullOrWhiteSpace(query))
+            {
+                requestUri += $"?{query}";
+            }
 
             _logger.LogInformation($"Indexer client request (GET): {requestUri}");
             var responseString = await client.GetStringAsync(requestUri);
