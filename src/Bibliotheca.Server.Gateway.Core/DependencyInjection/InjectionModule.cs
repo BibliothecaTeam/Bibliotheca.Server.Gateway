@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Bibliotheca.Server.Depository.Client;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +11,6 @@ using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Options;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Autofac.Core;
-using Bibliotheca.Server.Indexer.Client;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection

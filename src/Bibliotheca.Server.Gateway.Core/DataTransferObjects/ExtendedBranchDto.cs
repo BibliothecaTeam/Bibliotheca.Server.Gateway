@@ -1,5 +1,3 @@
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
-
 namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 {
     public class ExtendedBranchDto : BranchDto

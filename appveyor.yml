@@ -18,7 +18,7 @@ version: 1.0.{build}
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2015
+image: Visual Studio 2017
 
 environment:
   # Don't report back to the mothership
@@ -35,7 +35,8 @@ configuration: Release
 build: off
 
 before_build:
-  - appveyor-retry dotnet restore -v Minimal
+  - appveyor-retry dotnet restore "src\Bibliotheca.Server.Gateway.Api" -v Minimal
+  - appveyor-retry dotnet restore "src\Bibliotheca.Server.Gateway.Core" -v Minimal
 
 build_script:
   - dotnet build "src\Bibliotheca.Server.Gateway.Api" -c %CONFIGURATION%

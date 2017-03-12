@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
-using Bibliotheca.Server.Indexer.Abstractions.DataTransferObjects;
-using Bibliotheca.Server.Indexer.Client;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {

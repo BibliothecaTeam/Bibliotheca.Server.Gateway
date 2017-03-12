@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Indexer.Abstractions.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {

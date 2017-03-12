@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Client;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
 using YamlDotNet.Serialization;
 

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
@@ -13,8 +12,6 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
     public class NightcrawlerClient : BaseHttpClient, INightcrawlerClient
     {
         private readonly string _baseAddress;
-
-        private readonly IDictionary<string, StringValues> _customHeaders;
 
         private readonly ILogger _logger;
 

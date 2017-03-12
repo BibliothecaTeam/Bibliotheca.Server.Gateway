@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Client;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Bibliotheca.Server.Gateway.Core.Services

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;

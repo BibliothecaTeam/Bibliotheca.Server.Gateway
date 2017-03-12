@@ -4,9 +4,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using Bibliotheca.Server.Depository.Abstractions.DataTransferObjects;
-using Bibliotheca.Server.Depository.Client;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
