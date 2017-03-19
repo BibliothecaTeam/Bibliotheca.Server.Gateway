@@ -1,8 +1,8 @@
 namespace Bibliotheca.Server.Gateway.Core.Exceptions
 {
-    public class UpdateProjecttException : BibliothecaException
+    public class UpdateProjectException : BibliothecaException
     {
-        public UpdateProjecttException(string message) : base(message)
+        public UpdateProjectException(string message) : base(message)
         {
         }
     }

@@ -67,7 +67,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
-                throw new CreateProjecttException("During creating project error occurs: " + content);
+                throw new CreateProjectException("During creating project error occurs: " + content);
             }
 
             ClearCache();
@@ -79,7 +79,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
-                throw new UpdateProjecttException("During updating project error occurs: " + content);
+                throw new UpdateProjectException("During updating project error occurs: " + content);
             }
 
             ClearCache();
@@ -91,7 +91,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
-                throw new UpdateProjecttException("During updating project error occurs: " + content);
+                throw new DeleteProjectException("During deleting project error occurs: " + content);
             }
 
             ClearCache();

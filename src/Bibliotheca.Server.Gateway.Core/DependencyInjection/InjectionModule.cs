@@ -32,6 +32,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             RegisterDepositoryClients(builder);
             RegisterIndexerClients(builder);
             RegisterNightcrawlerClients(builder);
+            RegisterHeimdallClients(builder);
         }
 
         private void RegisterServices(ContainerBuilder builder)
@@ -42,6 +43,21 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+        }
+
+        private void RegisterHeimdallClients(ContainerBuilder builder)
+        {
+            var baseAddressParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
+                    (pi, ctx) => GetServiceAddress(ctx, "heimdall"));
+
+            var customHeadersParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => GetHttpHeaders(ctx));
+
+            builder.RegisterType<UsersClient>().As<IUsersClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
         }
 
         private void RegisterNightcrawlerClients(ContainerBuilder builder)
