@@ -13,6 +13,8 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
         [JsonConverter(typeof(StringEnumConverter))]
         public RoleEnumDto Role { get; set; }
 
-        public IList<UserProjectDto> UserProjects { get; set; }
+        public string AccessToken { get; set; }
+
+        public IList<string> Projects { get; set; }
     }
 }
