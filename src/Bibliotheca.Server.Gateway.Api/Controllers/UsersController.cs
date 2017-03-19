@@ -37,17 +37,17 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         public async Task<IActionResult> Post([FromBody] UserDto user)
         {
             await _userService.CreateUserAsync(user);
-            return Created($"/projects/{user.Id}", user);
+            return Created($"/users/{user.Id}", user);
         }
 
-        [HttpPut("{projectId}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] UserDto user)
         {
             await _userService.UpdateUserAsync(id, user);
             return Ok();
         }
 
-        [HttpDelete("{projectId}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             await _userService.DeleteUserAsync(id);
