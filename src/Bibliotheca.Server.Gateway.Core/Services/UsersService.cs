@@ -36,7 +36,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task<UserDto> GetUserAsync(string id)
         {
-            var user = null;
+            UserDto user = null;
             try
             {
                 user = await _usersClient.Get(id);
