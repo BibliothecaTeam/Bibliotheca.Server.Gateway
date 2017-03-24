@@ -36,7 +36,20 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task<UserDto> GetUserAsync(string id)
         {
-            var user = await _usersClient.Get(id);
+            var user = null;
+            try
+            {
+                user = await _usersClient.Get(id);
+            }
+            catch(Exception)
+            {
+                user = new UserDto 
+                {
+                    user.Id = id;
+                    user.Role = RoleEnumDto.Unknown;
+                };
+            }
+
             return user;
         }
 
