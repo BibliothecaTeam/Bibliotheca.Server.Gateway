@@ -45,8 +45,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             {
                 user = new UserDto 
                 {
-                    user.Id = id;
-                    user.Role = RoleEnumDto.Unknown;
+                    user.Id = id,
+                    user.Role = RoleEnumDto.Unknown
                 };
             }
 
