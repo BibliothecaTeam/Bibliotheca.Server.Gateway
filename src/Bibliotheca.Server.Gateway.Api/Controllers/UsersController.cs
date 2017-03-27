@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,26 +15,42 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     {
         private readonly IUsersService _userService;
 
-        public UsersController(IUsersService userService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public UsersController(IUsersService userService, IAuthorizationService authorizationService)
         {
             _userService = userService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet()]
+        [Authorize("CanManageUsers")]
         public async Task<IList<UserDto>> Get()
         {
-            var projects = await _userService.GetUsersAsync();
-            return projects;
+            var user = await _userService.GetUsersAsync();
+            return user;
         }
 
         [HttpGet("{id}")]
-        public async Task<UserDto> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var project = await _userService.GetUserAsync(id);
-            return project;
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Read);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
+            var user = await _userService.GetUserAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(user);
         }
 
         [HttpPost]
+        [Authorize("CanManageUsers")]
         public async Task<IActionResult> Post([FromBody] UserDto user)
         {
             await _userService.CreateUserAsync(user);
@@ -41,6 +58,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize("CanManageUsers")]
         public async Task<IActionResult> Put(string id, [FromBody] UserDto user)
         {
             await _userService.UpdateUserAsync(id, user);
@@ -48,9 +66,23 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("CanManageUsers")]
         public async Task<IActionResult> Delete(string id)
         {
             await _userService.DeleteUserAsync(id);
+            return Ok();
+        }
+
+        [HttpPut("{id}/refreshToken")]
+        public async Task<IActionResult> RefreshAccessToken(string id, [FromBody] AccessTokenDto accessToken)
+        {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
+            await _userService.RefreshTokenAsync(id, accessToken);
             return Ok();
         }
     }

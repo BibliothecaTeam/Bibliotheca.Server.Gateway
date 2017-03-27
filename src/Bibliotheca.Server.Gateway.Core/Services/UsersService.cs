@@ -41,13 +41,16 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             {
                 user = await _usersClient.Get(id);
             }
-            catch(Exception)
+            finally
             {
-                user = new UserDto 
+                if(user == null) 
                 {
-                    Id = id,
-                    Role = RoleEnumDto.Unknown
-                };
+                    user = new UserDto 
+                    {
+                        Id = id,
+                        Role = RoleEnumDto.Unknown
+                    };
+                }
             }
 
             return user;
@@ -84,6 +87,18 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             {
                 var content = await result.Content.ReadAsStringAsync();
                 throw new DeleteUserException("During deleting user error occurs: " + content);
+            }
+
+            ClearCache();
+        }
+
+        public async Task RefreshTokenAsync(string id, AccessTokenDto accessToken)
+        {
+            var result = await _usersClient.RefreshToken(id, accessToken);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateUserException("During refreshing user's access token error occurs: " + content);
             }
 
             ClearCache();

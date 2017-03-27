@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,36 +22,55 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly ISearchService _searchService;
 
+        private readonly IAuthorizationService _authorizationService;
+
         public DocumentsController(
             IDocumentsService documentsService, 
             IMarkdownService markdownService, 
             IBranchesService branchService,
-            ISearchService searchService)
+            ISearchService searchService,
+            IAuthorizationService authorizationService)
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
             _branchService = branchService;
             _searchService = searchService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
-        public async Task<IList<BaseDocumentDto>> Get(string projectId, string branchName)
+        public async Task<IActionResult> Get(string projectId, string branchName)
         {
             var documents = await _documentsService.GetDocumentsAsync(projectId, branchName);
-            return documents;
+            if(documents == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(documents);
         }
 
         [HttpGet("{fileUri}")]
-        public async Task<DocumentDto> Get(string projectId, string branchName, string fileUri)
+        public async Task<IActionResult> Get(string projectId, string branchName, string fileUri)
         {
             var document = await _documentsService.GetDocumentAsync(projectId, branchName, fileUri);
-            return document;
+            if(document == null) 
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(document);
         }
 
         [HttpGet("content/{fileUri}")]
-        public async Task<FileResult> GetContent(string projectId, string branchName, string fileUri)
+        public async Task<IActionResult> GetContent(string projectId, string branchName, string fileUri)
         {
             var document = await _documentsService.GetDocumentAsync(projectId, branchName, fileUri);
+            if(document == null) 
+            {
+                return NotFound();
+            }
+
             byte[] content = document.Content;
             string contentType = document.ConentType;
 
@@ -70,6 +89,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] DocumentDto document)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _documentsService.CreateDocumentAsync(projectId, branchName, document);
 
             document.Content = null;
@@ -79,6 +104,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPut("{fileUri}")]
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _documentsService.UpdateDocumentAsync(projectId, branchName, fileUri, document);
             return Ok();
         }
@@ -86,6 +117,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(string projectId, string branchName, IFormFile file)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!isAuthorize)
+            {
+                return Forbid();
+            }
+
             var branches = await _branchService.GetBranchesAsync(projectId);
             if(branches.Any(x => x.Name == branchName))
             {
@@ -99,6 +136,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPut("filebody")]
         public async Task<IActionResult> Put(string projectId, string branchName)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!isAuthorize)
+            {
+                return Forbid();
+            }
+
             var branches = await _branchService.GetBranchesAsync(projectId);
             if(branches.Any(x => x.Name == branchName))
             {
@@ -112,6 +155,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpDelete("{fileUri}")]
         public async Task<IActionResult> Delete(string projectId, string branchName, string fileUri)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _documentsService.DeleteDocumentAsync(projectId, branchName, fileUri);
             return Ok();
         }

@@ -11,13 +11,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.DependencyInjections;
-using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Extensions;
 using Microsoft.AspNetCore.Http;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Bibliotheca.Server.Gateway.Api.Jobs;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Policies;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
+using Bibliotheca.Server.Gateway.Api.UserTokenAuthorization;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.SecureTokenAuthentication;
+using Bibliotheca.Server.Mvc.Middleware.Authorization.BearerAuthentication;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -93,7 +98,30 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddServiceDiscovery();
 
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
+            services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanAddProject", policy => {
+                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Writer));
+                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Administrator));
+                    policy.Requirements.Add(new IsSecureTokenRequirement());
+                });
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanManageUsers", policy => {
+                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Administrator));
+                    policy.Requirements.Add(new IsSecureTokenRequirement());
+                });
+            });
+
+            services.AddScoped<IAuthorizationHandler, HasRoleHandler>();
+            services.AddScoped<IAuthorizationHandler, IsSecureTokenHandler>();
+            services.AddScoped<IAuthorizationHandler, ProjectAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, UserAuthorizationHandler>();
 
             return services.AddApplicationModules(Configuration);
         }
@@ -131,6 +159,13 @@ namespace Bibliotheca.Server.Gateway.Api
                 Realm = SecureTokenDefaults.Realm
             };
             app.UseSecureTokenAuthentication(secureTokenOptions);
+
+            var userTokenOptions = new UserTokenOptions
+            {
+                AuthenticationScheme = UserTokenDefaults.AuthenticationScheme,
+                Realm = UserTokenDefaults.Realm
+            };
+            app.UseUserTokenAuthentication(userTokenOptions);
 
             var jwtBearerOptions = new JwtBearerOptions
             {

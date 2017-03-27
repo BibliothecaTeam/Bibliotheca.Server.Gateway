@@ -1,22 +1,26 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
-    public class RestClient<T>
+    public class RestClient<T>  where T : class
     {
         private readonly string _resourceAddress;
 
+        private readonly string _customAction;
         private readonly IDictionary<string, StringValues> _customHeaders;
 
-        public RestClient(string resourceAddress, IDictionary<string, StringValues> customHeaders)
+        public RestClient(string resourceAddress, IDictionary<string, StringValues> customHeaders, string customAction = null)
         {
             _resourceAddress = resourceAddress;
             _customHeaders = customHeaders;
+            _customAction = customAction;
         }
 
         public async Task<IList<T>> Get()
@@ -34,10 +38,26 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var requestUri = $"{_resourceAddress}/{id}";
-            var responseString = await client.GetStringAsync(requestUri);
+            if(string.IsNullOrWhiteSpace(_customAction)) 
+            {
+                requestUri += $"/{_customAction}";
+            }
+            
+            var response = await client.GetAsync(requestUri);
+            if(response.StatusCode == HttpStatusCode.OK) 
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<T>(responseString);
+                return deserializedObject;
+            }
 
-            var deserializedObject = JsonConvert.DeserializeObject<T>(responseString);
-            return deserializedObject;
+            if(response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            var message = await response.Content.ReadAsStringAsync();
+            throw new RequestException(response.StatusCode, message);
         }
 
         public async Task<HttpResponseMessage> Post(T postObject)
@@ -57,6 +77,10 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var requestUri = $"{_resourceAddress}/{id}";
+            if(string.IsNullOrWhiteSpace(_customAction)) 
+            {
+                requestUri += $"/{_customAction}";
+            }
 
             var serializedObject = JsonConvert.SerializeObject(putObject);
             HttpContent content = new StringContent(serializedObject);
@@ -70,6 +94,10 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var requestUri = $"{_resourceAddress}/{id}";
+            if(string.IsNullOrWhiteSpace(_customAction)) 
+            {
+                requestUri += $"/{_customAction}";
+            }
 
             var httpResponseMessage = await client.DeleteAsync(requestUri);
             return httpResponseMessage;

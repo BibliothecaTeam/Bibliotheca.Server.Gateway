@@ -15,5 +15,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task UpdateUserAsync(string id, UserDto user);
 
         Task DeleteUserAsync(string id);
+
+        Task RefreshTokenAsync(string id, AccessTokenDto accessToken);
     }
 }

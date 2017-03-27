@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,28 +14,47 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     {
         private readonly IBranchesService _branchesService;
 
-        public BranchesController(IBranchesService branchesService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public BranchesController(IBranchesService branchesService, IAuthorizationService authorizationService)
         {
             _branchesService = branchesService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
-        public async Task<IList<ExtendedBranchDto>> Get(string projectId)
+        public async Task<IActionResult> Get(string projectId)
         {
             var branches = await _branchesService.GetBranchesAsync(projectId);
-            return branches;
+            if (branches == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(branches);
         }
 
         [HttpGet("{branchName}")]
-        public async Task<ExtendedBranchDto> Get(string projectId, string branchName)
+        public async Task<IActionResult> Get(string projectId, string branchName)
         {
             var branch = await _branchesService.GetBranchAsync(projectId, branchName);
-            return branch;
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(branch);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(string projectId, [FromBody] BranchDto branch)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _branchesService.CreateBranchAsync(projectId, branch);
             return Created($"/projects/{projectId}/branches/{branch.Name}", branch);
         }
@@ -43,6 +62,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPut("{branchName}")]
         public async Task<IActionResult> Put(string projectId, string branchName, [FromBody] BranchDto branch)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _branchesService.UpdateBranchAsync(projectId, branchName, branch);
             return Ok();
         }
@@ -50,6 +75,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpDelete("{branchName}")]
         public async Task<IActionResult> Delete(string projectId, string branchName)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _branchesService.DeleteBranchAsync(projectId, branchName);
             return Ok();
         }

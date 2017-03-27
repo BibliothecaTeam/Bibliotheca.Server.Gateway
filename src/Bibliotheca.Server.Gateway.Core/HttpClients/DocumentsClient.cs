@@ -51,7 +51,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             return await baseClient.Delete(fileUri);
         }
 
-        private RestClient<T> GetRestClient<T>(string projectId, string branchName)
+        private RestClient<T> GetRestClient<T>(string projectId, string branchName) where T: class
         {
             var uri = string.Format(_resourceUri, projectId, branchName);
             string resourceAddress = Path.Combine(_baseAddress, uri);

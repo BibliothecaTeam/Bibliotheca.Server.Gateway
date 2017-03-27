@@ -51,6 +51,13 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             return await baseClient.Delete(id);
         }
 
+        public async Task<HttpResponseMessage> RefreshToken(string id, AccessTokenDto accessToken)
+        {
+            string resourceAddress = Path.Combine(_baseAddress, _resourceUri);
+            var baseClient = new RestClient<AccessTokenDto>(resourceAddress, _customHeaders, "refreshToken");
+            return await baseClient.Put(id, accessToken);
+        }
+
         private RestClient<UserDto> GetRestClient()
         {
             string resourceAddress = Path.Combine(_baseAddress, _resourceUri);

@@ -16,5 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         Task<HttpResponseMessage> Put(string id, UserDto user);
 
         Task<HttpResponseMessage> Delete(string id);
+
+        Task<HttpResponseMessage> RefreshToken(string id, AccessTokenDto accessToken);
     }
 }

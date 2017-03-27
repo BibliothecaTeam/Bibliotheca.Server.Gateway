@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     {
         private readonly ISearchService _searchService;
 
-        public SearchController(ISearchService searchService)
+        private readonly IAuthorizationService _authorizationService;
+
+        public SearchController(ISearchService searchService, IAuthorizationService authorizationService)
         {
             _searchService = searchService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -35,6 +39,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPost("projects/{projectId}/branches/{branchName}")]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] IEnumerable<DocumentIndexDto> documentIndexDtos)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _searchService.UploadDocumentsAsync(projectId, branchName, documentIndexDtos);
             return Ok();
         }
@@ -42,6 +52,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPost("projects/{projectId}/branches/{branchName}/refresh")]
         public async Task<IActionResult> Post(string projectId, string branchName)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _searchService.RefreshIndexAsync(projectId, branchName);
             return Ok();
         }
@@ -56,6 +72,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpDelete("projects/{projectId}/branches/{branchName}")]
         public async Task<IActionResult> Delete(string projectId, string branchName)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             await _searchService.DeleteDocumentsAsync(projectId, branchName);
             return Ok();
         }
