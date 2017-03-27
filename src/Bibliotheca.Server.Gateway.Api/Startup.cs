@@ -103,23 +103,12 @@ namespace Bibliotheca.Server.Gateway.Api
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CanAddProject", policy => {
-                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Writer));
-                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Administrator));
-                    policy.Requirements.Add(new IsSecureTokenRequirement());
-                });
+                options.AddPolicy("CanAddProject", policy => policy.Requirements.Add(new HasAccessToCreateProjectRequirement()));
+                options.AddPolicy("CanManageUsers", policy => policy.Requirements.Add(new HasAccessToManageUsersRequirement()));
             });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("CanManageUsers", policy => {
-                    policy.Requirements.Add(new HasRoleRequirement(RoleEnumDto.Administrator));
-                    policy.Requirements.Add(new IsSecureTokenRequirement());
-                });
-            });
-
-            services.AddScoped<IAuthorizationHandler, HasRoleHandler>();
-            services.AddScoped<IAuthorizationHandler, IsSecureTokenHandler>();
+            services.AddScoped<IAuthorizationHandler, HasAccessToCreateProjectHandler>();
+            services.AddScoped<IAuthorizationHandler, HasAccessToManageUsersHandler>();
             services.AddScoped<IAuthorizationHandler, ProjectAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, UserAuthorizationHandler>();
 
