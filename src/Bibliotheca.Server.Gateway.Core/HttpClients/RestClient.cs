@@ -77,7 +77,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var requestUri = $"{_resourceAddress}/{id}";
-            if(string.IsNullOrWhiteSpace(_customAction)) 
+            if(!string.IsNullOrWhiteSpace(_customAction)) 
             {
                 requestUri += $"/{_customAction}";
             }
@@ -94,7 +94,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             HttpClient client = GetClient();
             var requestUri = $"{_resourceAddress}/{id}";
-            if(string.IsNullOrWhiteSpace(_customAction)) 
+            if(!string.IsNullOrWhiteSpace(_customAction)) 
             {
                 requestUri += $"/{_customAction}";
             }
