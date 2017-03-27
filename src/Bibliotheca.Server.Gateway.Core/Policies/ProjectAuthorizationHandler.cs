@@ -28,6 +28,7 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                 }
             }
             else if(context.User.Identity.AuthenticationType == "Bearer" 
+                || context.User.Identity.AuthenticationType == "AuthenticationTypes.Federation"
                 || context.User.Identity.AuthenticationType == "UserToken")
             {
                 var userId = context.User.Identity.Name.ToLower();
