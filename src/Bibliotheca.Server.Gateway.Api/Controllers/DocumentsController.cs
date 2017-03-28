@@ -130,6 +130,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
+            await _searchService.RefreshIndexAsync(projectId, branchName);
             return Ok();
         }
 
@@ -149,6 +150,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
             
             await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);
+            await _searchService.RefreshIndexAsync(projectId, branchName);
             return Ok();
         }
 

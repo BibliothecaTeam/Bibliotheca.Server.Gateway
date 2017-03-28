@@ -16,10 +16,16 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IAuthorizationService _authorizationService;
 
-        public BranchesController(IBranchesService branchesService, IAuthorizationService authorizationService)
+        private readonly ISearchService _searchService;
+
+        public BranchesController(
+            IBranchesService branchesService, 
+            IAuthorizationService authorizationService,
+            ISearchService searchService)
         {
             _branchesService = branchesService;
             _authorizationService = authorizationService;
+            _searchService = searchService;
         }
 
         [HttpGet]
@@ -82,6 +88,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             await _branchesService.DeleteBranchAsync(projectId, branchName);
+            await _searchService.DeleteDocumentsAsync(projectId, branchName);
             return Ok();
         }
     }
