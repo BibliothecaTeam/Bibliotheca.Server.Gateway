@@ -69,6 +69,19 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        [HttpGet("{projectId}/accessToken")]
+        public async Task<IActionResult> GetProjectAccessToken(string projectId)
+        {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
+            AccessTokenDto accessToken = await _projectsService.GetProjectAccessTokenAsync(projectId);
+            return new ObjectResult(accessToken);
+        }
+
         [HttpDelete("{projectId}")]
         public async Task<IActionResult> Delete(string projectId)
         {

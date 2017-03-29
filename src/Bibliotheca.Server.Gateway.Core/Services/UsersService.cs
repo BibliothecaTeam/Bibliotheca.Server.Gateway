@@ -109,8 +109,16 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             var user = await _usersClient.Get(id.ToLower());
             if(user != null)
             {
-                user.Projects.Add(projectId);
-                await UpdateUserAsync(user.Id, user);
+                if(user.Projects == null) 
+                {
+                    user.Projects = new List<string>();
+                }
+
+                if(!user.Projects.Contains(projectId))
+                {
+                    user.Projects.Add(projectId);
+                    await UpdateUserAsync(user.Id, user);
+                }
             }
         }
 

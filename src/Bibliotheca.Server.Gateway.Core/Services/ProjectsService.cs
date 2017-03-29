@@ -57,8 +57,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task<ProjectDto> GetProjectAsync(string projectId)
         {
-            var projects = await _projectsClient.Get(projectId);
-            return projects;
+            var project = await _projectsClient.Get(projectId);
+            project.AccessToken = string.Empty;
+            return project;
         }
 
         public async Task CreateProjectAsync(ProjectDto project)
@@ -97,6 +98,22 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             ClearCache();
         }
 
+        public async Task<AccessTokenDto> GetProjectAccessTokenAsync(string projectId)
+        {
+            var project = await _projectsClient.Get(projectId);
+            if(project == null)
+            {
+                throw new ProjectNotFoundException($"Project '{projectId}' not found.");
+            }
+
+            var accessToken = new AccessTokenDto
+            {
+                AccessToken = project.AccessToken
+            };
+
+            return accessToken;
+        }
+
         private bool TryGetProjects(out IList<ProjectDto> projects)
         {
             return _memoryCache.TryGetValue(_allProjectsInformationCacheKey, out projects);
@@ -104,8 +121,18 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private void AddProjects(IList<ProjectDto> projects)
         {
+            CleanProjectsAccessTokens(projects);
+
             _memoryCache.Set(_allProjectsInformationCacheKey, projects,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+        }
+
+        private static void CleanProjectsAccessTokens(IList<ProjectDto> projects)
+        {
+            foreach (var project in projects)
+            {
+                project.AccessToken = string.Empty;
+            }
         }
 
         private void ClearCache()

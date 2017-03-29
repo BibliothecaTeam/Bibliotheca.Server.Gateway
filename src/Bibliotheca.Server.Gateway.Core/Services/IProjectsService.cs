@@ -14,5 +14,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task UpdateProjectAsync(string projectId, ProjectDto project);
 
         Task DeleteProjectAsync(string projectId);
+        
+        Task<AccessTokenDto> GetProjectAccessTokenAsync(string projectId);
     }
 }

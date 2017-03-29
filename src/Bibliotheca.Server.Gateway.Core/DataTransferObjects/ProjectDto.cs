@@ -30,5 +30,7 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
         public List<ContactPersonDto> ContactPeople { get; set; }
 
         public List<EditLinkDto> EditLinks { get; set; }
+
+        public string AccessToken { get; set; }
     }
 }
