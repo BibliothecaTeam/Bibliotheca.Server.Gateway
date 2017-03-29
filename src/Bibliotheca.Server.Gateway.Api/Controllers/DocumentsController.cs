@@ -114,10 +114,11 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPut]
         public async Task<IActionResult> Put(string projectId, string branchName, IFormFile file)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
             if(!isAuthorize)
             {
                 return Forbid();
@@ -134,10 +135,11 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPut("filebody")]
         public async Task<IActionResult> Put(string projectId, string branchName)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
             if(!isAuthorize)
             {
                 return Forbid();
