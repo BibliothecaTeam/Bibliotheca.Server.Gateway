@@ -33,7 +33,7 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
             {
                 var userId = context.User.Identity.Name.ToLower();
 
-                var user = await _usersService.Get(userId);
+                var user = await _usersService.GetUserAsync(userId);
                 if (user != null)
                 {
                     if(user.Role == RoleEnumDto.Administrator)
