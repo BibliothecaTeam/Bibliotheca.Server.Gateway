@@ -16,10 +16,16 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IAuthorizationService _authorizationService;
 
-        public ProjectsController(IProjectsService projectsService, IAuthorizationService authorizationService)
+        private readonly IUsersService _usersService;
+
+        public ProjectsController(
+            IProjectsService projectsService, 
+            IAuthorizationService authorizationService, 
+            IUsersService usersService)
         {
             _projectsService = projectsService;
             _authorizationService = authorizationService;
+            _usersService = usersService;
         }
 
         [HttpGet()]
@@ -46,6 +52,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         public async Task<IActionResult> Post([FromBody] ProjectDto project)
         {
             await _projectsService.CreateProjectAsync(project);
+            await _usersService.AddProjectToUserAsync(User.Identity.Name, project.Id);
             return Created($"/projects/{project.Id}", project);
         }
 

@@ -104,6 +104,16 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             ClearCache();
         }
 
+        public async Task AddProjectToUserAsync(string id, string projectId)
+        {
+            var user = await _usersClient.Get(id.ToLower());
+            if(user != null)
+            {
+                user.Projects.Add(projectId);
+                await UpdateUserAsync(user.Id, user);
+            }
+        }
+
         private bool TryGetUsers(out IList<UserDto> users)
         {
             return _memoryCache.TryGetValue(_allUsersInformationCacheKey, out users);
