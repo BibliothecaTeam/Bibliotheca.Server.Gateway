@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
-using Bibliotheca.Server.Gateway.Core.HttpClients;
+using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
@@ -9,11 +9,11 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
 {
     public class UserAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, UserDto>
     {
-        private readonly IUsersClient _usersClient;
+        private readonly IUsersService _usersService;
 
-        public UserAuthorizationHandler(IUsersClient usersClient)
+        public UserAuthorizationHandler(IUsersService usersService)
         {
-            _usersClient = usersClient;
+            _usersService = usersService;
         }
 
         protected override async Task HandleRequirementAsync(
@@ -34,7 +34,7 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
             {
                 var userId = context.User.Identity.Name.ToLower();
 
-                var user = await _usersClient.Get(userId);
+                var user = await _usersService.GetUserAsync(userId);
                 if (user != null)
                 {
                     if(user.Role == RoleEnumDto.Administrator)
