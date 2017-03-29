@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheca.Server.Gateway.Api.Controllers
 {
-    [Authorize]
     [ApiVersion("1.0")]
     [Route("api/projects/{projectId}/branches/{branchName}/documents")]
     public class DocumentsController : Controller
@@ -38,6 +37,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             _authorizationService = authorizationService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get(string projectId, string branchName)
         {
@@ -50,6 +50,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return new ObjectResult(documents);
         }
 
+        [Authorize]
         [HttpGet("{fileUri}")]
         public async Task<IActionResult> Get(string projectId, string branchName, string fileUri)
         {
@@ -62,6 +63,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return new ObjectResult(document);
         }
 
+        [Authorize]
         [HttpGet("content/{fileUri}")]
         public async Task<IActionResult> GetContent(string projectId, string branchName, string fileUri)
         {
@@ -86,6 +88,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return new FileContentResult(content, contentType);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] DocumentDto document)
         {
@@ -101,6 +104,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Created($"/projects/{projectId}/branches/{branchName}/documents/{document.Uri}", document);
         }
 
+        [Authorize]
         [HttpPut("{fileUri}")]
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
         {
@@ -156,6 +160,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("{fileUri}")]
         public async Task<IActionResult> Delete(string projectId, string branchName, string fileUri)
         {

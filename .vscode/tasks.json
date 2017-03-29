@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/src/Bibliotheca.Server.Gateway.Api/project.json"
+                "${workspaceRoot}/src/Bibliotheca.Server.Gateway.Api/Bibliotheca.Server.Gateway.Api.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

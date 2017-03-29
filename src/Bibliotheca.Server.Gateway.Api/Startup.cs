@@ -111,6 +111,7 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddScoped<IAuthorizationHandler, HasAccessToManageUsersHandler>();
             services.AddScoped<IAuthorizationHandler, ProjectAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, UserAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, CanUploadBranchHandler>();
 
             return services.AddApplicationModules(Configuration);
         }

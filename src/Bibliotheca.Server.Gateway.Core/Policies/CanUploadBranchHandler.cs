@@ -1,8 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
+using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 
 namespace Bibliotheca.Server.Gateway.Core.Policies
 {
@@ -10,12 +13,15 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
     {
         private readonly IUsersService _usersService;
 
-        private readonly IProjectsService _projectsService;
+        private readonly IProjectsClient _projectsClient;
 
-        public CanUploadBranchHandler(IUsersService usersService, IProjectsService projectsService)
+        private readonly ApplicationParameters _applicationParameters;
+
+        public CanUploadBranchHandler(IUsersService usersService, IProjectsClient projectsClient, IOptions<ApplicationParameters> applicationParameters)
         {
             _usersService = usersService;
-            _projectsService = projectsService;
+            _projectsClient = projectsClient;
+            _applicationParameters = applicationParameters.Value;
         }
 
         protected override async Task HandleRequirementAsync(
@@ -37,10 +43,14 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                 if(authorizationParts.Length == 2)
                 {
                     var projectToken = authorizationParts[1];
-                    var existingToken = await _projectsService.GetProjectAccessTokenAsync(project.Id);
-                    if(existingToken != null && !string.IsNullOrWhiteSpace(existingToken.AccessToken))
+
+                    _projectsClient.CustomHeaders.Remove("Authorization");
+                    _projectsClient.CustomHeaders.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
+                    
+                    var existingProject = await _projectsClient.Get(project.Id);
+                    if(existingProject != null && !string.IsNullOrWhiteSpace(existingProject.AccessToken))
                     {
-                        if(string.Equals(projectToken, existingToken.AccessToken, StringComparison.OrdinalIgnoreCase))
+                        if(string.Equals(projectToken, existingProject.AccessToken, StringComparison.OrdinalIgnoreCase))
                         {
                             context.Succeed(requirement);
                         }
