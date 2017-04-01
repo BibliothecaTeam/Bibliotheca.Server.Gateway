@@ -209,7 +209,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         
         private static IEnumerable<ProjectDto> FilterByLimitedAccess(ProjectsFilterDto filter, IEnumerable<ProjectDto> query, string userId)
         {
-            query = query.Where(x => (x.IsAccessLimited && (x.ContactPeople.Any(y => y.Email == userId) || x.Owners.Any(o => o == userId))));
+            query = query.Where(x => (x.IsAccessLimited && 
+                ((x.ContactPeople != null && x.ContactPeople.Any(y => y.Email == userId)) || x.Owners.Any(o => o == userId))));
             return query;
         }
     }
