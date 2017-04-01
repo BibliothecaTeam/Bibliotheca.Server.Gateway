@@ -31,7 +31,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpGet()]
         public async Task<FilteredResutsDto<ProjectDto>> Get([FromQuery] ProjectsFilterDto filter)
         {
-            var projects = await _projectsService.GetProjectsAsync(filter, User.Identity.Name);
+            var userId = User.Identity.Name.ToLower();
+            var projects = await _projectsService.GetProjectsAsync(filter, userId);
             return projects;
         }
 
