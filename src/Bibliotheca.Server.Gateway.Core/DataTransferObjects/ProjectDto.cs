@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 {
@@ -34,5 +35,8 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
         public string AccessToken { get; set; }
 
         public bool IsAccessLimited { get; set; }
+
+        [JsonIgnore]
+        public List<string> Owners { get; set; }
     }
 }

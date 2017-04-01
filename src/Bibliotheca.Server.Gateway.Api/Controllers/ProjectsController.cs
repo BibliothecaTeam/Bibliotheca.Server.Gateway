@@ -31,13 +31,19 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpGet()]
         public async Task<FilteredResutsDto<ProjectDto>> Get([FromQuery] ProjectsFilterDto filter)
         {
-            var projects = await _projectsService.GetProjectsAsync(filter);
+            var projects = await _projectsService.GetProjectsAsync(filter, User.Identity.Name);
             return projects;
         }
 
         [HttpGet("{projectId}")]
         public async Task<IActionResult> Get(string projectId)
         {
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Read);
+            if (!isAuthorize)
+            {
+                return Forbid();
+            }
+
             var project = await _projectsService.GetProjectAsync(projectId);
             if (project == null)
             {

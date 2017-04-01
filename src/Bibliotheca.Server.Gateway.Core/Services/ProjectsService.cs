@@ -15,21 +15,32 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly IProjectsClient _projectsClient;
 
+        private readonly IUsersClient _usersClient;
+
         private readonly IMemoryCache _memoryCache;
 
-        public ProjectsService(IProjectsClient projectsClient, IMemoryCache memoryCache)
+        public ProjectsService(IProjectsClient projectsClient, IUsersClient usersClient, IMemoryCache memoryCache)
         {
             _projectsClient = projectsClient;
+            _usersClient = usersClient;
             _memoryCache = memoryCache;
         }
 
-        public async Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter)
+        public async Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter, string userId)
         {
             IList<ProjectDto> projects = null;
             if (!TryGetProjects(out projects))
             {
-                projects = await _projectsClient.Get();
-                AddProjects(projects);
+                var projectsTask = _projectsClient.Get();
+                var usersTask = _usersClient.Get();
+
+                projects = await projectsTask;
+                CleanProjectsAccessTokens(projects);
+
+                var users = await usersTask;
+                AddOwnersToProjects(projects, users);
+
+                AddProjectsToCache(projects);
             }
 
             IEnumerable<ProjectDto> query = projects;
@@ -37,6 +48,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             query = FilterByDescription(filter, query);
             query = FilterByGroups(filter, query);
             query = FilterByTags(filter, query);
+            query = FilterByLimitedAccess(filter, query, userId);
 
             var allResults = query.Count();
 
@@ -119,12 +131,19 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return _memoryCache.TryGetValue(_allProjectsInformationCacheKey, out projects);
         }
 
-        private void AddProjects(IList<ProjectDto> projects)
+        private void AddProjectsToCache(IList<ProjectDto> projects)
         {
-            CleanProjectsAccessTokens(projects);
-
             _memoryCache.Set(_allProjectsInformationCacheKey, projects,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+        }
+
+        private static void AddOwnersToProjects(IList<ProjectDto> projects, IList<UserDto> users)
+        {
+            foreach (var project in projects)
+            {
+                var owners = users.Where(x => x.Projects.Contains(project.Id) || x.Role == RoleEnumDto.Administrator);
+                project.Owners = owners.Select(x => x.Id).ToList();
+            }
         }
 
         private static void CleanProjectsAccessTokens(IList<ProjectDto> projects)
@@ -185,6 +204,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 query = query.Where(x => x.Description.ToUpper().Contains(filterQueryNormalized));
             }
 
+            return query;
+        }
+        
+        private static IEnumerable<ProjectDto> FilterByLimitedAccess(ProjectsFilterDto filter, IEnumerable<ProjectDto> query, string userId)
+        {
+            query = query.Where(x => (x.IsAccessLimited && (x.ContactPeople.Any(y => y.Email == userId) || x.Owners.Any(o => o == userId))));
             return query;
         }
     }

@@ -5,7 +5,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public interface IProjectsService
     {
-        Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter);
+        Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter, string userId);
 
         Task<ProjectDto> GetProjectAsync(string projectId);
 
