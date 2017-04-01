@@ -141,7 +141,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             foreach (var project in projects)
             {
-                var owners = users.Where(x => x.Projects.Contains(project.Id) || x.Role == RoleEnumDto.Administrator);
+                var owners = users.Where(x => x.Role == RoleEnumDto.Administrator || (x.Projects != null && x.Projects.Contains(project.Id)));
                 project.Owners = owners.Select(x => x.Id).ToList();
             }
         }
