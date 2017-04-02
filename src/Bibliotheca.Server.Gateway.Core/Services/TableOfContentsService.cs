@@ -29,13 +29,16 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!_memoryCache.TryGetValue(cacheKey, out toc))
             {
                 var branch = await _branchesClient.Get(projectId, branchName);
-                var mkDocsConfiguration = ReadMkDocsConfiguration(branch.MkDocsYaml);
-                toc = GetChapterItems(mkDocsConfiguration);
+                if(branch != null)
+                {
+                    var mkDocsConfiguration = ReadMkDocsConfiguration(branch.MkDocsYaml);
+                    toc = GetChapterItems(mkDocsConfiguration);
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(10));
 
-                _memoryCache.Set(cacheKey, toc, cacheEntryOptions);
+                    _memoryCache.Set(cacheKey, toc, cacheEntryOptions);
+                }
             }
 
             return toc;

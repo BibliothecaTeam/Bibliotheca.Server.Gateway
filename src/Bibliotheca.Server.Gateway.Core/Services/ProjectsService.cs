@@ -70,7 +70,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public async Task<ProjectDto> GetProjectAsync(string projectId)
         {
             var project = await _projectsClient.Get(projectId);
-            project.AccessToken = string.Empty;
+            if(project != null)
+            {
+                project.AccessToken = string.Empty;
+            }
+            
             return project;
         }
 
