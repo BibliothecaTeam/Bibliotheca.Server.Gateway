@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
+using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
@@ -28,10 +29,22 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             HttpClient client = GetClient();
 
             var requestUri = $"{_resourceAddress}";
-            var responseString = await client.GetStringAsync(requestUri);
+            var response = await client.GetAsync(requestUri);
 
-            var deserializedObject = JsonConvert.DeserializeObject<IList<T>>(responseString);
-            return deserializedObject;
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseString = await client.GetStringAsync(requestUri);
+                var deserializedObject = JsonConvert.DeserializeObject<IList<T>>(responseString);
+                return deserializedObject;
+            }
+
+            if(response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            var message = await response.Content.ReadAsStringAsync();
+            throw new RequestException(response.StatusCode, message);
         }
 
         public async Task<T> Get(string id)
@@ -68,7 +81,13 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             var serializedObject = JsonConvert.SerializeObject(postObject);
             HttpContent content = new StringContent(serializedObject);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            
             var httpResponseMessage = await client.PostAsync(requestUri, content);
+            if(httpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                throw new NotFoundException(responseString);
+            }            
 
             return httpResponseMessage;
         }
@@ -85,7 +104,13 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             var serializedObject = JsonConvert.SerializeObject(putObject);
             HttpContent content = new StringContent(serializedObject);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
             var httpResponseMessage = await client.PutAsync(requestUri, content);
+            if(httpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                throw new NotFoundException(responseString);
+            }            
 
             return httpResponseMessage;
         }
@@ -100,6 +125,12 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             }
 
             var httpResponseMessage = await client.DeleteAsync(requestUri);
+            if(httpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                var responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                throw new NotFoundException(responseString);
+            }
+
             return httpResponseMessage;
         }
 

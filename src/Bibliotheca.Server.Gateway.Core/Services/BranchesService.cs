@@ -31,6 +31,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!_memoryCache.TryGetValue(cacheKey, out branches))
             {
                 var branchesDto = await _branchesClient.Get(projectId);
+                if(branchesDto == null)
+                {
+                    return null;
+                }
+
                 branches = branchesDto.Select(x => CreateExtendedBranchDto(x)).ToList();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -45,6 +50,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public async Task<ExtendedBranchDto> GetBranchAsync(string projectId, string branchName)
         {
             var branch = await _branchesClient.Get(projectId, branchName);
+            if(branch == null)
+            {
+                return null;
+            }
+
             return CreateExtendedBranchDto(branch);
         }
 
@@ -54,7 +64,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             if(!result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
-                throw new CreateBranchException("During creatint the new branch error occurs: " + content);
+                throw new CreateBranchException("During creating the new branch error occurs: " + content);
             }
 
             ClearCache(projectId);
