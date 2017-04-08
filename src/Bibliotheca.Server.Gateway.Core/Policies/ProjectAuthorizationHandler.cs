@@ -25,7 +25,7 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
             {
                 await CheckIfUsertCanRead(context, requirement, project);
             }
-            else if(requirement == Operations.Update || requirement == Operations.Delete)
+            else if(requirement == Operations.Update || requirement == Operations.Delete || requirement == Operations.Create)
             {
                 await CheckIfUsertCanModify(context, requirement, project);
             }
@@ -51,8 +51,14 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                     if (user.Role == RoleEnumDto.Administrator)
                     {
                         context.Succeed(requirement);
+                        return;
                     }
-                    else if (requirement == Operations.Update && user.Projects.Contains(project.Id))
+
+                    if (requirement == Operations.Update && user.Projects.Contains(project.Id))
+                    {
+                        context.Succeed(requirement);
+                    }
+                    else if (requirement == Operations.Create && user.Role == RoleEnumDto.Writer)
                     {
                         context.Succeed(requirement);
                     }
@@ -66,23 +72,35 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
 
         private async Task CheckIfUsertCanRead(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, ProjectDto project)
         {
+
             if (!project.IsAccessLimited)
             {
                 context.Succeed(requirement);
             }
             else
             {
-                var userId = context.User.Identity.Name.ToLower();
-                if (project.ContactPeople.Any(x => x.Email == userId))
+                if (context.User.Identity.AuthenticationType == "SecureToken")
                 {
-                    context.Succeed(requirement);
-                    return;
+                    if (context.User.Identity.Name == "System")
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
                 }
-
-                var user = await _usersService.GetUserAsync(userId);
-                if (user != null && user.Projects.Any(o => o == project.Id))
+                else
                 {
-                    context.Succeed(requirement);
+                    var userId = context.User.Identity.Name.ToLower();
+                    if (project.ContactPeople.Any(x => x.Email == userId))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    var user = await _usersService.GetUserAsync(userId);
+                    if (user != null && user.Projects != null && user.Projects.Any(o => o == project.Id))
+                    {
+                        context.Succeed(requirement);
+                    }
                 }
             }
         }

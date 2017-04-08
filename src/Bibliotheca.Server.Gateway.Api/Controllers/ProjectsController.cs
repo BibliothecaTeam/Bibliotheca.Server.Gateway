@@ -39,19 +39,19 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpGet("{projectId}")]
         public async Task<IActionResult> Get(string projectId)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Read);
+            var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
+            if (projectFromStorage == null)
+            {
+                return NotFound();
+            }
+
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Read);
             if (!isAuthorize)
             {
                 return Forbid();
             }
 
-            var project = await _projectsService.GetProjectAsync(projectId);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(project);
+            return new ObjectResult(projectFromStorage);
         }
 
         [HttpPost]
@@ -66,7 +66,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPut("{projectId}")]
         public async Task<IActionResult> Put(string projectId, [FromBody] ProjectDto project)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
+            if (projectFromStorage == null)
+            {
+                return NotFound();
+            }
+
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
             if (!isAuthorize)
             {
                 return Forbid();
@@ -79,7 +85,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpGet("{projectId}/accessToken")]
         public async Task<IActionResult> GetProjectAccessToken(string projectId)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
+            if (projectFromStorage == null)
+            {
+                return NotFound();
+            }
+
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
             if (!isAuthorize)
             {
                 return Forbid();
@@ -92,7 +104,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpDelete("{projectId}")]
         public async Task<IActionResult> Delete(string projectId)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Delete);
+            var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
+            if (projectFromStorage == null)
+            {
+                return NotFound();
+            }
+
+            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Delete);
             if (!isAuthorize)
             {
                 return Forbid();
