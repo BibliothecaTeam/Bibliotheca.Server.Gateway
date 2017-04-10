@@ -69,9 +69,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 }
             }
 
-            var listOfPages = pages as List<object>;
             var parentItem = new ChapterItemDto();
-            AddChildItems(parentItem, listOfPages, docsDir);
+            var listOfPages = pages as List<object>;
+            if(listOfPages != null)
+            {
+                AddChildItems(parentItem, listOfPages, docsDir);
+            }
 
             var rootChapterItems = new List<ChapterItemDto>();
             foreach (var item in parentItem.Children)
