@@ -106,7 +106,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     else
                     {
                         List<object> nodes = value as List<object>;
-                        AddChildItems(node, nodes, docsDir);
+                        if(nodes != null)
+                        {
+                            AddChildItems(node, nodes, docsDir);
+                        }
                     }
                 }
             }
