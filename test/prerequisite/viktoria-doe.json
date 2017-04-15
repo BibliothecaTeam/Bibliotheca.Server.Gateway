@@ -1,0 +1,9 @@
+{
+  "id": "viktoria.doe@test.com",
+  "name": "Vikrtoria Doe",
+  "role": "User",
+  "accessToken": "5ab208be-0711-486f-983e-eab578aad782",
+  "projects": [
+    "message-hub"
+  ]
+}

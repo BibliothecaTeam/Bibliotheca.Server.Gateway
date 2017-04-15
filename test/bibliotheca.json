@@ -1,0 +1,3236 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Bibliotheca",
+		"_postman_id": "58239a62-b1a2-5b65-2680-a4f512e51e3c",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. Prerequisite",
+			"description": "",
+			"item": [
+				{
+					"name": "System have to contains user marcin.doe@test.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Marcin Doe'\"] = responseJSON.name === \"Marcin Doe\";",
+									"tests[\"Role of user have to by 'Administrator'\"] = responseJSON.role === \"Administrator\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/marcin.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to contains user voktoria.doe@test.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Viktoria Doe'\"] = responseJSON.name === \"Vikrtoria Doe\";",
+									"tests[\"Role of user have to by 'User'\"] = responseJSON.role === \"User\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to contains user wiktor.doe@test.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Wiktor Doe'\"] = responseJSON.name === \"Wiktor Doe\";",
+									"tests[\"Role of user have to by 'Writer'\"] = responseJSON.role === \"Writer\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/wiktor.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Create temporary public project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"unit-test-project-public\",\n    \"Name\": \"Unit Test Project Public\",\n    \"Description\": \"Unit test project public description.\",\n    \"DefaultBranch\": \"Latest\",\n    \"VisibleBranches\": [\n        \"Latest\"\n    ],\n    \"Tags\": [\n        \"TagA\",\n        \"TagB\"\n    ],\n    \"Group\": \"GroupA\",\n    \"ProjectSite\": \"\",\n    \"ContactPeople\": \n    [\n        {\n            \"Name\": \"Marcin Doe\",\n            \"Email\": \"marcin.doe@test.com\"\n        },\n        {\n            \"Name\": \"Justyna Doe\",\n            \"Email\": \"justyna.doe@test.com\"\n        }\n    ],\n    \"EditLinks\":\n    [\n        {\n            \"BranchName\": \"Latest\",\n            \"Link\": \"http://link.to.sources/\"\n        }\n    ],\n    \"AccessToken\": \"2a8bb300-9f60-45c4-9fdf-190e5a48371e\",\n    \"IsAccessLimited\": false\n}"
+						},
+						"description": "User cannot add a new project."
+					},
+					"response": []
+				},
+				{
+					"name": "Create temporary private project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"unit-test-project-private\",\n    \"Name\": \"Unit Test Project Private\",\n    \"Description\": \"Unit test project pribvate description.\",\n    \"DefaultBranch\": \"Latest\",\n    \"VisibleBranches\": [\n        \"Latest\"\n    ],\n    \"Tags\": [\n        \"TagA\",\n        \"TagB\"\n    ],\n    \"Group\": \"GroupA\",\n    \"ProjectSite\": \"\",\n    \"ContactPeople\": \n    [\n        {\n            \"Name\": \"Marcin Doe\",\n            \"Email\": \"marcin.doe@test.com\"\n        },\n        {\n            \"Name\": \"Justyna Doe\",\n            \"Email\": \"justyna.doe@test.com\"\n        }\n    ],\n    \"EditLinks\":\n    [\n        {\n            \"BranchName\": \"Latest\",\n            \"Link\": \"http://link.to.sources/\"\n        }\n    ],\n    \"AccessToken\": \"2a8bb300-9f60-45c4-9fdf-190e5a48371e\",\n    \"IsAccessLimited\": true\n}"
+						},
+						"description": "User cannot add a new project."
+					},
+					"response": []
+				},
+				{
+					"name": "Send documentation file to temporary public project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/filebody",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "prerequisite/unit-test-project-public/Latest.zip"
+							}
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "Send documentation file to temporary private project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private/branches/Latest/documents/filebody",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "prerequisite/unit-test-project-private/Latest.zip"
+							}
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. Authorization",
+			"description": "",
+			"item": [
+				{
+					"name": "System have to return 401 (Unauthorized) for request without token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;",
+									"",
+									"tests[\"Www-Authenticate is present\"] = postman.getResponseHeader(\"Www-Authenticate\");",
+									"",
+									"tests[\"Bearer token was returned\"] = postman.getResponseHeader(\"Www-Authenticate\").toString().includes(\"Bearer\");",
+									"",
+									"tests[\"UserToken token was returned\"] = postman.getResponseHeader(\"Www-Authenticate\").toString().includes(\"UserToken\");",
+									"",
+									"tests[\"SecureToken token was returned\"] = postman.getResponseHeader(\"Www-Authenticate\").toString().includes(\"SecureToken\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Almost all requests without authorization tokens have to fail with 401 Unauthorized status code."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 200 (Ok) for correct SecureToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains correct SecureToken then system should return 200 Ok status code."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 200 (Ok) for correct UserToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains correct UserToken then system should return 200 Ok status code."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 401 (Unauthorized) for incorrect SecureToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "SecureToken e4739779-a546-43d1-837d-8cf4901c3489",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains incorrect SecureToken then system should return 401 Unauthorized status code."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 401 (Unauthorized) for incorrect UserToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "UserToken e8486076-5a8f-4542-b96f-f0a3691cfb8d",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains incorrect SecureToken then system should return 401 Unauthorized status code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03. Health controller",
+			"description": "Health controller for service discovery",
+			"item": [
+				{
+					"name": "Information about helth have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/health",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Information about helth have to be returned without authorization"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04. Projects controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Projects list have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'allResults' property\"] = responseBody.has(\"allResults\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Projects list have to returns correct project by tag filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"",
+									"for(var i = 0; i < responseJSON.results.length; i++) {",
+									"    var project = responseJSON.results[i];",
+									"    tests[\"Project tags have to contains 'TagA' tag\"] = project.tags.indexOf(\"TagA\") >= 0;",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects?tags=TagA",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all projects which have API tag."
+					},
+					"response": []
+				},
+				{
+					"name": "Projects list have to returns correct project by group filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"",
+									"for(var i = 0; i < responseJSON.results.length; i++) {",
+									"    var project = responseJSON.results[i];",
+									"    tests[\"Project group have to be equal 'GroupA'\"] = project.group === \"GroupA\"",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects?groups=GroupA",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all projects which have People Platform group."
+					},
+					"response": []
+				},
+				{
+					"name": "Projects list have to returns correct project by query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns one item\"] = responseJSON.allResults === 1;",
+									"tests[\"Response have to returns 'Unit Test Project Public\"] = responseJSON.results[0].name === \"Unit Test Project Public\";",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects?query=Unit Test Project Public",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all projects which have Configuration Manager name."
+					},
+					"response": []
+				},
+				{
+					"name": "Project have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'Unit test project public description' text\"] = responseBody.has(\"Unit test project public description\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns specific project by his id."
+					},
+					"response": []
+				},
+				{
+					"name": "Getting not existing project have to return 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains not existing project system have to return 404 status code."
+					},
+					"response": []
+				},
+				{
+					"name": "Getting project have to return 403 when user don't have access to project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains not existing project system have to return 404 status code."
+					},
+					"response": []
+				},
+				{
+					"name": "User have not access to adding new projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"configuration-manager\",\n  \"name\": \"Configuration Manager\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "User cannot add a new project."
+					},
+					"response": []
+				},
+				{
+					"name": "User have not access to update not his projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"configuration-manager\",\n  \"name\": \"Configuration Manager\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Writer can not update not his projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User have not access to deleting project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "User cannot delete projects which are not his."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer have access to adding new projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new-test-project\",\n  \"name\": \"Test project\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Writer can add a new projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer have access to update his project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/new-test-project",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new-test-project\",\n  \"name\": \"Test project - updated\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Writer can update his projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator have access to update not his project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/new-test-project",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new-test-project\",\n  \"name\": \"Test project - updated\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Administrator can updat projects wich was added by sombody else."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer can delete his project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/new-test-project",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"configuration-manager\",\n  \"name\": \"Configuration Manager\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Writer can delete his own projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator have access to adding new projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new-test-project-admin\",\n  \"name\": \"Test project\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Administrator can add a new projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator have access to update his project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/new-test-project-admin",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new-test-project-admin\",\n  \"name\": \"Test project - updated\",\n  \"description\": \"Configuration Manager is powerful application to manage deployments between Unit4 Business World On! installations.\",\n  \"defaultBranch\": \"Latest\",\n  \"visibleBranches\": [\n    \"Latest\"\n  ],\n  \"tags\": [\n    \"Data admin\",\n    \"Self driving\",\n    \"FaaS\",\n    \"Wanda\"\n  ],\n  \"group\": \"Other products\",\n  \"projectSite\": \"http://unit4.com/configuration-manager\",\n  \"contactPeople\": [\n    {\n      \"name\": \"Marcin Czachurski\",\n      \"email\": \"marcin.czachurski@unit4.com\"\n    },\n    {\n      \"name\": \"Justyna Mokrzecka\",\n      \"email\": \"justyna.mokrzecka@unit4.com\"\n    }\n  ],\n  \"editLinks\": [\n    {\n      \"branchName\": \"Latest\",\n      \"link\": \"http://team47system1:8080/tfs/defaultcollection/Fundamentals/_versionControl?path=%24%2FFundamentals%2FConfigurationManager%2FMain%2Fdocs%2F{FILE}&_a=contents\"\n    }\n  ],\n  \"accessToken\": \"\",\n  \"isAccessLimited\": true\n}"
+						},
+						"description": "Writer can update his projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator can delete his project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/new-test-project-admin",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Writer can delete his own projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05. Branches controller",
+			"description": "Controller for managing branches.",
+			"item": [
+				{
+					"name": "Branches for project have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'root' docsDir\"] = responseBody.has(\"root\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all branches for specific project."
+					},
+					"response": []
+				},
+				{
+					"name": "Specific branch for project have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'root' docsDir\"] = responseBody.has(\"root\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns specific branch information for project."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when project not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 404;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists/branches",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Return 404 when project not exists."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when branch not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 404;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/configuration-manager/branches/not-exists",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Return 404 when branch not exists."
+					},
+					"response": []
+				},
+				{
+					"name": "Creating new branch have to finish with success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to finish successfully when we branch a project with correct information."
+					},
+					"response": []
+				},
+				{
+					"name": "Update branch have to finish with success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/NewProject",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager Modified\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to finish successfully when we update a branch with correct information."
+					},
+					"response": []
+				},
+				{
+					"name": "Update branch have to fail when we send incorrect mkdocs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 400;",
+									"",
+									"tests[\"Response have to contains 'MkDocsFileIsIncorrectException' exception\"] = responseBody.has(\"MkDocsFileIsIncorrectException\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/NewProject",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager Modified\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide'\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to fail when we try to update a branch with invalid mkdocs file."
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting branch have to finish with success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/NewProject",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests have to finish successfully when we delete a branch."
+					},
+					"response": []
+				},
+				{
+					"name": "Creating new branch have to return 404 when project not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists/branches",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to return 404 when we create a branch for not existing project."
+					},
+					"response": []
+				},
+				{
+					"name": "Update branch have to return 404 when project not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists/branches/NewProject",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager Modified\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to return 404 when project not exists."
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting branch have to return 404 when we delete branch from not existing project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-existing/branches/NewProject",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests have to return 404 for not existing project."
+					},
+					"response": []
+				},
+				{
+					"name": "Creating new branch have to fail when we send incorrect mkdocs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"tests[\"Response have to contains 'MkDocsFileIsIncorrectException' exception\"] = responseBody.has(\"MkDocsFileIsIncorrectException\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide'\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to fail when we try to create a branch with invalid mkdocs file."
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting branch have to return 404 when we delete not existing branch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-existing",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests have to fail when we delete not existing branch."
+					},
+					"response": []
+				},
+				{
+					"name": "Creating new branch have to fail when user don't haave access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}"
+						},
+						"description": "Requests have to fail when we try to create a branch in project that we don't have access."
+					},
+					"response": []
+				},
+				{
+					"name": "Update branch have to fail when user don't have access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/NewProject",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"siteName\":\"Configuration Manager Modified\",\"docsDir\":\"root\",\"name\":\"NewProject\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"},{\"siteName\":\"Configuration Manager\",\"docsDir\":\"root\",\"name\":\"Release 1.0\",\"mkDocsYaml\":\"site_name: Configuration Manager\\r\\ntheme: readthedocs\\r\\nuse_directory_urls: false\\r\\ndocs_dir: 'root'\\r\\nextra_css: ['css/custom.css']\\r\\nmarkdown_extensions:\\r\\n  - toc:\\r\\n      permalink: \\r\\n  - admonition:\\r\\n\\r\\npages:\\r\\n  - 'Introduction':\\r\\n    - 'Home': 'index.md'\\r\\n    - '✎ About': 'introduction/about.md'\\r\\n    - 'Architecture': 'introduction/architecture.md'\\r\\n    - 'Release notes': \\r\\n      - '✎ Configuration Manager 1.0': 'introduction/release-notes/configuration-manager-1.0.md'\\r\\n  - 'Developer guide':\\r\\n    - 'Prerequisite': 'developer/prerequisite.md'\\r\\n    - 'Developer environment': 'developer/developer-environment.md'\\r\\n    - 'Template Connection Flow': 'developer/template-connection-flow.md'\\r\\n    - 'Architecture':\\r\\n      - 'Overview': 'developer/architecture.md'\\r\\n      - 'API service': 'developer/api-service.md'\\r\\n      - '✎ WEB application': 'developer/web-application.md'\\r\\n      - 'Class diagrams': 'developer/class-diagrams.md'\\r\\n    - 'Tests':\\r\\n      - 'Test environments': 'developer/test/test-environments.md'\\r\\n      - 'Unit tests': \\r\\n        - 'Server side (C#)': 'developer/test/unit-tests-server.md'\\r\\n        - 'Client side (JS)': 'developer/test/unit-tests-client.md'\\r\\n      - 'Integration tests':\\r\\n        - 'Server side (C#)': 'developer/test/integration-tests-server.md'\\r\\n        - 'Client side (GUI tests)': 'developer/test/integration-tests-client.md'\\r\\n      - 'Behavioral tests':\\r\\n        - ' Behavior Driven Development': 'developer/test/bdd-introduction.md'\\r\\n        - ' Gherkin directives writing guide-lines': 'developer/test/gherkin-for-configuration-manager-web.md'\\r\\n        - '✎ Server side (C#)': 'developer/test/behavioral-tests-server.md'\\r\\n        - 'Client side (BDD & Automated GUI testing)': 'developer/test/behavioral-tests-client.md'\\r\\n        - 'Tools': \\r\\n          - '✎ Gherkin Intellisence': 'developer/tools/gherkin-intellisence.md'\\r\\n          - 'StepLister': 'developer/tools/step-lister.md'\\r\\n    - 'Tutorials':\\r\\n      - 'Server side':\\r\\n        - 'Database migrations': 'developer/tutorials/database-migrations.md'\\r\\n        - '✎ New entity': 'developer/tutorials/new-entity.md'\\r\\n        - '✎ Automapper': 'developer/tutorials/automapper.md'\\r\\n        - '✎ Throwing exceptions': 'developer/tutorials/throwing-exceptions.md'\\r\\n        - '✎ Logging': 'developer/tutorials/logging.md'\\r\\n        - '✎ Seed data': 'developer/tutorials/seed-data.md'\\r\\n  - 'Administrator guide':\\r\\n    - 'Identity Service configuration': 'administrator/ids.md'\\r\\n    - 'CORS configuration': 'administrator/cors.md'\\r\\n    - 'Deploying Unit4 Configuration Manager':\\r\\n      - '✎ Azure deployment': 'administrator/deploying/azure.md'\\r\\n      - '✎ On-premise deployment': 'administrator/deploying/on-premise.md'\\r\\n\\r\\ncopyright: Copyright &copy; 2016 <a href=\\\"http://unit4.com/\\\">Unit4</a>.\"}]"
+						},
+						"description": "Requests have to fail when we try to update a branch in project that we don't have access."
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting branch have to return 403 when we delete branch from project that we don't have access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-existing",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests have to fail when we try delete branch and we don't have access to project."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06. Documents controller",
+			"description": "Controller which is responsible for manage documents.",
+			"item": [
+				{
+					"name": "System have to return all documents for specific branch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return all documents for specific branch."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try download documents for not existing project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-existing/branches/Latest/documents",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return 404 when we try download documents for not existing project"
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try download documents for not existing branch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-existing/documents",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return 404 when we try download documents for not existing branch."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return document by his uri",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns name\"] = responseJSON.name === \"api-service.md\";",
+									"tests[\"Response have to returns uri\"] = responseJSON.uri === \"root/developer/api-service.md\";",
+									"tests[\"Response have to returns contentType\"] = responseJSON.conentType === \"text/markdown\";",
+									"tests[\"Response have to returns content\"] = responseJSON.content !== \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when project not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists/branches/Latest/documents/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when branch not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-exists/documents/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when uri not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:administrator:not-exists.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return document content by his uri",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response have to returns content\"] = responseBody !== \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/content/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try to download content and project not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-exists/branches/Latest/documents/content/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try to download content and branch not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-exists/documents/content/root:developer:api-service.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try to download content and uri not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/content/root:administrator:not-exists.md",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "New documentation data should be send correctly",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to update documentation data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:administrator:new-file-test.md",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when we try update document in project without access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:administrator:new-file-test.md",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 400 when we try add document which exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"tests[\"Response have to contains 'DocumentAlreadyExistsException' exception\"] = responseBody.has(\"DocumentAlreadyExistsException\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when we try to delete document form project without access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:administrator:new-file-test.md",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to delete existing documentation file",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:administrator:new-file-test.md",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 404 when we try to remove document which not exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"tests[\"Response have to contains 'DocumentNotFoundException' exception\"] = responseBody.has(\"DocumentNotFoundException\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents/root:not-exists.md",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when we try add document to project without access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/documents",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"IyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyAoQ09SUykgY29uZmlndXJhdGlvbg0KDQpJZiB3ZSB3YW50IHRvIHVzZSBVbml0NCBCdXNpbmVzcyBXb3JsZCBPbiEgcHVibGljIEFQSSB3ZSBoYXZlIHRvIHByb3Blcmx5IGNvbmZpZ3VyZSBDT1JTIGluIE1hbmFnZW1lbnQgQ29uc29sZSAob3IgZGlyZWNsdHkgaW4gYGBgV2ViLmNvbmZpZ2BgYCkuIFdlIGhhdmUgdG8gb3BlbiBNQyBhbmQgaW4gUHVibGljIEFQSSBzZWN0aW9uIGEgbmV3IGNsaWVudCBzaG91bGQgYmUgYWRkZWQ6IGBgYGNvbmZpZ3VyYXRpb25NYW5hZ2VyYGBgLiBJdCBpcyBhbHNvIHBvc3NpYmxlIHRvIHJlc3RyaWN0IHRoZSBhY2Nlc3Mgb25seSB0byBzcGVjaWZpYyBVcmlzLg0KDQohW0NPUlMgY29uZmlndXJhdGlvbl0oLi4vaW1hZ2VzL2FtYy1jb3JzLWFwaS5wbmcpDQoNCk9uY2UgdGhlIGRhdGEgaW4gV2ViLmNvbmZpZyAgaXMgc2F2ZWQsIG5ldyBlbnRyaWVzIHdpbGwgYXBwZWFyLg0KDQpgYGB4bWwNCiAgPGFncmVzc28ud2ViLmFwaSBhcGlSb290PSIiPg0KICAgIDxjb3JzUG9saWN5Pg0KICAgICAgPGFkZCBjbGllbnQ9ImNvbmZpZ3VyYXRpb25NYW5hZ2VyIj4NCiAgICAgICAgPGFsbG93ZWRUbz4NCiAgICAgICAgICA8Y2xlYXIgLz4NCiAgICAgICAgICA8YWRkIHVyaT0iKiIgYWxsb3dBbnlIZWFkZXI9InRydWUiIGFsbG93QW55TWV0aG9kPSJ0cnVlIiBhbGxvd0FueU9yaWdpbj0idHJ1ZSIgZXhwb3NlZEhlYWRlcnM9IiIgaGVhZGVycz0iIiBtZXRob2RzPSIiIG9yaWdpbnM9IiIgcHJlZmxpZ2h0TWF4QWdlPSIiIHN1cHBvcnRzQ3JlZGVudGlhbHM9IiIgLz4NCiAgICAgICAgPC9hbGxvd2VkVG8+DQogICAgICA8L2FkZD4NCiAgICA8L2NvcnNQb2xpY3k+DQogIDwvYWdyZXNzby53ZWIuYXBpPg0KYGBgDQo=\",\n  \"uri\": \"root/administrator/new-file-test.md\",\n  \"name\": \"new-file-test.md\",\n  \"conentType\": \"text/markdown\"\n}"
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "New documentation file should be send correctly",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Release1/documents/filebody",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "prerequisite/unit-test-project-public/Latest.zip"
+							}
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when we try to send files to project without access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private/branches/Latest/documents/filebody",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "prerequisite/unit-test-project-public/Latest.zip"
+							}
+						},
+						"description": "Sending a new documentation version should end with success."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "07. TOC controller",
+			"description": "",
+			"item": [
+				{
+					"name": "TOC have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'Developer guide' chapter\"] = responseBody.has(\"Developer guide\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/Latest/toc",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all table of contents information for specific project"
+					},
+					"response": []
+				},
+				{
+					"name": "Getting TOC for not existing branch have to return 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/not-exists/toc",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains not existing branch system have to return 404 status code."
+					},
+					"response": []
+				},
+				{
+					"name": "Getting TOC for not existing project have to return 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/not-existing/branches/Latest/toc",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains not existing project system have to return 404 status code."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "08. Groups controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Groups have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'GroupA' group\"] = responseBody.has(\"GroupA\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/groups",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "09. Tags controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Tags have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'TagA' tag\"] = responseBody.has(\"TagA\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/tags",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. Search controller",
+			"description": "",
+			"item": [
+				{
+					"name": "System have to return search results",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response should contains results\"] = responseJSON.numberOfResults >= 0;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/search?query=unit test project",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return search results for specific project and branch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response should contains results\"] = responseJSON.numberOfResults >= 0;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/search/projects/unit-test-project-public/branches/Latest?query=lorem",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "11. Users controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Users have to be returned for system (SecureToken)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns json\"] = responseJSON;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Users have to be returned for administrator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns json\"] = responseJSON;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when writer want's to retrieve users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when user want's to retrieve users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return user by his email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Viktoria Doe'\"] = responseJSON.name === \"Vikrtoria Doe\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return 403 when user want's to retrieve data of other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return user data for user from request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Viktoria Doe'\"] = responseJSON.name === \"Vikrtoria Doe\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return user data when we wan't retrieve not existing user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Id of user have to by 'not.existing@test.com'\"] = responseJSON.id === \"not.existing@test.com\";",
+									"tests[\"Role of user have to by 'Unknown'\"] = responseJSON.role === \"Unknown\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/not.existing@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator can add new user to system",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"User\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator can update user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"Writer\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer can not update user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"Writer\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can not update user data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"Writer\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer can not delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can not delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Administrator can delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/new.user@test.com",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Marcin)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Writer can not add new user to system",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Wiktor)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"User\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can not add new user to system",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"new.user@test.com\",\n  \"name\": \"New User\",\n  \"role\": \"User\",\n  \"projects\": [\n    \"message-hub\"\n  ]\n}"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can not update his own data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"id\": \"viktoria.doe@test.com\",\n    \"name\": \"Vikrtoria Doe Changed\",\n    \"role\": \"User\",\n    \"accessToken\": \"********-*****-****-****-************\",\n    \"projects\": [\n      \"message-hub\"\n    ]\n  }"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can update his own refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/viktoria.doe@test.com/refreshToken",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"accessToken\": \"5ab208be-0711-486f-983e-eab578aad782\"\n  }"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "User can not update other user refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/wiktor.doe@test.com/refreshToken",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"accessToken\": \"5ab208be-0711-486f-983e-eab578aad782\"\n  }"
+						},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "99. Cleanup",
+			"description": "",
+			"item": [
+				{
+					"name": "Remove temporary public project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Writer can delete his own projects."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove temporary private project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Writer can delete his own projects."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

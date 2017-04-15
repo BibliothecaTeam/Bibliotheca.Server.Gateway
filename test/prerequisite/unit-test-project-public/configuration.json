@@ -1,0 +1,35 @@
+{
+    "Id": "unit-test-project-public",
+    "Name": "Unit Test Project Public",
+    "Description": "Unit test project public description.",
+    "DefaultBranch": "Latest",
+    "VisibleBranches": [
+        "Latest"
+    ],
+    "Tags": [
+        "TagA",
+        "TagB"
+    ],
+    "Group": "GroupA",
+    "ProjectSite": "",
+    "ContactPeople": 
+    [
+        {
+            "Name": "Marcin Doe",
+            "Email": "marcin.doe@test.com"
+        },
+        {
+            "Name": "Justyna Doe",
+            "Email": "justyna.doe@test.com"
+        }
+    ],
+    "EditLinks":
+    [
+        {
+            "BranchName": "Latest",
+            "Link": "http://link.to.sources/"
+        }
+    ],
+    "AccessToken": "2a8bb300-9f60-45c4-9fdf-190e5a48371e",
+    "IsAccessLimited": false
+}

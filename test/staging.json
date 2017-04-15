@@ -1,0 +1,40 @@
+{
+  "id": "ac92eea0-705a-ca95-00b9-220c19098803",
+  "name": "Staging",
+  "values": [
+    {
+      "enabled": true,
+      "key": "Server",
+      "value": "<ENTER URL>",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "SecureToken",
+      "value": "SecureToken <ENTER TOKEN>",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "UserToken (Marcin)",
+      "value": "UserToken e5c5c753-fe6f-4bf2-a092-56ee406488ef",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "UserToken (Viktoria)",
+      "value": "UserToken 5ab208be-0711-486f-983e-eab578aad782",
+      "type": "text"
+    },
+    {
+      "enabled": true,
+      "key": "UserToken (Wiktor)",
+      "value": "UserToken c3f4ddd8-de65-4eb8-82e0-15ba18a4aa72",
+      "type": "text"
+    }
+  ],
+  "timestamp": 1491930920006,
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2017-04-15T15:03:27.639Z",
+  "_postman_exported_using": "Postman/4.10.7"
+}

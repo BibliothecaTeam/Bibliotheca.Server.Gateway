@@ -1,0 +1,10 @@
+{
+  "id": "wiktor.doe@test.com",
+  "name": "Wiktor Doe",
+  "role": "Writer",
+  "accessToken": "c3f4ddd8-de65-4eb8-82e0-15ba18a4aa72",
+  "projects": [
+    "configuration-manager",
+    "new-test-project"
+  ]
+}

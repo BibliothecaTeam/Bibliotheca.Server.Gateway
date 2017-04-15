@@ -1,0 +1,13 @@
+site_name: Unit Test Project
+docs_dir: 'root'
+
+pages:
+  - 'Introduction':
+    - 'Home': 'index.md'
+    - '✎ About': 'introduction/about.md'
+  - 'Developer guide':
+    - 'Prerequisite': 'developer/prerequisite.md'
+    - 'Architecture':
+      - 'API service': 'developer/api-service.md'
+
+copyright: Copyright &copy; 2016 <a href="http://test.com/">Test</a>.
