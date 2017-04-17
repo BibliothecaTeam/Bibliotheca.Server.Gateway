@@ -32,7 +32,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// Endpoint returns all tags which are defined in all documentation projects.
         /// </remarks>
         /// <returns>List of all tags.</returns>
-        [HttpGet()]
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IList<string>))]
         public async Task<IList<string>> Get()
         {
             var tags = await _tagsService.GetAvailableTagsAsync();

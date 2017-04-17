@@ -38,8 +38,9 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// Endpoint returns all users defined in ths authorization service.
         /// </remarks>
         /// <returns>List of users.</returns>
-        [HttpGet()]
+        [HttpGet]
         [Authorize("CanManageUsers")]
+        [ProducesResponseType(200, Type = typeof(IList<UserDto>))]
         public async Task<IList<UserDto>> Get()
         {
             var user = await _userService.GetUsersAsync();
@@ -55,6 +56,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="id">User id.</param>
         /// <returns>User data.</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(UserDto))]
         public async Task<IActionResult> Get(string id)
         {
             var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Read);
@@ -82,6 +84,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <returns>If created successfully endpoint returns 201 (Created).</returns>
         [HttpPost]
         [Authorize("CanManageUsers")]
+        [ProducesResponseType(201)]
         public async Task<IActionResult> Post([FromBody] UserDto user)
         {
             await _userService.CreateUserAsync(user);
@@ -99,6 +102,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <returns>If updated successfully endpoint returns 200 (Ok).</returns>
         [HttpPut("{id}")]
         [Authorize("CanManageUsers")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> Put(string id, [FromBody] UserDto user)
         {
             await _userService.UpdateUserAsync(id, user);
@@ -115,6 +119,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <returns>If deleted successfully endpoint returns 200 (Ok).</returns>
         [HttpDelete("{id}")]
         [Authorize("CanManageUsers")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(string id)
         {
             await _userService.DeleteUserAsync(id);
@@ -131,6 +136,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="accessToken">New access token.</param>
         /// <returns>If token saved successfully endpoint returns 200 (Ok).</returns>
         [HttpPut("{id}/refreshToken")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> RefreshAccessToken(string id, [FromBody] AccessTokenDto accessToken)
         {
             var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Update);

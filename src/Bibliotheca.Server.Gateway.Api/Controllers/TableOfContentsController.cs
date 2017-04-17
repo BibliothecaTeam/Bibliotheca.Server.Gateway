@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +35,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="projectId">Project id.</param>
         /// <param name="branchName">Branch name.</param>
         /// <returns>Table of contents for branch.</returns>
-        [HttpGet()]
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IList<ChapterItemDto>))]
         public async Task<IActionResult> Get(string projectId, string branchName)
         {
             var rootChapterNodes = await _tableOfContentsService.GetTableOfConents(projectId, branchName);
