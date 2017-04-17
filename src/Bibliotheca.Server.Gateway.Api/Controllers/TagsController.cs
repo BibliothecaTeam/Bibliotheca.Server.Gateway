@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheca.Server.Gateway.Api.Controllers
 {
+    /// <summary>
+    /// Controller which manage information about documentation tags.
+    /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/tags")]
@@ -13,11 +16,22 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     {
         private readonly ITagsService _tagsService;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="tagsService">Tags service.</param>
         public TagsController(ITagsService tagsService)
         {
             _tagsService = tagsService;
         }
 
+        /// <summary>
+        /// Get all tags.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint returns all tags which are defined in all documentation projects.
+        /// </remarks>
+        /// <returns>List of all tags.</returns>
         [HttpGet()]
         public async Task<IList<string>> Get()
         {

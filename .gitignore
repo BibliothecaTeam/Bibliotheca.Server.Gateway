@@ -1,6 +1,9 @@
 
 # Created by https://www.gitignore.io/api/windows,osx,linux,visualstudio,visualstudiocode,git
 
+# Xml generated as a documentation. 
+src/Bibliotheca.Server.Gateway.Api/Bibliotheca.Server.Gateway.Api.xml
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db

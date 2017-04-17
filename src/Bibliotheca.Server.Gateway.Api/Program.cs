@@ -5,8 +5,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
+    /// <summary>
+    /// Main class.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Main application endpoint.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
         public static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()

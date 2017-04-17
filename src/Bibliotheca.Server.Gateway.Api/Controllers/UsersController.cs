@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheca.Server.Gateway.Api.Controllers
 {
+    /// <summary>
+    /// Controller which manages users.
+    /// /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/users")]
@@ -17,12 +20,24 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IAuthorizationService _authorizationService;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="userService">Users service.</param>
+        /// <param name="authorizationService">Authorization service.</param>
         public UsersController(IUsersService userService, IAuthorizationService authorizationService)
         {
             _userService = userService;
             _authorizationService = authorizationService;
         }
 
+        /// <summary>
+        /// Get list of users.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint returns all users defined in ths authorization service.
+        /// </remarks>
+        /// <returns>List of users.</returns>
         [HttpGet()]
         [Authorize("CanManageUsers")]
         public async Task<IList<UserDto>> Get()
@@ -31,6 +46,14 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return user;
         }
 
+        /// <summary>
+        /// Get specific user.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint returns information about specific user.
+        /// </remarks>
+        /// <param name="id">User id.</param>
+        /// <returns>User data.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -49,6 +72,14 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return new ObjectResult(user);
         }
 
+        /// <summary>
+        /// Create a new user.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint for creating new user information.
+        /// </remarks>
+        /// <param name="user">User information.</param>
+        /// <returns>If created successfully endpoint returns 201 (Created).</returns>
         [HttpPost]
         [Authorize("CanManageUsers")]
         public async Task<IActionResult> Post([FromBody] UserDto user)
@@ -57,6 +88,15 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Created($"/users/{user.Id}", user);
         }
 
+        /// <summary>
+        /// Update user information.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint for updating user information.
+        /// </remarks>
+        /// <param name="id">User id.</param>
+        /// <param name="user">User information.</param>
+        /// <returns>If updated successfully endpoint returns 200 (Ok).</returns>
         [HttpPut("{id}")]
         [Authorize("CanManageUsers")]
         public async Task<IActionResult> Put(string id, [FromBody] UserDto user)
@@ -65,6 +105,14 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Delete user.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint for deleting user.
+        /// </remarks>
+        /// <param name="id">User id.</param>
+        /// <returns>If deleted successfully endpoint returns 200 (Ok).</returns>
         [HttpDelete("{id}")]
         [Authorize("CanManageUsers")]
         public async Task<IActionResult> Delete(string id)
@@ -73,6 +121,15 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Refresh access token.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint is resposible for saving new access token for user.
+        /// </remarks>
+        /// <param name="id">User id.</param>
+        /// <param name="accessToken">New access token.</param>
+        /// <returns>If token saved successfully endpoint returns 200 (Ok).</returns>
         [HttpPut("{id}/refreshToken")]
         public async Task<IActionResult> RefreshAccessToken(string id, [FromBody] AccessTokenDto accessToken)
         {

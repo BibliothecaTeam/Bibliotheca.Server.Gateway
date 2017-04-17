@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
-using Swashbuckle.Swagger.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -17,21 +16,30 @@ using Microsoft.AspNetCore.Http;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Bibliotheca.Server.Gateway.Api.Jobs;
-using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
 using Bibliotheca.Server.Gateway.Api.UserTokenAuthorization;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.SecureTokenAuthentication;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.BearerAuthentication;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.IO;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
+    /// <summary>
+    /// Startup class.
+    /// </summary>
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
+        private IConfigurationRoot Configuration { get; }
 
-        protected bool UseServiceDiscovery { get; set; } = true;
+        private bool UseServiceDiscovery { get; set; } = true;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="env">Environment parameters.</param>
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -43,6 +51,11 @@ namespace Bibliotheca.Server.Gateway.Api
             Configuration = builder.Build();
         }
 
+        /// <summary>
+        /// Service configuration.
+        /// </summary>
+        /// <param name="services">List of services.</param>
+        /// <returns>Service provider.</returns>
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<ApplicationParameters>(Configuration);
@@ -83,16 +96,31 @@ namespace Bibliotheca.Server.Gateway.Api
                 options.ApiVersionReader = new QueryStringOrHeaderApiVersionReader("api-version");
             });
 
-            services.AddSwaggerGen();
-            services.ConfigureSwaggerGen(options =>
+            services.AddSwaggerGen(options =>
             {
-                options.SingleApiVersion(new Info
+                options.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
                     Title = "Bibliotheca Gateway API",
-                    Description = "Bibliotheca service which is responsible for communication with microservices.",
+                    Description = "Bibliotheca Gateway service is responsible for communication between all application microservices. Also it's main API endpoint for Bibliotheca clients such as Bibliotheca.Client (Angular SPA) or custom scripts.",
                     TermsOfService = "None"
                 });
+
+                options.AddSecurityDefinition("apiKey", new ApiKeyScheme
+                {
+                    Name = "Authorization",
+                    Type = "apiKey",
+                    In = "header",
+                    Description = "As a authorization header you can send one of the following token: <br />" +
+                    " - Bearer <AccessToken> - JWT token obtained by OAuth2 authorization <br />" +
+                    " - SecureToken <GUID> - global token defined as a variable in services parameters <br />" +
+                    " - UserToken <GUID> - token generated on user property page <br />" +
+                    " - ProjectToken <GUID> - token generated on project property page"
+                });
+
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "Bibliotheca.Server.Gateway.Api.xml"); 
+                options.IncludeXmlComments(xmlPath);
             });
 
             services.AddServiceDiscovery();
@@ -116,6 +144,12 @@ namespace Bibliotheca.Server.Gateway.Api
             return services.AddApplicationModules(Configuration);
         }
 
+        /// <summary>
+        /// Configure web application.
+        /// </summary>
+        /// <param name="app">Application builder.</param>
+        /// <param name="env">Environment parameters.</param>
+        /// <param name="loggerFactory">Logger.</param>
         public void Configure(
             IApplicationBuilder app,
             IHostingEnvironment env,
@@ -169,7 +203,10 @@ namespace Bibliotheca.Server.Gateway.Api
             app.UseMvc();
 
             app.UseSwagger();
-            app.UseSwaggerUi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
         }
     }
 }

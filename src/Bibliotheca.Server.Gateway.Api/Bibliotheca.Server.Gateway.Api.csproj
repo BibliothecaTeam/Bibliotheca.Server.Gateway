@@ -11,6 +11,8 @@
     <UserSecretsId>aspnet-Bibliotheca.Api-30EA97EE-D183-4B75-BC4E-CE07604997DA</UserSecretsId>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <DocumentationFile>Bibliotheca.Server.Gateway.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,8 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.1" />
-    <PackageReference Include="Swashbuckle.SwaggerUi" Version="6.0.0-beta902" />
-    <PackageReference Include="Swashbuckle.SwaggerGen" Version="6.0.0-beta902" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0-rc3" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.9" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="Bibliotheca.Server.ServiceDiscovery.ServiceClient" Version="1.0.12" />

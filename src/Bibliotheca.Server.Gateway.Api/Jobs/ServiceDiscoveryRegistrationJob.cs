@@ -7,18 +7,31 @@ using Microsoft.Extensions.Options;
 
 namespace Bibliotheca.Server.Gateway.Api.Jobs
 {
+    /// <summary>
+    /// Job for register in service discovery.
+    /// </summary>
     public class ServiceDiscoveryRegistrationJob : IServiceDiscoveryRegistrationJob
     {
         private readonly IServiceDiscoveryClient _serviceDiscoveryClient;
 
         private readonly ApplicationParameters _applicationParameters;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="serviceDiscoveryClient">Service discovery client.</param>
+        /// <param name="options">Application parameters.</param>
         public ServiceDiscoveryRegistrationJob(IServiceDiscoveryClient serviceDiscoveryClient, IOptions<ApplicationParameters> options)
         {
             _serviceDiscoveryClient = serviceDiscoveryClient;
             _applicationParameters = options.Value;
         }
 
+        /// <summary>
+        /// Register service in service discovery application.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <returns>Returns async task.</returns>
         public async Task RegisterServiceAsync(PerformContext context)
         {
             var serviceDiscoveryOptions = GetServiceDiscoveryOptions();
