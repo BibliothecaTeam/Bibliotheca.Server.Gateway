@@ -36,7 +36,6 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="branchName">Branch name.</param>
         /// <returns>Table of contents for branch.</returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IList<ChapterItemDto>))]
         public async Task<IActionResult> Get(string projectId, string branchName)
         {
             var rootChapterNodes = await _tableOfContentsService.GetTableOfConents(projectId, branchName);
