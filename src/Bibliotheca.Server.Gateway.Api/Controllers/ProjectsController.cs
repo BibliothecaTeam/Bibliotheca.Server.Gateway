@@ -17,6 +17,10 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     {
         private readonly IProjectsService _projectsService;
 
+        private readonly IBranchesService _branchesService;
+
+        private readonly ISearchService _searchService;
+
         private readonly IAuthorizationService _authorizationService;
 
         private readonly IUsersService _usersService;
@@ -25,14 +29,20 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// Constructor.
         /// </summary>
         /// <param name="projectsService">Project service.</param>
+        /// <param name="branchesService">Bran ches service.</param>
+        /// <param name="searchService">Search service.</param>
         /// <param name="authorizationService">Authorization service.</param>
         /// <param name="usersService">Users service.</param>
         public ProjectsController(
             IProjectsService projectsService, 
+            IBranchesService branchesService,
+            ISearchService searchService,
             IAuthorizationService authorizationService, 
             IUsersService usersService)
         {
             _projectsService = projectsService;
+            _branchesService = branchesService;
+            _searchService = searchService;
             _authorizationService = authorizationService;
             _usersService = usersService;
         }
@@ -183,7 +193,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            // TODO: Project should be removed also from search index.
+            var branches = await _branchesService.GetBranchesAsync(projectId);
+            foreach(var branch in branches) 
+            {
+                await _searchService.DeleteDocumentsAsync(projectId, branch.Name);
+            }
+
             await _projectsService.DeleteProjectAsync(projectId);
             return Ok();
         }
