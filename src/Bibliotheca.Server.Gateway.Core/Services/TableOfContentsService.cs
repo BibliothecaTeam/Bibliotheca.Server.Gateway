@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
 using YamlDotNet.Serialization;
@@ -13,17 +14,26 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         private readonly IBranchesClient _branchesClient;
 
+        private readonly IProjectsService _projectsService;
+
         private readonly IMemoryCache _memoryCache;
 
-        public TableOfContentsService(IBranchesClient branchesClient, IMemoryCache memoryCache)
+        public TableOfContentsService(IBranchesClient branchesClient, IProjectsService projectsService, IMemoryCache memoryCache)
         {
             _branchesClient = branchesClient;
+            _projectsService = projectsService;
             _memoryCache = memoryCache;
         }
 
         public async Task<IList<ChapterItemDto>> GetTableOfConents(string projectId, string branchName)
         {
             List<ChapterItemDto> toc = null;
+
+            if(branchName == null || branchName == "undefined")
+            {
+                branchName = await GetDefaultBranch(projectId);
+            }
+
             string cacheKey = GetCacheKey(projectId, branchName);
 
             if(!_memoryCache.TryGetValue(cacheKey, out toc))
@@ -118,6 +128,17 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         private string GetCacheKey(string projectId, string branchName)
         {
             return $"TableOfContentsService#{projectId}#{branchName}";
+        }
+
+        private async Task<string> GetDefaultBranch(string projectId)
+        {
+            var project = await _projectsService.GetProjectAsync(projectId);
+            if(project == null)
+            {
+                throw new ProjectNotFoundException($"I cannot find default branch. Project '{projectId}' not found.");
+            }
+
+            return project.DefaultBranch;
         }
     }
 }

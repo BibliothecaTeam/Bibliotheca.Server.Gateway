@@ -17,12 +17,19 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly IBranchesService _branchService;
 
+        private readonly IProjectsService _projectsService;
+
         private readonly IMemoryCache _memoryCache;
 
-        public DocumentsService(IDocumentsClient documentsClient, IBranchesService branchService, IMemoryCache memoryCache)
+        public DocumentsService(
+            IDocumentsClient documentsClient, 
+            IBranchesService branchService, 
+            IProjectsService projectsService,
+            IMemoryCache memoryCache)
         {
             _documentsClient = documentsClient;
             _branchService = branchService;
+            _projectsService = projectsService;
             _memoryCache = memoryCache;
         }
 
@@ -35,6 +42,17 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public async Task<DocumentDto> GetDocumentAsync(string projectId, string branchName, string fileUri)
         {
             DocumentDto documentDto = null;
+
+            if(branchName == null || branchName == "undefined") 
+            {
+                branchName = await GetDefaultBranch(projectId);
+            }
+
+            if(fileUri == null || fileUri == "undefined")
+            {
+                fileUri = await GetDefaultFileUri(projectId, branchName);
+            }
+
             string cacheKey = GetCacheKey(projectId, branchName, fileUri);
 
             if (!_memoryCache.TryGetValue(cacheKey, out documentDto))
@@ -167,6 +185,29 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         private string GetCacheKey(string projectId, string branchName, string fileUri)
         {
             return $"DocumentsService#{projectId}#{branchName}#{fileUri}";
+        }
+
+        private async Task<string> GetDefaultBranch(string projectId)
+        {
+            var project = await _projectsService.GetProjectAsync(projectId);
+            if(project == null)
+            {
+                throw new ProjectNotFoundException($"I cannot find default branch. Project '{projectId}' not found.");
+            }
+
+            return project.DefaultBranch;
+        }
+
+        private async Task<string> GetDefaultFileUri(string projectId, string branchName)
+        {
+            var branch = await _branchService.GetBranchAsync(projectId, branchName);
+            if(branch == null)
+            {
+                throw new BranchNotFoundException($"I cannot calculate default file uri. Branch '' not found.");
+            }
+            
+            var fileUri = $"{branch.DocsDir}:index.md";
+            return fileUri;
         }
     }
 }
