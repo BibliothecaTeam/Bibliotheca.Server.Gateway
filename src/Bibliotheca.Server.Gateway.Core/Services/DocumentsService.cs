@@ -76,6 +76,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new CreateDocumentException("During creating document error occurs: " + content);
             }
+
+            var fileUri = document.Uri.Replace("/", ":");
+            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
+            _memoryCache.Remove(cacheKey);
         }
 
         public async Task UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document)
@@ -86,6 +90,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new UpdateDocumentException("During updating document error occurs: " + content);
             }
+
+            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
+            _memoryCache.Remove(cacheKey);
         }
 
         public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
@@ -142,6 +149,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new DeleteDocumentException("During deleting document error occurs: " + content);
             }
+
+            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
+            _memoryCache.Remove(cacheKey);
         }
 
         private async Task CreateBranchAsync(string projectId, string branchName, byte[] content)
