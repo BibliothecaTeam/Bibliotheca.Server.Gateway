@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Parameters;
+using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
+using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -18,19 +20,15 @@ namespace Bibliotheca.Server.Gateway.Api
     [Route("api/services")]
     public class ServicesController : Controller
     {
-        private readonly IServiceDiscoveryQuery _serviceDiscoveryQuery;
-
-        private readonly ApplicationParameters _applicationParameters;
+        private readonly IServicesService _servicesService;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="serviceDiscoveryQuery">Service discovery query service.</param>
-        /// <param name="applicationParameters">Application parameters.</param>
-        public ServicesController(IServiceDiscoveryQuery serviceDiscoveryQuery, IOptions<ApplicationParameters> applicationParameters)
+        /// <param name="servicesService">Service for services information.</param>
+        public ServicesController(IServicesService servicesService)
         {
-            _serviceDiscoveryQuery = serviceDiscoveryQuery;
-            _applicationParameters = applicationParameters.Value;
+            _servicesService = servicesService;
         }
 
         /// <summary>
@@ -44,43 +42,7 @@ namespace Bibliotheca.Server.Gateway.Api
         [ProducesResponseType(200, Type = typeof(IList<ServiceDto>))]
         public async Task<IList<ServiceDto>> Get()
         {
-            var serverOptions = new ServerOptions { Address = _applicationParameters.ServiceDiscovery.ServerAddress };
-            var services = await _serviceDiscoveryQuery.GetServicesAsync(serverOptions);
-            var serviceNames = services.Select(x => x.Service).Distinct();
-
-            var servicesDtos = new List<ServiceDto>();
-            foreach(var serviceName in serviceNames)
-            {
-                var serviceDto = new ServiceDto
-                {
-                    Name = serviceName
-                };
-
-                var servicesHealth = await _serviceDiscoveryQuery.GetServicesHealthAsync(serverOptions, serviceName);
-                var instances = services.Where(x => x.Service == serviceName);
-                
-                foreach(var instance in instances)
-                {
-                    var instanceDto = new InstanceDto
-                    {
-                        Address = instance.Address,
-                        Id = instance.ID,
-                        Port = instance.Port
-                    };
-
-                    var healthStatus = servicesHealth.FirstOrDefault(x => x.ServiceID == instance.ID);
-                    if(healthStatus != null)
-                    {
-                        instanceDto.HealthStatus = healthStatus.Status;
-                        instanceDto.HealthOuptput = healthStatus.Output;
-                    }
-
-                    serviceDto.Instances.Add(instanceDto);
-                }
-
-                servicesDtos.Add(serviceDto);
-            }
-
+            var servicesDtos = await _servicesService.GetServicesAsync();
             return servicesDtos;
         }
     }

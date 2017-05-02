@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Autofac.Core;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
+using Bibliotheca.Server.Gateway.Core.Services;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -129,20 +130,15 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 
         private static string GetServiceAddress(IComponentContext c, string serviceTag)
         {
-            var serviceDiscoveryQuery = c.Resolve<IServiceDiscoveryQuery>();
-            var applicationParameters = c.Resolve<IOptions<ApplicationParameters>>();
+            var servicesService = c.Resolve<IServicesService>();
+            var instance = servicesService.GetServiceInstanceAsync(serviceTag).GetAwaiter().GetResult();
 
-            var service = serviceDiscoveryQuery.GetServiceAsync(
-                new ServerOptions { Address = applicationParameters.Value.ServiceDiscovery.ServerAddress },
-                new string[] { serviceTag }
-            ).GetAwaiter().GetResult();
-
-            if (service == null)
+            if (instance == null)
             {
                 return null;
             }
 
-            var address = $"http://{service.Address}:{service.Port}/api/";
+            var address = $"http://{instance.Address}:{instance.Port}/api/";
             return address;
         }
     }
