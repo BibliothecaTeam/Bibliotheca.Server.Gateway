@@ -41,14 +41,14 @@ namespace Bibliotheca.Server.Gateway.Api.UserTokenAuthorization
         {
             _logger.LogInformation("Retrieving authorization url...");
 
-            var service = _serviceDiscoveryQuery.GetServiceAsync(
+            var instance = _serviceDiscoveryQuery.GetServiceInstanceAsync(
                 new ServerOptions { Address = _applicationParameters.Value.ServiceDiscovery.ServerAddress },
-                new string[] { "heimdall" }
+                new string[] { "authorization" }
             ).GetAwaiter().GetResult();
 
-            if (service != null)
+            if (instance != null)
             {
-                var address = $"http://{service.Address}:{service.Port}/api/";
+                var address = $"http://{instance.Address}:{instance.Port}/api/";
                 _logger.LogInformation($"Authorization url was retrieved ({address}).");
 
                 return address;
