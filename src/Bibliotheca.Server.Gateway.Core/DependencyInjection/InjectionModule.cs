@@ -49,7 +49,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         {
             var baseAddressParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
-                    (pi, ctx) => GetServiceAddress(ctx, "heimdall"));
+                    (pi, ctx) => GetServiceAddress(ctx, "authorization"));
 
             var customHeadersParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
@@ -64,7 +64,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         {
             var baseAddressParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
-                    (pi, ctx) => GetServiceAddress(ctx, "nightcrawler"));
+                    (pi, ctx) => GetServiceAddress(ctx, "crawler"));
 
             var customHeadersParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
@@ -139,7 +139,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 
             if (service == null)
             {
-                throw new DepositoryServiceNotAvailableException($"Microservice with tag '{serviceTag}' service is not running!");
+                return null;
             }
 
             var address = $"http://{service.Address}:{service.Port}/api/";

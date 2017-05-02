@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
@@ -24,6 +25,8 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         public async Task<HttpResponseMessage> Post(string projectId, string branchName)
         {
+            AssertIfServiceNotAlive();
+
             HttpClient client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
 
@@ -35,6 +38,11 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         public async Task<IndexStatusDto> Get(string projectId, string branchName)
         {
+            if(!IsServiceAlive())
+            {
+                return new IndexStatusDto();
+            }
+
             HttpClient client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
 
@@ -43,6 +51,19 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
             var deserializedObject = JsonConvert.DeserializeObject<IndexStatusDto>(responseString);
             return deserializedObject;
+        }
+
+        private void AssertIfServiceNotAlive()
+        {
+            if(!IsServiceAlive()) 
+            {
+                throw new ServiceNotAvailableException($"Microservice with tag 'crawler' is not running!");
+            }
+        }
+
+        private bool IsServiceAlive()
+        {
+            return !string.IsNullOrWhiteSpace(_baseAddress);
         }
     }
 }

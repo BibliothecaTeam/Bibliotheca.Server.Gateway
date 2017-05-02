@@ -14,5 +14,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         Task<HttpResponseMessage> Post(string projectId, string branchName, IEnumerable<DocumentIndexDto> documentIndexDtos);
 
         Task<HttpResponseMessage> Delete(string projectId, string branchName);
+
+        bool IsServiceAlive();
     }
 }

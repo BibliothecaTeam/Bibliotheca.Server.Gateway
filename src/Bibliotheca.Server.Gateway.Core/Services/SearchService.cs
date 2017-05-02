@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
@@ -64,6 +65,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var content = await result.Content.ReadAsStringAsync();
                 throw new DeleteSearchIndexException("During deleting search index error occurs: " + content);
             }
+        }
+
+        public bool IsEnabled()
+        {
+            return _searchClient.IsServiceAlive();
         }
     }
 }

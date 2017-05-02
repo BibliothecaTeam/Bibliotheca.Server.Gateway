@@ -17,5 +17,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task<DataTransferObjects.IndexStatusDto> GetRefreshIndexStatusAsync(string projectId, string branchName);
 
         Task DeleteDocumentsAsync(string projectId, string branchName);
+        
+        bool IsEnabled();
     }
 }

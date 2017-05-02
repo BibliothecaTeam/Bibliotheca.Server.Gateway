@@ -32,6 +32,21 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         }
 
         /// <summary>
+        /// Check if search service is enabled.
+        /// </summary>
+        /// <remarks>
+        /// Method verifies if service for searching is enabled. Only if search service is running we can use search.
+        /// </remarks>
+        /// <returns>Information about serch service status.</returns>
+        [HttpGet("isEnabled")]
+        [ProducesResponseType(200, Type = typeof(ServiceHealthDto))]
+        public ServiceHealthDto IsEnabled()
+        {
+            var isEnabled = _searchService.IsEnabled();
+            return new ServiceHealthDto { IsAlive = isEnabled };
+        }
+
+        /// <summary>
         /// Search by specific query (filter).
         /// </summary>
         /// <remarks>

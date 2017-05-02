@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Primitives;
 
 namespace Bibliotheca.Server.Gateway.Core.HttpClients
@@ -28,30 +29,46 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         public async Task<IList<ProjectDto>> Get()
         {
+            if(!IsServiceAlive())
+            {
+                return new List<ProjectDto>();
+            }
+
             RestClient<ProjectDto> baseClient = GetRestClient();
             return await baseClient.Get();
         }
 
         public async Task<ProjectDto> Get(string projectId)
         {
+            if(!IsServiceAlive())
+            {
+                return null;
+            }
+
             RestClient<ProjectDto> baseClient = GetRestClient();
             return await baseClient.Get(projectId);
         }
 
         public async Task<HttpResponseMessage> Post(ProjectDto project)
         {
+            AssertIfServiceNotAlive();
+
             RestClient<ProjectDto> baseClient = GetRestClient();
             return await baseClient.Post(project);
         }
 
         public async Task<HttpResponseMessage> Put(string projectId, ProjectDto project)
         {
+            AssertIfServiceNotAlive();
+
             RestClient<ProjectDto> baseClient = GetRestClient();
             return await baseClient.Put(projectId, project);
         }
 
         public async Task<HttpResponseMessage> Delete(string projectId)
         {
+            AssertIfServiceNotAlive();
+
             RestClient<ProjectDto> baseClient = GetRestClient();
             return await baseClient.Delete(projectId);
         }
@@ -61,6 +78,19 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             string resourceAddress = Path.Combine(_baseAddress, _resourceUri);
             var baseClient = new RestClient<ProjectDto>(resourceAddress, _customHeaders);
             return baseClient;
+        }
+
+        private void AssertIfServiceNotAlive()
+        {
+            if(!IsServiceAlive()) 
+            {
+                throw new ServiceNotAvailableException($"Microservice with tag 'depository' is not running!");
+            }
+        }
+
+        private bool IsServiceAlive()
+        {
+            return !string.IsNullOrWhiteSpace(_baseAddress);
         }
     }
 }
