@@ -34,12 +34,16 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0-rc3" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.6.9" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.6.12" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
     <PackageReference Include="Bibliotheca.Server.ServiceDiscovery.ServiceClient" Version="1.0.14" />
     <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Authorization" Version="1.0.8" />
     <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Diagnostics" Version="1.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="libyear" Version="*" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
@@ -48,5 +52,5 @@
     </ItemGroup>
     <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
   </Target>
-
+  
 </Project>
