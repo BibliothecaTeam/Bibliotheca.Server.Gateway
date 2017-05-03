@@ -205,7 +205,7 @@ namespace Bibliotheca.Server.Gateway.Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
             });
         }
     }
