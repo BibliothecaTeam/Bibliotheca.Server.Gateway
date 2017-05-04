@@ -152,10 +152,10 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             catch(Exception exception)
             {
                 logger.LogError($"Address for '{serviceTag}' microservice wasn't retrieved. There was an exception during retrieving address.");
-                logger.LogError($"Exception: {exception.Message}");
+                logger.LogError($"Exception: {exception}");
                 if(exception.InnerException != null)
                 {
-                    logger.LogError($"Inner exception: {exception.InnerException.Message}");
+                    logger.LogError($"Inner exception: {exception.InnerException}");
                 }
 
                 return null;
