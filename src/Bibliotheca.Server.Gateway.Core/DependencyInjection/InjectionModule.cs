@@ -13,6 +13,8 @@ using Bibliotheca.Server.Gateway.Core.Parameters;
 using Autofac.Core;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Gateway.Core.Services;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -130,16 +132,34 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 
         private static string GetServiceAddress(IComponentContext c, string serviceTag)
         {
-            var servicesService = c.Resolve<IServicesService>();
-            var instance = servicesService.GetServiceInstanceAsync(serviceTag).GetAwaiter().GetResult();
+            var logger = c.Resolve<ILogger<InjectionModule>>();
+            try
+            {    
+                logger.LogInformation($"Getting address for '{serviceTag}' microservice.");
 
-            if (instance == null)
+                var servicesService = c.Resolve<IServicesService>();
+                var instance = servicesService.GetServiceInstanceAsync(serviceTag).GetAwaiter().GetResult();
+                if (instance == null)
+                {
+                    logger.LogWarning($"Address for '{serviceTag}' microservice wasn't retrieved.");
+                    return null;
+                }
+
+                var address = $"http://{instance.Address}:{instance.Port}/api/";
+                logger.LogInformation($"Address for '{serviceTag}' microservice was retrieved ({address}).");
+                return address;
+            }
+            catch(Exception exception)
             {
+                logger.LogError($"Address for '{serviceTag}' microservice wasn't retrieved. There was an exception during retrieving address.");
+                logger.LogError($"Exception: {exception.Message}");
+                if(exception.InnerException != null)
+                {
+                    logger.LogError($"Inner exception: {exception.InnerException.Message}");
+                }
+
                 return null;
             }
-
-            var address = $"http://{instance.Address}:{instance.Port}/api/";
-            return address;
         }
     }
 }
