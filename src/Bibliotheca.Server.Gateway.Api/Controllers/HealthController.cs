@@ -21,7 +21,8 @@ namespace Bibliotheca.Server.Gateway.Api
         [ProducesResponseType(200, Type = typeof(string))]
         public string Get()
         {
-            return "I'm alive and reachable";
+            var version = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
+            return $"[Gateway: {version}] I'm alive and reachable";
         }
     }
 }
