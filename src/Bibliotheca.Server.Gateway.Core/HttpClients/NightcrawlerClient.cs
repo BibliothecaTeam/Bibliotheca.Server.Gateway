@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
@@ -10,27 +11,36 @@ using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
-    public class NightcrawlerClient : BaseHttpClient, INightcrawlerClient
+    public class NightcrawlerClient : INightcrawlerClient
     {
         private readonly string _baseAddress;
 
+        private readonly IDictionary<string, StringValues> _customHeaders;
+
         private readonly ILogger _logger;
 
-        public NightcrawlerClient(string baseAddress, IDictionary<string, StringValues> customHeaders, ILogger<NightcrawlerClient> logger) 
-            : base(customHeaders)
+        private readonly HttpClient _httpClient;
+
+        public NightcrawlerClient(
+            string baseAddress, 
+            IDictionary<string, StringValues> customHeaders, 
+            ILogger<NightcrawlerClient> logger,
+            HttpClient httpClient) 
         {
             _baseAddress = baseAddress;
+            _customHeaders = customHeaders;
             _logger = logger;
+            _httpClient = httpClient;
         }
 
         public async Task<HttpResponseMessage> Post(string projectId, string branchName)
         {
             AssertIfServiceNotAlive();
 
-            HttpClient client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
-
             _logger.LogInformation($"Nightcrawler client request (POST): {requestUri}");
+
+            var client = GetClient();
             var httpResponseMessage = await client.PostAsync(requestUri, null);
 
             return httpResponseMessage;
@@ -43,14 +53,26 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
                 return new IndexStatusDto();
             }
 
-            HttpClient client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"queues/{projectId}/{branchName}");
-
             _logger.LogInformation($"Nightcrawler client request (GET): {requestUri}");
-            var responseString = await client.GetStringAsync(requestUri);
 
-            var deserializedObject = JsonConvert.DeserializeObject<IndexStatusDto>(responseString);
-            return deserializedObject;
+            var client = GetClient();
+            var response = await client.GetAsync(requestUri);
+
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<IndexStatusDto>(responseString);
+                return deserializedObject;
+            }
+
+            return null;
+        }
+
+        private BaseHttpClient GetClient()
+        {            
+            var baseClient = new BaseHttpClient(_httpClient, _customHeaders);
+            return baseClient;
         }
 
         private void AssertIfServiceNotAlive()

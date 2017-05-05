@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -11,17 +12,26 @@ using Newtonsoft.Json;
 
 namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
-    public class SearchClient : BaseHttpClient, ISearchClient
+    public class SearchClient : ISearchClient
     {
         private readonly string _baseAddress;
 
+        private readonly IDictionary<string, StringValues> _customHeaders;
+
         private readonly ILogger _logger;
 
-        public SearchClient(string baseAddress, IDictionary<string, StringValues> customHeaders, ILogger<SearchClient> logger)
-         : base(customHeaders)
+        private readonly HttpClient _httpClient;
+
+        public SearchClient(
+            string baseAddress, 
+            IDictionary<string, StringValues> customHeaders, 
+            ILogger<SearchClient> logger,
+            HttpClient httpClient)
         {
             _baseAddress = baseAddress;
+            _customHeaders = customHeaders;
             _logger = logger;
+            _httpClient = httpClient;
         }
 
         public async Task<DocumentSearchResultDto<DocumentIndexDto>> Get(FilterDto filter)
@@ -31,7 +41,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
                 return new DocumentSearchResultDto<DocumentIndexDto>();
             }
 
-            HttpClient client = GetClient();
+            var client = GetClient();
             var query = CreateQuery(filter);
 
             var requestUri = Path.Combine(_baseAddress, $"search");
@@ -41,11 +51,16 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             }
 
             _logger.LogInformation($"Indexer client request (GET): {requestUri}");
-            var responseString = await client.GetStringAsync(requestUri);
+            var response = await client.GetAsync(requestUri);
 
-            var deserializedObject = JsonConvert.DeserializeObject<DocumentSearchResultDto<DocumentIndexDto>>(responseString);
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<DocumentSearchResultDto<DocumentIndexDto>>(responseString);
+                return deserializedObject;
+            }
 
-            return deserializedObject;
+            return new DocumentSearchResultDto<DocumentIndexDto>();
         }
 
         public async Task<DocumentSearchResultDto<DocumentIndexDto>> Get(FilterDto filter, string projectId, string branchName)
@@ -55,7 +70,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
                 return new DocumentSearchResultDto<DocumentIndexDto>();
             }
 
-            HttpClient client = GetClient();
+            var client = GetClient();
             var query = CreateQuery(filter);
 
             var requestUri = Path.Combine(_baseAddress, $"search/projects/{projectId}/branches/{branchName}");
@@ -65,18 +80,23 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             }
 
             _logger.LogInformation($"Indexer client request (GET): {requestUri}");
-            var responseString = await client.GetStringAsync(requestUri);
+            var response = await client.GetAsync(requestUri);
 
-            var deserializedObject = JsonConvert.DeserializeObject<DocumentSearchResultDto<DocumentIndexDto>>(responseString);
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                var deserializedObject = JsonConvert.DeserializeObject<DocumentSearchResultDto<DocumentIndexDto>>(responseString);
+                return deserializedObject;
+            }
 
-            return deserializedObject;
+            return new DocumentSearchResultDto<DocumentIndexDto>();
         }
 
         public async Task<HttpResponseMessage> Post(string projectId, string branchName, IEnumerable<DocumentIndexDto> documentIndexDtos)
         {
             AssertIfServiceNotAlive();
 
-            HttpClient client = GetClient();
+            var client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"search/projects/{projectId}/branches/{branchName}");
 
             var serializedObject = JsonConvert.SerializeObject(documentIndexDtos);
@@ -93,13 +113,19 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             AssertIfServiceNotAlive();
 
-            HttpClient client = GetClient();
+            var client = GetClient();
             var requestUri = Path.Combine(_baseAddress, $"search/projects/{projectId}/branches/{branchName}");
 
             _logger.LogInformation($"Indexer client request (DELETE): {requestUri}");
             var httpResponseMessage = await client.DeleteAsync(requestUri);
 
             return httpResponseMessage;
+        }
+
+        private BaseHttpClient GetClient()
+        {            
+            var baseClient = new BaseHttpClient(_httpClient, _customHeaders);
+            return baseClient;
         }
 
         public bool IsServiceAlive()

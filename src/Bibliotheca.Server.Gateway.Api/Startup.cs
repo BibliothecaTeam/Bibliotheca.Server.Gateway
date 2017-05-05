@@ -24,6 +24,7 @@ using Bibliotheca.Server.Mvc.Middleware.Authorization.BearerAuthentication;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Net.Http;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -128,6 +129,7 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
             services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<HttpClient, HttpClient>();
 
             services.AddAuthorization(options =>
             {

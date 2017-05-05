@@ -16,10 +16,13 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         private readonly IDictionary<string, StringValues> _customHeaders;
 
-        public DocumentsClient(string baseAddress, IDictionary<string, StringValues> customHeaders)
+        private readonly HttpClient _httpClient;
+
+        public DocumentsClient(string baseAddress, IDictionary<string, StringValues> customHeaders, HttpClient httpClient)
         {
             _baseAddress = baseAddress;
             _customHeaders = customHeaders;
+            _httpClient = httpClient;
         }
 
         public async Task<IList<BaseDocumentDto>> Get(string projectId, string branchName)
@@ -73,7 +76,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             var uri = string.Format(_resourceUri, projectId, branchName);
             string resourceAddress = Path.Combine(_baseAddress, uri);
 
-            var baseClient = new RestClient<T>(resourceAddress, _customHeaders);
+            var baseClient = new RestClient<T>(_httpClient, resourceAddress, _customHeaders);
             return baseClient;
         }
 

@@ -16,10 +16,13 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         private readonly IDictionary<string, StringValues> _customHeaders;
 
-        public UsersClient(string baseAddress, IDictionary<string, StringValues> customHeaders)
+        private readonly HttpClient _httpClient;
+
+        public UsersClient(string baseAddress, IDictionary<string, StringValues> customHeaders, HttpClient httpClient)
         {
             _baseAddress = baseAddress;
             _customHeaders = customHeaders;
+            _httpClient = httpClient;
         }
 
         public async Task<IList<UserDto>> Get()
@@ -73,14 +76,14 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             AssertIfServiceNotAlive();
 
             string resourceAddress = Path.Combine(_baseAddress, _resourceUri);
-            var baseClient = new RestClient<AccessTokenDto>(resourceAddress, _customHeaders, "refreshToken");
+            var baseClient = new RestClient<AccessTokenDto>(_httpClient, resourceAddress, _customHeaders, "refreshToken");
             return await baseClient.Put(id, accessToken);
         }
 
         private RestClient<UserDto> GetRestClient()
         {      
             string resourceAddress = Path.Combine(_baseAddress, _resourceUri);
-            var baseClient = new RestClient<UserDto>(resourceAddress, _customHeaders);
+            var baseClient = new RestClient<UserDto>(_httpClient, resourceAddress, _customHeaders);
             return baseClient;
         }
 
