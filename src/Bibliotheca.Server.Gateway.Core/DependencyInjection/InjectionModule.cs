@@ -34,8 +34,9 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             RegisterServices(builder);
             RegisterDepositoryClients(builder);
             RegisterIndexerClients(builder);
-            RegisterNightcrawlerClients(builder);
-            RegisterHeimdallClients(builder);
+            RegisterCrawlerClients(builder);
+            RegisterAuthorizationClients(builder);
+            RegisterPdfExportClients(builder);
         }
 
         private void RegisterServices(ContainerBuilder builder)
@@ -48,7 +49,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .InstancePerLifetimeScope();
         }
 
-        private void RegisterHeimdallClients(ContainerBuilder builder)
+        private void RegisterAuthorizationClients(ContainerBuilder builder)
         {
             var baseAddressParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
@@ -63,7 +64,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .WithParameter(customHeadersParameter);
         }
 
-        private void RegisterNightcrawlerClients(ContainerBuilder builder)
+        private void RegisterCrawlerClients(ContainerBuilder builder)
         {
             var baseAddressParameter = new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
@@ -112,6 +113,21 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<SearchClient>().As<ISearchClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
+        }
+
+        private void RegisterPdfExportClients(ContainerBuilder builder)
+        {
+            var baseAddressParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(string) && pi.Name == "baseAddress",
+                    (pi, ctx) => GetServiceAddress(ctx, "pdfexport"));
+
+            var customHeadersParameter = new ResolvedParameter(
+                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => GetHttpHeaders(ctx));
+
+            builder.RegisterType<PdfExportClient>().As<IPdfExportClient>()
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
         }
