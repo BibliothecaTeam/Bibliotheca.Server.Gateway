@@ -89,7 +89,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             var htmlVersion = $"<div style=\"text-align: right;\"><div>version: {branchName}</div><div>date: {dateString}</div></div>";
             var htmlTitle=  $"<div style=\"margin-top: 200px\"><center><h1>{project.Name}</h1></center></div>";
 
-            var htmlDescriptiom = $"<div><div style=\"text-align: center; width: 240px;margin-top: 50px; margin-left: auto; margin-right: auto;\">{project.Description}</div></div>";
+            var htmlDescriptiom = $"<div><div style=\"text-align: center; width: 350px;margin-top: 50px; margin-left: auto; margin-right: auto;\">{project.Description}</div></div>";
 
             markdownBuilder.AppendLine(htmlVersion);
             markdownBuilder.AppendLine(htmlTitle);
