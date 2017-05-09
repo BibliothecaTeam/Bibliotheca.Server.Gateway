@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
@@ -17,6 +20,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         private readonly IProjectsService _projectsService;
 
         private readonly IPdfExportClient _pdfExportClient;
+
+        private class ImageUrl
+        {
+            public string RelativePath { get; set; }
+            public string AbsolutePath { get; set; }
+            public string TemporaryName { get; set; }
+        }
 
         public ExportService(
             ITableOfContentsService tableOfContentsService,
@@ -40,17 +50,27 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
             var chapters = await _tableOfContentsService.GetTableOfConents(projectId, branchName);
             
-
             var markdownBuilder = new StringBuilder();
             AddTitlePage(project, branchName, markdownBuilder);
             AddPageBreak(markdownBuilder);
             AddTableOfContents(chapters, markdownBuilder);
             AddPageBreak(markdownBuilder);
-            await AddDocumentsContent(projectId, branchName, chapters, markdownBuilder);
+
+            var imagesList = new List<ImageUrl>();
+            await AddDocumentsContent(projectId, branchName, chapters, markdownBuilder, imagesList);
 
             var markdown = markdownBuilder.ToString();
-            var response = await _pdfExportClient.Post(markdown);
+            foreach(var image in imagesList) 
+            {
+                var imageFile = await _documentsService.GetDocumentAsync(project.Id, branchName, image.AbsolutePath);
+                if(imageFile != null) 
+                {
+                    var base64Image = System.Convert.ToBase64String(imageFile.Content);
+                    markdown = markdown.Replace(image.TemporaryName, $"data:image/png;base64,{base64Image}");
+                }
+            }          
 
+            var response = await _pdfExportClient.Post(markdown);
             if(response.IsSuccessStatusCode) 
             {
                 var responseBytes = await response.Content.ReadAsByteArrayAsync();
@@ -105,25 +125,92 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             string projectId, 
             string branchName, 
             IList<DataTransferObjects.ChapterItemDto> chapters, 
-            StringBuilder markdownBuilder)
+            StringBuilder markdownBuilder,
+            List<ImageUrl> imagesList)
         {
             foreach (var item in chapters)
             {
                 if (!string.IsNullOrWhiteSpace(item.Url))
                 {
-                    var fileUri = item.Url.Replace("/", ":");
-                    var document = await _documentsService.GetDocumentAsync(projectId, branchName, fileUri);
+                    var document = await _documentsService.GetDocumentAsync(projectId, branchName, item.Url);
                     var markdown = Encoding.UTF8.GetString(document.Content);
+
+                    var imagesUrls = GetImages(markdown);
+                    foreach(var imageUrl in imagesUrls)
+                    {
+                        var imagePath = GetImagePath(item.Url, imageUrl);
+
+                        var imgUrl = new ImageUrl
+                        {
+                            RelativePath = imageUrl,
+                            AbsolutePath = imagePath,
+                            TemporaryName = Guid.NewGuid().ToString()
+                        };
+
+                        imagesList.Add(imgUrl);
+                        markdown = markdown.Replace(imgUrl.RelativePath, imgUrl.TemporaryName);
+                    }
 
                     markdownBuilder.Append(markdown);
                     markdownBuilder.AppendLine().AppendLine();
                 }
 
-                if(item.Children != null && item.Children.Count > 0)
+                if (item.Children != null && item.Children.Count > 0)
                 {
-                    await AddDocumentsContent(projectId, branchName, item.Children, markdownBuilder);
+                    await AddDocumentsContent(projectId, branchName, item.Children, markdownBuilder, imagesList);
                 }
             }
+        }
+
+        private string GetImagePath(string url, string imageUrl)
+        {
+            var prefixFolder = Path.GetDirectoryName(url.Replace(":", "/"));
+
+            var path = prefixFolder + "/" + imageUrl;
+            path = path.Replace("\\\\", "/");
+            path = path.Replace("\\", "/");
+            path = path.Replace("////", "/");
+            path = path.Replace("//", "/");
+            path = path.Replace(":", "/");
+
+            var pathParts = path.Split('/');
+
+            var dotsNumber = 0;
+            var pathParsed = new List<string>();
+            for (var i = pathParts.Length - 1; i >= 0; --i) {
+                if (pathParts[i] == "..") {
+                    dotsNumber++;
+                }
+                else {
+                    if (dotsNumber == 0) {
+                        pathParsed.Add(pathParts[i]);
+                    }
+                    else {
+                        dotsNumber--;
+                    }
+                }
+            }
+
+            pathParsed.Reverse();
+            path = string.Join(":", pathParsed);
+            return path;
+        }
+
+        private List<string> GetImages(string markdown)
+        {
+            List<string> imagesList = new List<string>();
+            var matches = Regex.Matches(markdown, "!\\[[^\\]]+\\]\\([^)]+\\)");
+            foreach (Match match in matches)
+            {
+                var startIndex = match.Value.IndexOf("(");
+                var path = match.Value.Substring(startIndex + 1).TrimEnd(')');
+                if(!path.StartsWith("http://") && !path.StartsWith("https://"))
+                {
+                    imagesList.Add(path);
+                }
+            }
+
+            return imagesList;
         }
     }
 }
