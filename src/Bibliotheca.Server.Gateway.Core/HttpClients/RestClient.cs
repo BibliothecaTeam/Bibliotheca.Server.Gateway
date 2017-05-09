@@ -50,7 +50,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         public async Task<T> Get(string id)
         {
             var requestUri = $"{_resourceAddress}/{id}";
-            if(string.IsNullOrWhiteSpace(_customAction)) 
+            if(!string.IsNullOrWhiteSpace(_customAction)) 
             {
                 requestUri += $"/{_customAction}";
             }
