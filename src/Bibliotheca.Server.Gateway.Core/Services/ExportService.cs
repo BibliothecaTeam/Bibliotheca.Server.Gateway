@@ -25,7 +25,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             public string RelativePath { get; set; }
             public string AbsolutePath { get; set; }
-            public string TemporaryName { get; set; }
+            public string ImageTag { get; set; }
         }
 
         public ExportService(
@@ -66,7 +66,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 if(imageFile != null) 
                 {
                     var base64Image = System.Convert.ToBase64String(imageFile.Content);
-                    markdown = markdown.Replace(image.TemporaryName, $"data:image/png;base64,{base64Image}");
+                    markdown = markdown.Replace(image.ImageTag, $"<img src=\"data:image/png;base64,{base64Image}\" />");
                 }
             }          
 
@@ -135,21 +135,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     var document = await _documentsService.GetDocumentAsync(projectId, branchName, item.Url);
                     var markdown = Encoding.UTF8.GetString(document.Content);
 
-                    var imagesUrls = GetImages(markdown);
-                    foreach(var imageUrl in imagesUrls)
-                    {
-                        var imagePath = GetImagePath(item.Url, imageUrl);
-
-                        var imgUrl = new ImageUrl
-                        {
-                            RelativePath = imageUrl,
-                            AbsolutePath = imagePath,
-                            TemporaryName = Guid.NewGuid().ToString()
-                        };
-
-                        imagesList.Add(imgUrl);
-                        markdown = markdown.Replace(imgUrl.RelativePath, imgUrl.TemporaryName);
-                    }
+                    imagesList.AddRange(GetImages(item.Url, markdown));
 
                     markdownBuilder.Append(markdown);
                     markdownBuilder.AppendLine().AppendLine();
@@ -196,9 +182,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return path;
         }
 
-        private List<string> GetImages(string markdown)
+        private List<ImageUrl> GetImages(string markdownUrl, string markdown)
         {
-            List<string> imagesList = new List<string>();
+            var imagesList = new List<ImageUrl>();
             var matches = Regex.Matches(markdown, "!\\[[^\\]]+\\]\\([^)]+\\)");
             foreach (Match match in matches)
             {
@@ -206,7 +192,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var path = match.Value.Substring(startIndex + 1).TrimEnd(')');
                 if(!path.StartsWith("http://") && !path.StartsWith("https://"))
                 {
-                    imagesList.Add(path);
+                    imagesList.Add(new ImageUrl 
+                    { 
+                        ImageTag = match.Value, 
+                        RelativePath = path,
+                        AbsolutePath = GetImagePath(markdownUrl, path)
+                    });
                 }
             }
 
