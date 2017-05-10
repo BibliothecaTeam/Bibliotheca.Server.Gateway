@@ -11,25 +11,23 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class ProjectsService : IProjectsService
     {
-        private const string _allProjectsInformationCacheKey = "ProjectsService";
-
         private readonly IProjectsClient _projectsClient;
 
         private readonly IUsersClient _usersClient;
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
-        public ProjectsService(IProjectsClient projectsClient, IUsersClient usersClient, IMemoryCache memoryCache)
+        public ProjectsService(IProjectsClient projectsClient, IUsersClient usersClient, ICacheService cacheService)
         {
             _projectsClient = projectsClient;
             _usersClient = usersClient;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<FilteredResutsDto<ProjectDto>> GetProjectsAsync(ProjectsFilterDto filter, string userId)
         {
             IList<ProjectDto> projects = null;
-            if (!TryGetProjects(out projects))
+            if (!_cacheService.TryGetProjects(out projects))
             {
                 var projectsTask = _projectsClient.Get();
                 var usersTask = _usersClient.Get();
@@ -40,7 +38,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 var users = await usersTask;
                 AddOwnersToProjects(projects, users);
 
-                AddProjectsToCache(projects);
+                _cacheService.AddProjectsToCache(projects);
             }
 
             IEnumerable<ProjectDto> query = projects;
@@ -87,7 +85,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new CreateProjectException("During creating project error occurs: " + content);
             }
 
-            ClearCache();
+            _cacheService.ClearProjectsCache();
+            _cacheService.ClearGroupsCache();
+            _cacheService.ClearTagsCache();
         }
 
         public async Task UpdateProjectAsync(string projectId, ProjectDto project)
@@ -99,7 +99,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new UpdateProjectException("During updating project error occurs: " + content);
             }
 
-            ClearCache();
+            _cacheService.ClearProjectsCache();
+            _cacheService.ClearGroupsCache();
+            _cacheService.ClearTagsCache();
         }
 
         public async Task DeleteProjectAsync(string projectId)
@@ -111,7 +113,9 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new DeleteProjectException("During deleting project error occurs: " + content);
             }
 
-            ClearCache();
+            _cacheService.ClearProjectsCache();
+            _cacheService.ClearGroupsCache();
+            _cacheService.ClearTagsCache();
         }
 
         public async Task<AccessTokenDto> GetProjectAccessTokenAsync(string projectId)
@@ -130,17 +134,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return accessToken;
         }
 
-        private bool TryGetProjects(out IList<ProjectDto> projects)
-        {
-            return _memoryCache.TryGetValue(_allProjectsInformationCacheKey, out projects);
-        }
-
-        private void AddProjectsToCache(IList<ProjectDto> projects)
-        {
-            _memoryCache.Set(_allProjectsInformationCacheKey, projects,
-                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
-        }
-
         private static void AddOwnersToProjects(IList<ProjectDto> projects, IList<UserDto> users)
         {
             foreach (var project in projects)
@@ -156,11 +149,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             {
                 project.AccessToken = string.Empty;
             }
-        }
-
-        private void ClearCache()
-        {
-            _memoryCache.Remove(_allProjectsInformationCacheKey);
         }
 
         private static IEnumerable<ProjectDto> FilterByTags(ProjectsFilterDto filter, IEnumerable<ProjectDto> query)

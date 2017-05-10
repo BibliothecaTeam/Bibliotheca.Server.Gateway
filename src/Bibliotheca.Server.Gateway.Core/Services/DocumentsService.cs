@@ -19,18 +19,18 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly IProjectsService _projectsService;
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
         public DocumentsService(
             IDocumentsClient documentsClient, 
             IBranchesService branchService, 
             IProjectsService projectsService,
-            IMemoryCache memoryCache)
+            ICacheService cacheService)
         {
             _documentsClient = documentsClient;
             _branchService = branchService;
             _projectsService = projectsService;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<IList<BaseDocumentDto>> GetDocumentsAsync(string projectId, string branchName)
@@ -53,16 +53,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 fileUri = await GetDefaultFileUri(projectId, branchName);
             }
 
-            string cacheKey = GetCacheKey(projectId, branchName, fileUri);
-
-            if (!_memoryCache.TryGetValue(cacheKey, out documentDto))
+            if (!_cacheService.TryGetDocument(projectId, branchName, fileUri, out documentDto))
             {
                 documentDto = await _documentsClient.Get(projectId, branchName, fileUri);
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(10));
-
-                _memoryCache.Set(cacheKey, documentDto, cacheEntryOptions);
+                _cacheService.AddDocument(projectId, branchName, fileUri, documentDto);
             }
 
             return documentDto;
@@ -78,8 +72,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
 
             var fileUri = document.Uri.Replace("/", ":");
-            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
-            _memoryCache.Remove(cacheKey);
+            _cacheService.ClearDocumentCache(projectId, branchName, fileUri);
         }
 
         public async Task UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document)
@@ -91,8 +84,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new UpdateDocumentException("During updating document error occurs: " + content);
             }
 
-            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
-            _memoryCache.Remove(cacheKey);
+            _cacheService.ClearDocumentCache(projectId, branchName, fileUri);
         }
 
         public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
@@ -150,8 +142,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new DeleteDocumentException("During deleting document error occurs: " + content);
             }
 
-            var cacheKey = GetCacheKey(projectId, branchName, fileUri);
-            _memoryCache.Remove(cacheKey);
+            _cacheService.ClearDocumentCache(projectId, branchName, fileUri);
         }
 
         private async Task CreateBranchAsync(string projectId, string branchName, byte[] content)
@@ -190,11 +181,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
 
             return newPath;
-        }
-
-        private string GetCacheKey(string projectId, string branchName, string fileUri)
-        {
-            return $"DocumentsService#{projectId}#{branchName}#{fileUri}";
         }
 
         private async Task<string> GetDefaultBranch(string projectId)

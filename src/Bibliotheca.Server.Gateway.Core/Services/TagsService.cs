@@ -9,22 +9,20 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class TagsService : ITagsService
     {
-        private const string _tagsCacheKey = "TagsService";
-
         private readonly IProjectsClient _projectsClient;
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
-        public TagsService(IProjectsClient projectsClient, IMemoryCache memoryCache)
+        public TagsService(IProjectsClient projectsClient, ICacheService cacheService)
         {
             _projectsClient = projectsClient;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<IList<string>> GetAvailableTagsAsync()
         {
             IList<string> tags = null;
-            if (!TryGetTags(out tags))
+            if (!_cacheService.TryGetTags(out tags))
             {
                 var projects = await _projectsClient.Get();
                 tags = new List<string>();
@@ -34,21 +32,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 }
 
                 tags = tags.OrderBy(x => x).Distinct().ToList();
-                AddTags(tags);
+                _cacheService.AddTags(tags);
             }
 
             return tags;
-        }
-
-        public bool TryGetTags(out IList<string> tags)
-        {
-            return _memoryCache.TryGetValue(_tagsCacheKey, out tags);
-        }
-
-        public void AddTags(IList<string> tags)
-        {
-            _memoryCache.Set(_tagsCacheKey, tags,
-                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }
 }

@@ -20,14 +20,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly ApplicationParameters _applicationParameters;
 
-        private readonly IMemoryCache _memoryCache;
-
         public ServicesService(
-            IMemoryCache memoryCache, 
             IServiceDiscoveryQuery serviceDiscoveryQuery, 
             IOptions<ApplicationParameters> applicationParameters)
         {
-            _memoryCache = memoryCache;
             _serviceDiscoveryQuery = serviceDiscoveryQuery;
             _applicationParameters = applicationParameters.Value;
         }

@@ -9,22 +9,20 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class GroupsService : IGroupsService
     {
-        private const string _groupsCacheKey = "GroupsService";
-
         private readonly IProjectsClient _projectsClient;
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
-        public GroupsService(IProjectsClient projectsClient, IMemoryCache memoryCache)
+        public GroupsService(IProjectsClient projectsClient, ICacheService cacheService)
         {
             _projectsClient = projectsClient;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<IList<string>> GetAvailableGroupsAsync()
         {
             IList<string> groups = null;
-            if (!TryGetGroups(out groups))
+            if (!_cacheService.TryGetGroups(out groups))
             {
                 var projects = await _projectsClient.Get();
 
@@ -35,21 +33,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 }
 
                 groups = groups.OrderBy(x => x).Distinct().ToList();
-                AddGroups(groups);
+                _cacheService.AddGroups(groups);
             }
 
             return groups;
-        }
-
-        public bool TryGetGroups(out IList<string> tags)
-        {
-            return _memoryCache.TryGetValue(_groupsCacheKey, out tags);
-        }
-
-        public void AddGroups(IList<string> tags)
-        {
-            _memoryCache.Set(_groupsCacheKey, tags,
-                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }
 }

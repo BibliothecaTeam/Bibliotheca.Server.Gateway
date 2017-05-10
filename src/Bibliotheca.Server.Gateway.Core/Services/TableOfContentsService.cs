@@ -16,27 +16,24 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly IProjectsService _projectsService;
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
-        public TableOfContentsService(IBranchesClient branchesClient, IProjectsService projectsService, IMemoryCache memoryCache)
+        public TableOfContentsService(IBranchesClient branchesClient, IProjectsService projectsService, ICacheService cacheService)
         {
             _branchesClient = branchesClient;
             _projectsService = projectsService;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public async Task<IList<ChapterItemDto>> GetTableOfConents(string projectId, string branchName)
         {
-            List<ChapterItemDto> toc = null;
-
             if(branchName == null || branchName == "undefined")
             {
                 branchName = await GetDefaultBranch(projectId);
             }
 
-            string cacheKey = GetCacheKey(projectId, branchName);
-
-            if(!_memoryCache.TryGetValue(cacheKey, out toc))
+            IList<ChapterItemDto> toc = null;
+            if(!_cacheService.TryGetTableOfContents(projectId, branchName, out toc))
             {
                 var branch = await _branchesClient.Get(projectId, branchName);
                 if(branch != null)
@@ -47,7 +44,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetSlidingExpiration(TimeSpan.FromMinutes(10));
 
-                    _memoryCache.Set(cacheKey, toc, cacheEntryOptions);
+                    _cacheService.AddTableOfContentsToCache(projectId, branchName, toc);
                 }
             }
 
@@ -123,11 +120,6 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     }
                 }
             }
-        }
-
-        private string GetCacheKey(string projectId, string branchName)
-        {
-            return $"TableOfContentsService#{projectId}#{branchName}";
         }
 
         private async Task<string> GetDefaultBranch(string projectId)
