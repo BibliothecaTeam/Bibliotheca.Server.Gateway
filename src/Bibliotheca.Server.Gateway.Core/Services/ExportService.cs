@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
+using Bibliotheca.Server.Gateway.Core.MimeTypes;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -43,13 +44,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public async Task<byte[]> GeneratePdf(string projectId, string branchName)
         {
             var project = await _projectsService.GetProjectAsync(projectId);
-            if(project == null) 
+            if (project == null)
             {
                 throw new ProjectNotFoundException($"Project '{projectId}' not exists.");
             }
 
             var chapters = await _tableOfContentsService.GetTableOfConents(projectId, branchName);
-            
+
             var markdownBuilder = new StringBuilder();
             AddTitlePage(project, branchName, markdownBuilder);
             AddPageBreak(markdownBuilder);
@@ -60,18 +61,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             await AddDocumentsContent(projectId, branchName, chapters, markdownBuilder, imagesList);
 
             var markdown = markdownBuilder.ToString();
-            foreach(var image in imagesList) 
-            {
-                var imageFile = await _documentsService.GetDocumentAsync(project.Id, branchName, image.AbsolutePath);
-                if(imageFile != null) 
-                {
-                    var base64Image = System.Convert.ToBase64String(imageFile.Content);
-                    markdown = markdown.Replace(image.ImageTag, $"<img src=\"data:image/png;base64,{base64Image}\" />");
-                }
-            }          
+            await EmbedImagesToMarkdown(project.Id, branchName, imagesList, markdown);
 
             var response = await _pdfExportClient.Post(markdown);
-            if(response.IsSuccessStatusCode) 
+            if (response.IsSuccessStatusCode)
             {
                 var responseBytes = await response.Content.ReadAsByteArrayAsync();
                 return responseBytes;
@@ -79,6 +72,21 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
             var responseString = await response.Content.ReadAsStringAsync();
             throw new PdfExportException($"Exception during generating pdf. Status code: {response.StatusCode}. Message: {responseString}.");
+        }
+
+        private async Task EmbedImagesToMarkdown(string projectId, string branchName, List<ImageUrl> imagesList, string markdown)
+        {
+            foreach (var image in imagesList)
+            {
+                var imageFile = await _documentsService.GetDocumentAsync(projectId, branchName, image.AbsolutePath);
+                if (imageFile != null)
+                {
+                    var base64Image = System.Convert.ToBase64String(imageFile.Content);
+                    var mimeType = MimeTypeMap.GetMimeType(Path.GetExtension(image.AbsolutePath));
+
+                    markdown = markdown.Replace(image.ImageTag, $"<img src=\"data:{mimeType};base64,{base64Image}\" />");
+                }
+            }
         }
 
         private void AddTableOfContents(IList<ChapterItemDto> chapters, StringBuilder markdownBuilder)
