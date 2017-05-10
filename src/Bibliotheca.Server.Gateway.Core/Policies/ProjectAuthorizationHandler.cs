@@ -90,13 +90,20 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                 else
                 {
                     var userId = context.User.Identity.Name.ToLower();
+                    var user = await _usersService.GetUserAsync(userId);
+
+                    if (user.Role == RoleEnumDto.Administrator)
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+                    
                     if (project.ContactPeople.Any(x => x.Email == userId))
                     {
                         context.Succeed(requirement);
                         return;
                     }
-
-                    var user = await _usersService.GetUserAsync(userId);
+                    
                     if (user != null && user.Projects != null && user.Projects.Any(o => o == project.Id))
                     {
                         context.Succeed(requirement);
