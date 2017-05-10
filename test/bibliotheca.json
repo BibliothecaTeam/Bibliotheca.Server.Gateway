@@ -1570,8 +1570,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return all documents for specific branch."
 					},
 					"response": []
@@ -1600,8 +1598,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return 404 when we try download documents for not existing project"
 					},
 					"response": []
@@ -1630,8 +1626,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return 404 when we try download documents for not existing branch."
 					},
 					"response": []
@@ -1665,8 +1659,39 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return default document for project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns name\"] = responseJSON.name === \"index.md\";",
+									"tests[\"Response have to returns uri\"] = responseJSON.uri === \"root/index.md\";",
+									"tests[\"Response have to returns contentType\"] = responseJSON.conentType === \"text/markdown\";",
+									"tests[\"Response have to returns content\"] = responseJSON.content !== \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/undefined/documents/undefined",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1694,8 +1719,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1723,8 +1746,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1752,8 +1773,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1782,8 +1801,34 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
+						"description": "System have to return specific document by his uri."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return default document content for project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Response have to returns content\"] = responseBody !== \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/undefined/documents/content/undefined",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1811,8 +1856,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1840,8 +1883,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -1869,8 +1910,6 @@
 								"description": ""
 							}
 						],
-						"body": {
-						},
 						"description": "System have to return specific document by his uri."
 					},
 					"response": []
@@ -2277,6 +2316,37 @@
 					"response": []
 				},
 				{
+					"name": "TOC for default branch have to be returned",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'Developer guide' chapter\"] = responseBody.has(\"Developer guide\");",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-public/branches/undefined/toc",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all table of contents information for specific project"
+					},
+					"response": []
+				},
+				{
 					"name": "Getting TOC for not existing branch have to return 404",
 					"event": [
 						{
@@ -2461,6 +2531,34 @@
 					],
 					"request": {
 						"url": "{{Server}}/api/search/projects/unit-test-project-public/branches/Latest?query=lorem",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
+					"name": "System have to return refresh status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/search/projects/unit-test-project-public/branches/Latest/status",
 						"method": "GET",
 						"header": [
 							{
@@ -3155,6 +3253,29 @@
 							"raw": "  {\n    \"accessToken\": \"5ab208be-0711-486f-983e-eab578aad782\"\n  }"
 						},
 						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "12. Services controller",
+			"description": "",
+			"item": [
+				{
+					"name": "Get services list",
+					"request": {
+						"url": "{{Server}}/api/services",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
 					},
 					"response": []
 				}
