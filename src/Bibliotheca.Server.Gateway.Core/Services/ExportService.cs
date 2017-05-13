@@ -61,7 +61,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             await AddDocumentsContent(projectId, branchName, chapters, markdownBuilder, imagesList);
 
             var markdown = markdownBuilder.ToString();
-            await EmbedImagesToMarkdown(project.Id, branchName, imagesList, markdown);
+            markdown = await EmbedImagesToMarkdown(project.Id, branchName, imagesList, markdown);
 
             var response = await _pdfExportClient.Post(markdown);
             if (response.IsSuccessStatusCode)
@@ -74,7 +74,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             throw new PdfExportException($"Exception during generating pdf. Status code: {response.StatusCode}. Message: {responseString}.");
         }
 
-        private async Task EmbedImagesToMarkdown(string projectId, string branchName, List<ImageUrl> imagesList, string markdown)
+        private async Task<string> EmbedImagesToMarkdown(string projectId, string branchName, List<ImageUrl> imagesList, string markdown)
         {
             foreach (var image in imagesList)
             {
@@ -87,6 +87,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     markdown = markdown.Replace(image.ImageTag, $"<img src=\"data:{mimeType};base64,{base64Image}\" />");
                 }
             }
+
+            return markdown;
         }
 
         private void AddTableOfContents(IList<ChapterItemDto> chapters, StringBuilder markdownBuilder)
