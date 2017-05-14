@@ -2730,6 +2730,37 @@
 					"response": []
 				},
 				{
+					"name": "System have to return user by his email when email has upper case",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'Viktoria Doe'\"] = responseJSON.name === \"Vikrtoria Doe\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/Viktoria.Doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
 					"name": "System have to return 403 when user want's to retrieve data of other user",
 					"event": [
 						{
