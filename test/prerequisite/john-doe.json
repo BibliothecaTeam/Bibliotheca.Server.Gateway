@@ -1,0 +1,8 @@
+{
+  "id": "john.doe@test.com",
+  "name": "John Doe",
+  "role": "User",
+  "accessToken": "654164dc-0766-4f2f-b5cd-224c68bf4da6",
+  "projects": [
+  ]
+}

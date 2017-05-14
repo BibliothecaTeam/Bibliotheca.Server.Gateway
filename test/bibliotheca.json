@@ -76,6 +76,38 @@
 					"response": []
 				},
 				{
+					"name": "System have to contains user john.doe@test.com",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Name of user have to by 'John Doe'\"] = responseJSON.name === \"John Doe\";",
+									"tests[\"Role of user have to by 'User'\"] = responseJSON.role === \"User\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/users/john.doe@test.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all tags from all documentation projects."
+					},
+					"response": []
+				},
+				{
 					"name": "System have to contains user wiktor.doe@test.com",
 					"event": [
 						{
@@ -173,7 +205,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"Id\": \"unit-test-project-private\",\n    \"Name\": \"Unit Test Project Private\",\n    \"Description\": \"Unit test project pribvate description.\",\n    \"DefaultBranch\": \"Latest\",\n    \"VisibleBranches\": [\n        \"Latest\"\n    ],\n    \"Tags\": [\n        \"TagA\",\n        \"TagB\"\n    ],\n    \"Group\": \"GroupA\",\n    \"ProjectSite\": \"\",\n    \"ContactPeople\": \n    [\n        {\n            \"Name\": \"Marcin Doe\",\n            \"Email\": \"marcin.doe@test.com\"\n        },\n        {\n            \"Name\": \"Justyna Doe\",\n            \"Email\": \"justyna.doe@test.com\"\n        }\n    ],\n    \"EditLinks\":\n    [\n        {\n            \"BranchName\": \"Latest\",\n            \"Link\": \"http://link.to.sources/\"\n        }\n    ],\n    \"AccessToken\": \"2a8bb300-9f60-45c4-9fdf-190e5a48371e\",\n    \"IsAccessLimited\": true\n}"
+							"raw": "{\n    \"Id\": \"unit-test-project-private\",\n    \"Name\": \"Unit Test Project Private\",\n    \"Description\": \"Unit test project private description.\",\n    \"DefaultBranch\": \"Latest\",\n    \"VisibleBranches\": [\n        \"Latest\"\n    ],\n    \"Tags\": [\n        \"TagA\",\n        \"TagB\"\n    ],\n    \"Group\": \"GroupA\",\n    \"ProjectSite\": \"\",\n    \"ContactPeople\": \n    [\n        {\n            \"Name\": \"Marcin Doe\",\n            \"Email\": \"Marcin.Doe@test.com\"\n        },\n        {\n            \"Name\": \"John Doe\",\n            \"Email\": \"John.Doe@test.com\"\n        }\n    ],\n    \"EditLinks\":\n    [\n        {\n            \"BranchName\": \"Latest\",\n            \"Link\": \"http://link.to.sources/\"\n        }\n    ],\n    \"AccessToken\": \"2a8bb300-9f60-45c4-9fdf-190e5a48371e\",\n    \"IsAccessLimited\": true\n}"
 						},
 						"description": "User cannot add a new project."
 					},
@@ -646,6 +678,36 @@
 							{
 								"key": "Authorization",
 								"value": "{{UserToken (Viktoria)}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "When request contains not existing project system have to return 404 status code."
+					},
+					"response": []
+				},
+				{
+					"name": "Private project have to be returned for contact people",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"tests[\"Response have to contains 'Unit test project private description' text\"] = responseBody.has(\"Unit test project private description\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects/unit-test-project-private",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{UserToken (John)}}",
 								"description": ""
 							}
 						],
