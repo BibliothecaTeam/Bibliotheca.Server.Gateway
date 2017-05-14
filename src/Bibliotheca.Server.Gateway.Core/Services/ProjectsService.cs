@@ -214,7 +214,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private static string GetNormalizedQuery(ProjectsFilterDto filter)
         {
-            var filterQueryNormalized = $" {filter.Query.ToUpper().Trim()}";
+            var filterQueryNormalized = filter.Query.ToUpper().Trim();
             if (filterQueryNormalized.Last() == '*')
             {
                 filterQueryNormalized = filterQueryNormalized.TrimEnd('*');
