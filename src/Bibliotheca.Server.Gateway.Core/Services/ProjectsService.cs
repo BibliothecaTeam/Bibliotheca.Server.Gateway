@@ -181,7 +181,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             if (!string.IsNullOrWhiteSpace(filter.Query))
             {
-                var filterQueryNormalized = filter.Query.ToUpper();
+                string filterQueryNormalized = GetNormalizedQuery(filter);
                 query = query.Where(x => x.Name.ToUpper().Contains(filterQueryNormalized));
             }
 
@@ -192,7 +192,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             if (!string.IsNullOrWhiteSpace(filter.Query))
             {
-                var filterQueryNormalized = filter.Query.ToUpper();
+                string filterQueryNormalized = GetNormalizedQuery(filter);
                 query = query.Where(x => x.Description.ToUpper().Contains(filterQueryNormalized));
             }
 
@@ -210,6 +210,21 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 )
             );
             return query;
+        }
+
+        private static string GetNormalizedQuery(ProjectsFilterDto filter)
+        {
+            var filterQueryNormalized = $" {filter.Query.ToUpper().Trim()}";
+            if (filterQueryNormalized.Last() == '*')
+            {
+                filterQueryNormalized = filterQueryNormalized.TrimEnd('*');
+            }
+            else
+            {
+                filterQueryNormalized = $"{filterQueryNormalized} ";
+            }
+
+            return filterQueryNormalized;
         }
     }
 }

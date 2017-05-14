@@ -600,6 +600,41 @@
 					"response": []
 				},
 				{
+					"name": "Projects list have to returns correct project by query with star",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"",
+									"var responseJSON = JSON.parse(responseBody); ",
+									"tests[\"Response have to returns one item\"] = responseJSON.allResults === 1;",
+									"tests[\"Response have to returns 'Unit Test Project Public\"] = responseJSON.results[0].name === \"Unit Test Project Public\";",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{Server}}/api/projects?query=Publi*",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{SecureToken}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "Requests returns all projects which have Configuration Manager name."
+					},
+					"response": []
+				},
+				{
 					"name": "Project have to be returned",
 					"event": [
 						{
