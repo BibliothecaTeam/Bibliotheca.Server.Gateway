@@ -98,7 +98,7 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                         return;
                     }
                     
-                    if (project.ContactPeople.Any(x => x.Email.ToLower() == userId))
+                    if (project.ContactPeople != null && project.ContactPeople.Any(x => x.Email.ToLower() == userId))
                     {
                         context.Succeed(requirement);
                         return;
