@@ -3,6 +3,7 @@ namespace Bibliotheca.Server.Gateway.Core.Parameters
     public class ServiceDiscovery
     {
         public string ServiceId { get; set; }
+        
         public string ServiceType { get; set; }
 
         public string ServiceAddress { get; set; }

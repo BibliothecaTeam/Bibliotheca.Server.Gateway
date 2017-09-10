@@ -22,7 +22,6 @@ namespace Bibliotheca.Server.Gateway.Api
         [ProducesResponseType(200, Type = typeof(string))]
         public string Get()
         {
-            
             var version = Assembly.GetEntryAssembly().GetName().Version.ToString();
             return $"[Gateway: {version}] I'm alive and reachable";
         }
