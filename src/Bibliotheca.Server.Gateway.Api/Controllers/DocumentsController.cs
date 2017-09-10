@@ -153,8 +153,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] DocumentDto document)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
-            if(!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -183,8 +183,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
-            if(!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -213,8 +213,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> Put(string projectId, string branchName, IFormFile file)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
-            if(!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
+            if(!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -249,8 +249,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> Put(string projectId, string branchName)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
-            if(!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, new CanUploadBranchRequirement(HttpContext.Request.Headers));
+            if(!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -283,8 +283,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(string projectId, string branchName, string fileUri)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
-            if(!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new ProjectDto { Id = projectId }, Operations.Update);
+            if(!authorization.Succeeded)
             {
                 return Forbid();
             }

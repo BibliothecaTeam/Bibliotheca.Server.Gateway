@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Gateway.Core.Parameters;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Model;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Neutrino.AspNetCore.Client;
+using Neutrino.Entities.Model;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -16,32 +16,28 @@ namespace Bibliotheca.Server.Gateway.Core.Services
     {
         private const string _tagsCacheKey = "ServicesService";
 
-        private readonly IServiceDiscoveryQuery _serviceDiscoveryQuery;
+        private readonly INeutrinoClient _neutrinoClient;
 
         private readonly ApplicationParameters _applicationParameters;
 
         public ServicesService(
-            IServiceDiscoveryQuery serviceDiscoveryQuery, 
+            INeutrinoClient neutrinoClient, 
             IOptions<ApplicationParameters> applicationParameters)
         {
-            _serviceDiscoveryQuery = serviceDiscoveryQuery;
+            _neutrinoClient = neutrinoClient;
             _applicationParameters = applicationParameters.Value;
         }
 
-        public async Task<IList<ServiceDto>> GetServicesAsync()
+        public async Task<IList<Service>> GetServicesAsync()
         {
-            var serverOptions = new ServerOptions { Address = _applicationParameters.ServiceDiscovery.ServerAddress };
-            var services = await _serviceDiscoveryQuery.GetServicesAsync(serverOptions);
-
+            var services = await _neutrinoClient.GetServicesAsync();
             return services;
         }
 
-        public async Task<InstanceDto> GetServiceInstanceAsync(string tag) 
+        public async Task<Service> GetServiceInstanceAsync(string serviceType) 
         {
-            var serverOptions = new ServerOptions { Address = _applicationParameters.ServiceDiscovery.ServerAddress };
-            var instance = await _serviceDiscoveryQuery.GetServiceInstanceAsync(serverOptions, new string[] { tag });
-
-            return instance;
+            var services = await _neutrinoClient.GetServicesByServiceTypeAsync(serviceType);
+            return services.FirstOrDefault();
         }
     }
 }

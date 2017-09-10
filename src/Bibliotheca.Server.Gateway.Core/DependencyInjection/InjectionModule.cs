@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Gateway.Core.Services;
 using System;
 using Microsoft.Extensions.Logging;
+using Flurl;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -161,7 +161,8 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     return null;
                 }
 
-                var address = $"http://{instance.Address}:{instance.Port}/api/";
+                
+                var address = instance.Address.AppendPathSegment("api/");
                 logger.LogInformation($"Address for '{serviceTag}' microservice was retrieved ({address}).");
                 return address;
             }

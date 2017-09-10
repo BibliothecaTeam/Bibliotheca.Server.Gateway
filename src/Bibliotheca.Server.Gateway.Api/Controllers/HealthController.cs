@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheca.Server.Gateway.Api
@@ -21,7 +22,8 @@ namespace Bibliotheca.Server.Gateway.Api
         [ProducesResponseType(200, Type = typeof(string))]
         public string Get()
         {
-            var version = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
+            
+            var version = Assembly.GetEntryAssembly().GetName().Version.ToString();
             return $"[Gateway: {version}] I'm alive and reachable";
         }
     }

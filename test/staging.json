@@ -5,13 +5,13 @@
     {
       "enabled": true,
       "key": "Server",
-      "value": "<ENTER URL>",
+      "value": "http://u4hub-gateway-dev-01.azurewebsites.net",
       "type": "text"
     },
     {
       "enabled": true,
       "key": "SecureToken",
-      "value": "SecureToken <ENTER TOKEN>",
+      "value": "SecureToken 4e57e961-5f2e-4b24-893f-7842c5ccff97",
       "type": "text"
     },
     {

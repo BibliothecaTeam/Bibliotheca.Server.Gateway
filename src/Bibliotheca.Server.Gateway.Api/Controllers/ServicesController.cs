@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Neutrino.Entities.Model;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -39,11 +38,11 @@ namespace Bibliotheca.Server.Gateway.Api
         /// </remarks>
         /// <returns>Information abouth services.</returns>
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IList<ServiceDto>))]
-        public async Task<IList<ServiceDto>> Get()
+        [ProducesResponseType(200, Type = typeof(IList<Service>))]
+        public async Task<IList<Service>> Get()
         {
-            var servicesDtos = await _servicesService.GetServicesAsync();
-            return servicesDtos;
+            var services = await _servicesService.GetServicesAsync();
+            return services;
         }
     }
 }

@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.Parameters;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using Hangfire.Server;
 using Microsoft.Extensions.Options;
+using Neutrino.AspNetCore.Client;
+using Neutrino.Entities.Model;
 
 namespace Bibliotheca.Server.Gateway.Api.Jobs
 {
@@ -12,18 +13,18 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
     /// </summary>
     public class ServiceDiscoveryRegistrationJob : IServiceDiscoveryRegistrationJob
     {
-        private readonly IServiceDiscoveryClient _serviceDiscoveryClient;
+        private readonly INeutrinoClient _neutrinoClient;
 
         private readonly ApplicationParameters _applicationParameters;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="serviceDiscoveryClient">Service discovery client.</param>
+        /// <param name="neutrinoClient">Service discovery client.</param>
         /// <param name="options">Application parameters.</param>
-        public ServiceDiscoveryRegistrationJob(IServiceDiscoveryClient serviceDiscoveryClient, IOptions<ApplicationParameters> options)
+        public ServiceDiscoveryRegistrationJob(INeutrinoClient neutrinoClient, IOptions<ApplicationParameters> options)
         {
-            _serviceDiscoveryClient = serviceDiscoveryClient;
+            _neutrinoClient = neutrinoClient;
             _applicationParameters = options.Value;
         }
 
@@ -34,20 +35,33 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <returns>Returns async task.</returns>
         public async Task RegisterServiceAsync(PerformContext context)
         {
-            var serviceDiscoveryOptions = GetServiceDiscoveryOptions();
-            await _serviceDiscoveryClient.RegisterAsync(serviceDiscoveryOptions);
+            var service = CreateServiceInformation();
+            var registeredService = await _neutrinoClient.GetServiceByIdAsync(service.Id);
+            if(registeredService == null)
+            {
+                await _neutrinoClient.AddServiceAsync(service);
+            }
+            else
+            {
+                await _neutrinoClient.UpdateServiceAsync(service.Id, service);
+            }
         }
 
-        private ServiceDiscoveryOptions GetServiceDiscoveryOptions()
+        private Service CreateServiceInformation()
         {
-            var options = new ServiceDiscoveryOptions();
-            options.ServiceOptions.Id = _applicationParameters.ServiceDiscovery.ServiceId;
-            options.ServiceOptions.Name = _applicationParameters.ServiceDiscovery.ServiceName;
-            options.ServiceOptions.Address = _applicationParameters.ServiceDiscovery.ServiceAddress;
-            options.ServiceOptions.Port = Convert.ToInt32(_applicationParameters.ServiceDiscovery.ServicePort);
-            options.ServiceOptions.HttpHealthCheck = _applicationParameters.ServiceDiscovery.ServiceHttpHealthCheck;
-            options.ServiceOptions.Tags = _applicationParameters.ServiceDiscovery.ServiceTags;
-            options.ServerOptions.Address = _applicationParameters.ServiceDiscovery.ServerAddress;
+            var options = new Service
+            {
+                Id = _applicationParameters.ServiceDiscovery.ServiceId,
+                ServiceType = _applicationParameters.ServiceDiscovery.ServiceType,
+                Address = _applicationParameters.ServiceDiscovery.ServiceAddress,
+                HealthCheck = new HealthCheck {
+                    Address = _applicationParameters.ServiceDiscovery.ServiceHttpHealthCheck,
+                    DeregisterCriticalServiceAfter = 240,
+                    HealthCheckType = HealthCheckType.HttpRest,
+                    Interval = 30
+                },
+                Tags = _applicationParameters.ServiceDiscovery.ServiceTags
+            };
 
             return options;
         }

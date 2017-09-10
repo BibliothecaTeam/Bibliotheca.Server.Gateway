@@ -59,8 +59,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200, Type = typeof(UserDto))]
         public async Task<IActionResult> Get(string id)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Read);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Read);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -139,8 +139,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> RefreshAccessToken(string id, [FromBody] AccessTokenDto accessToken)
         {
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Update);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, new UserDto { Id = id }, Operations.Update);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }

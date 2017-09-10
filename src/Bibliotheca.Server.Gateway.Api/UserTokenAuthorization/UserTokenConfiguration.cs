@@ -1,8 +1,10 @@
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Mvc.Middleware.Authorization.UserTokenAuthentication;
-using Bibliotheca.Server.ServiceDiscovery.ServiceClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Neutrino.AspNetCore.Client;
+using Flurl;
+using System.Linq;
 
 namespace Bibliotheca.Server.Gateway.Api.UserTokenAuthorization
 {
@@ -13,7 +15,7 @@ namespace Bibliotheca.Server.Gateway.Api.UserTokenAuthorization
     {
         private readonly ILogger<UserTokenConfiguration> _logger;
 
-        private readonly IServiceDiscoveryQuery _serviceDiscoveryQuery;
+        private readonly INeutrinoClient _neutrinoClient;
 
         IOptions<ApplicationParameters> _applicationParameters;
         
@@ -21,15 +23,15 @@ namespace Bibliotheca.Server.Gateway.Api.UserTokenAuthorization
         /// Constructor.
         /// </summary>
         /// <param name="logger">Logger.</param>
-        /// <param name="serviceDiscoveryQuery">Service discovery query.</param>
+        /// <param name="neutrinoClient">Service discovery query.</param>
         /// <param name="applicationParameters">Application parameters.</param>
         public UserTokenConfiguration(
             ILogger<UserTokenConfiguration> logger, 
-            IServiceDiscoveryQuery serviceDiscoveryQuery, 
+            INeutrinoClient neutrinoClient, 
             IOptions<ApplicationParameters> applicationParameters)
         {
             _logger = logger;
-            _serviceDiscoveryQuery = serviceDiscoveryQuery;
+            _neutrinoClient = neutrinoClient;
             _applicationParameters = applicationParameters;
         }
 
@@ -41,14 +43,11 @@ namespace Bibliotheca.Server.Gateway.Api.UserTokenAuthorization
         {
             _logger.LogInformation("Retrieving authorization url...");
 
-            var instance = _serviceDiscoveryQuery.GetServiceInstanceAsync(
-                new ServerOptions { Address = _applicationParameters.Value.ServiceDiscovery.ServerAddress },
-                new string[] { "authorization" }
-            ).GetAwaiter().GetResult();
-
-            if (instance != null)
+            var services = _neutrinoClient.GetServicesByServiceTypeAsync("authorization").GetAwaiter().GetResult();
+            if (services != null && services.Count > 0)
             {
-                var address = $"http://{instance.Address}:{instance.Port}/api/";
+                var instance = services.FirstOrDefault();
+                var address = instance.Address.AppendPathSegment("api/");
                 _logger.LogInformation($"Authorization url was retrieved ({address}).");
 
                 return address;

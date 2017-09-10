@@ -82,8 +82,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return NotFound();
             }
 
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Read);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Read);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -128,8 +128,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return NotFound();
             }
 
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -158,8 +158,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return NotFound();
             }
 
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }
@@ -187,8 +187,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return NotFound();
             }
 
-            var isAuthorize = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Delete);
-            if (!isAuthorize)
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Delete);
+            if (!authorization.Succeeded)
             {
                 return Forbid();
             }
