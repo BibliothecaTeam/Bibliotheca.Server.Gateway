@@ -90,27 +90,16 @@ namespace Bibliotheca.Server.Gateway.Api
                 options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
             });
 
-            services.AddSingleton<ISecureTokenOptions>(new SecureTokenOptions { SecureToken = Configuration["SecureToken"] });
-            services.AddScoped<ISecureTokenAuthenticationHandler, SecureTokenAuthenticationHandler>();
-
             services.AddScoped<IUserTokenConfiguration, UserTokenConfiguration>();
-            services.AddScoped<IUserTokenAuthenticationHandler, UserTokenAuthenticationHandler>();
 
             services.AddAuthentication(configure => {
-                configure.AddScheme(SecureTokenSchema.Name, builder => {
-                    builder.DisplayName = SecureTokenSchema.Description;
-                    builder.HandlerType = typeof(ISecureTokenAuthenticationHandler);
-                });
-                configure.AddScheme(UserTokenSchema.Name, builder => {
-                    builder.DisplayName = UserTokenSchema.Description;
-                    builder.HandlerType = typeof(IUserTokenAuthenticationHandler);
-                });
                 configure.DefaultScheme = SecureTokenSchema.Name;
             }).AddBearerAuthentication(options => {
                 options.Authority = Configuration["OAuthAuthority"];
                 options.Audience = Configuration["OAuthAudience"];
-            });
-
+            }).AddSecureToken(options => {
+                options.SecureToken = Configuration["SecureToken"];
+            }).AddUserToken(options => { });
 
             services.AddApiVersioning(options =>
             {
