@@ -25,6 +25,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Net.Http;
 using Neutrino.AspNetCore.Client;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -79,12 +80,11 @@ namespace Bibliotheca.Server.Gateway.Api
 
             services.AddMvc(config =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(SecureTokenSchema.Name)
-                    .AddAuthenticationSchemes(UserTokenSchema.Name)
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                var policy = new AuthorizationPolicyBuilder(
+                    new[] { SecureTokenSchema.Name, UserTokenSchema.Name, JwtBearerDefaults.AuthenticationScheme })
                     .RequireAuthenticatedUser()
                     .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
             }).AddJsonOptions(options =>
             {
                 options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
