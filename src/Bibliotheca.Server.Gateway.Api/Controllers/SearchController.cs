@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     /// <summary>
     /// Controller which manages search index.
     /// </summary>
-    [Authorize]
+    [UserAuthorize]
     [ApiVersion("1.0")]
     [Route("api/search")]
     public class SearchController : Controller

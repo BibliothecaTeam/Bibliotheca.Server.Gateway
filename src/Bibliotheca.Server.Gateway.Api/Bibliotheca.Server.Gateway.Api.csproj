@@ -37,7 +37,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.16" />
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
-    <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Authorization" Version="1.1.6" />
+    <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Authorization" Version="1.1.7" />
     <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Diagnostics" Version="1.1.4" />
   </ItemGroup>
 

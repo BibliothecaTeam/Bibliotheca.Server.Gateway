@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +60,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="projectId">Project id.</param>
         /// <param name="branchName">Branch name.</param>
         /// <returns>List of documents.</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IList<BaseDocumentDto>))]
         public async Task<IActionResult> Get(string projectId, string branchName)
@@ -84,7 +85,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="fileUri">File uri. As a path separator to file is used ":". For example path "docs/folder/index.md"
         /// should be converted to "docs:folder:index.md".</param>
         /// <returns>Detailed information about document (with document body).</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpGet("{fileUri}")]
         [ProducesResponseType(200, Type = typeof(DocumentDto))]
         public async Task<IActionResult> Get(string projectId, string branchName, string fileUri)
@@ -110,7 +111,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="fileUri">File uri. As a path separator to file is used ":". For example path "docs/folder/index.md"
         /// should be converted to "docs:folder:index.md".</param>
         /// <returns>Document content.</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpGet("content/{fileUri}")]
         [ProducesResponseType(200, Type = typeof(FileContentResult))]
         public async Task<IActionResult> GetContent(string projectId, string branchName, string fileUri)
@@ -148,7 +149,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="branchName">Branch name.</param>
         /// <param name="document">Document data.</param>
         /// <returns>If created successfully endpoint returns 201 (Created).</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpPost]
         [ProducesResponseType(201)]
         public async Task<IActionResult> Post(string projectId, string branchName, [FromBody] DocumentDto document)
@@ -178,7 +179,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// should be converted to "docs:folder:index.md".</param>
         /// <param name="document">Document data.</param>
         /// <returns>If updated successfully endpoint returns 200 (Ok).</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpPut("{fileUri}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Put(string projectId, string branchName, string fileUri, [FromBody] DocumentDto document)
@@ -278,7 +279,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="fileUri">File uri. As a path separator to file is used ":". For example path "docs/folder/index.md"
         /// should be converted to "docs:folder:index.md".</param>
         /// <returns>If deleted successfully endpoint returns 200 (Ok).</returns>
-        [Authorize]
+        [UserAuthorize]
         [HttpDelete("{fileUri}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(string projectId, string branchName, string fileUri)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     /// <summary>
     /// Controller which can export markdown dokumentation to different files.
     /// </summary>
-    [Authorize]
+    [UserAuthorize]
     [ApiVersion("1.0")]
     [Route("api/projects/{projectId}/branches/{branchName}/export")]
     public class ExportController : Controller

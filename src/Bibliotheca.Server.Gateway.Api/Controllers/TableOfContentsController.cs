@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
     /// <summary>
     /// Controller which manages table of contents.
     /// </summary>
-    [Authorize]
+    [UserAuthorize]
     [ApiVersion("1.0")]
     [Route("api/projects/{projectId}/branches/{branchName}/toc")]
     public class TableOfContentsController : Controller
