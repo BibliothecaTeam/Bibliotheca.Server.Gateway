@@ -39,5 +39,11 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             var services = await _neutrinoClient.GetServicesByServiceTypeAsync(serviceType);
             return services.FirstOrDefault();
         }
+
+        public async Task<ServiceHealth> GetServiceHealthAsync(string serviceId)
+        {
+            var serviceHealth = await _neutrinoClient.GetLastServiceHealthAsync(serviceId);
+            return serviceHealth;
+        }
     }
 }

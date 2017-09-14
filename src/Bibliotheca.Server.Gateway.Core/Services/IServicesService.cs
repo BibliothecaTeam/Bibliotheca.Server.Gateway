@@ -9,5 +9,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task<IList<Service>> GetServicesAsync();
 
         Task<Service> GetServiceInstanceAsync(string serviceType);
+
+        Task<ServiceHealth> GetServiceHealthAsync(string serviceId);
     }
 }

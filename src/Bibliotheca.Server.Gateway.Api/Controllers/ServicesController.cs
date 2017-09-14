@@ -45,5 +45,21 @@ namespace Bibliotheca.Server.Gateway.Api
             var services = await _servicesService.GetServicesAsync();
             return services;
         }
+
+        /// <summary>
+        /// Get information about service health.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint returns information about service health.
+        /// </remarks>
+        /// <param name="serviceId">Service id.</param>
+        /// <returns>Information abouth service health.</returns>
+        [HttpGet("{serviceId}/current-health")]
+        [ProducesResponseType(200, Type = typeof(ServiceHealth))]
+        public async Task<ServiceHealth> GetHealth(string serviceId)
+        {
+            var serviceHealth = await _servicesService.GetServiceHealthAsync(serviceId);
+            return serviceHealth;
+        }
     }
 }
