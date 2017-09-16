@@ -142,6 +142,7 @@ namespace Bibliotheca.Server.Gateway.Api
             {
                 options.AddPolicy("CanAddProject", policy => policy.Requirements.Add(new HasAccessToCreateProjectRequirement()));
                 options.AddPolicy("CanManageUsers", policy => policy.Requirements.Add(new HasAccessToManageUsersRequirement()));
+                options.AddPolicy("CanManageGroups", policy => policy.Requirements.Add(new HasAccessToManageGroupsRequirement()));
             });
 
             services.AddScoped<IAuthorizationHandler, HasAccessToCreateProjectHandler>();
@@ -149,6 +150,7 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddScoped<IAuthorizationHandler, ProjectAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, UserAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, CanUploadBranchHandler>();
+            services.AddScoped<IAuthorizationHandler, HasAccessToManageGroupsHandler>();
 
             return services.AddApplicationModules(Configuration);
         }

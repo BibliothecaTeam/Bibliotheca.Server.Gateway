@@ -100,6 +100,10 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             builder.RegisterType<DocumentsClient>().As<IDocumentsClient>()
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
+
+            builder.RegisterType<GroupsClient>().As<IGroupsClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
         }
 
         private void RegisterIndexerClients(ContainerBuilder builder)

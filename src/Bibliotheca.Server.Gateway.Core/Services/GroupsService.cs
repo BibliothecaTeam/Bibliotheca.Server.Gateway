@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -9,34 +11,67 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 {
     public class GroupsService : IGroupsService
     {
-        private readonly IProjectsClient _projectsClient;
+        private readonly IGroupsClient _groupsClient;
 
         private readonly ICacheService _cacheService;
 
-        public GroupsService(IProjectsClient projectsClient, ICacheService cacheService)
+        public GroupsService(IGroupsClient groupsClient, ICacheService cacheService)
         {
-            _projectsClient = projectsClient;
+            _groupsClient = groupsClient;
             _cacheService = cacheService;
         }
 
-        public async Task<IList<string>> GetAvailableGroupsAsync()
+        public async Task<IList<GroupDto>> GetGroupsAsync()
         {
-            IList<string> groups = null;
-            if (!_cacheService.TryGetGroups(out groups))
+            if (!_cacheService.TryGetGroups(out IList<GroupDto> groups))
             {
-                var projects = await _projectsClient.Get();
-
-                groups = new List<string>();
-                foreach (var project in projects)
-                {
-                    groups.Add(project.Group);
-                }
-
-                groups = groups.OrderBy(x => x).Distinct().ToList();
+                groups = await _groupsClient.Get();
                 _cacheService.AddGroups(groups);
             }
 
             return groups;
+        }
+
+        public async Task<GroupDto> GetGroupAsync(string groupName)
+        {
+            var group = await _groupsClient.Get(groupName);
+            return group;
+        }
+
+        public async Task CreateGroupAsync(GroupDto group)
+        {
+            var result = await _groupsClient.Post(group);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new CreateGroupException("During creating group error occurs: " + content);
+            }
+
+            _cacheService.ClearGroupsCache();
+        }
+
+        public async Task UpdateGroupAsync(string groupName, GroupDto group)
+        {
+            var result = await _groupsClient.Put(groupName, group);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new UpdateGroupException("During updating group error occurs: " + content);
+            }
+
+            _cacheService.ClearGroupsCache();
+        }
+
+        public async Task DeleteGroupAsync(string groupName)
+        {
+            var result = await _groupsClient.Delete(groupName);
+            if(!result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                throw new DeleteGroupException("During deleting group error occurs: " + content);
+            }
+
+            _cacheService.ClearGroupsCache();
         }
     }
 }

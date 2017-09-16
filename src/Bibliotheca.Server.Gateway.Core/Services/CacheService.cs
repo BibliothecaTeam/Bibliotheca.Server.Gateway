@@ -88,14 +88,14 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             return $"DocumentsService#{projectId}#{branchName}#{fileUri}";
         }
 
-        public bool TryGetGroups(out IList<string> tags)
+        public bool TryGetGroups(out IList<GroupDto> groups)
         {
-            return _memoryCache.TryGetValue(_groupsCacheKey, out tags);
+            return _memoryCache.TryGetValue(_groupsCacheKey, out groups);
         }
 
-        public void AddGroups(IList<string> tags)
+        public void AddGroups(IList<GroupDto> groups)
         {
-            _memoryCache.Set(_groupsCacheKey, tags,
+            _memoryCache.Set(_groupsCacheKey, groups,
                 new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
 

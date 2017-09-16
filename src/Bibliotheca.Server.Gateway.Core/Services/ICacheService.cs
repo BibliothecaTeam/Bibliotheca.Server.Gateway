@@ -19,8 +19,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         void AddDocument(string projectId, string branchName, string fileUri, DocumentDto documentDto);
         void ClearDocumentCache(string projectId, string branchName, string fileUri);
 
-        bool TryGetGroups(out IList<string> tags);
-        void AddGroups(IList<string> tags);
+        bool TryGetGroups(out IList<GroupDto> groups);
+        void AddGroups(IList<GroupDto> groups);
         void ClearGroupsCache();
 
         bool TryGetProjects(out IList<ProjectDto> projects);
