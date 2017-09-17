@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Neutrino.Entities.Model;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -34,5 +35,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         bool TryGetUsers(out IList<UserDto> users);
         void AddUsers(IList<UserDto> users);
         void ClearUsersCache();
+
+        bool TryGetService(string serviceType, out Service service);
+        void AddService(string serviceType, Service service);
     }
 }

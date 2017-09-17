@@ -154,17 +154,25 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         {
             var logger = c.Resolve<ILogger<InjectionModule>>();
             try
-            {    
-                logger.LogInformation($"Getting address for '{serviceTag}' microservice.");
+            {   
+                logger.LogInformation($"Getting address for '{serviceTag}' microservice from cache.");
+                var cacheService = c.Resolve<ICacheService>();
 
-                var servicesService = c.Resolve<IServicesService>();
-                var instance = servicesService.GetServiceInstanceAsync(serviceTag).GetAwaiter().GetResult();
-                if (instance == null)
+                if(!cacheService.TryGetService(serviceTag, out Neutrino.Entities.Model.Service instance))
                 {
-                    logger.LogWarning($"Address for '{serviceTag}' microservice wasn't retrieved.");
-                    return null;
-                }
+                    logger.LogInformation($"Getting address for '{serviceTag}' microservice from discovery.");
 
+                    var servicesService = c.Resolve<IServicesService>();
+                    instance = servicesService.GetServiceInstanceAsync(serviceTag).GetAwaiter().GetResult();
+
+                    if (instance == null)
+                    {
+                        logger.LogWarning($"Address for '{serviceTag}' microservice wasn't retrieved from discovery.");
+                        return null;
+                    }
+
+                    cacheService.AddService(serviceTag, instance);
+                }
                 
                 var address = instance.Address.AppendPathSegment("api/");
                 logger.LogInformation($"Address for '{serviceTag}' microservice was retrieved ({address}).");

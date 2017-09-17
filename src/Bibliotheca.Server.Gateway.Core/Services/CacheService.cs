@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Microsoft.Extensions.Caching.Memory;
+using Neutrino.Entities.Model;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -16,6 +17,8 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         private const string _allProjectsInformationCacheKey = "ProjectsService";
 
         private const string _allUsersInformationCacheKey = "UsersService";
+
+        private const string _servicesAddressCacheKey = "ServicesAddress";
 
         private readonly IMemoryCache _memoryCache;
 
@@ -158,6 +161,20 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         public void ClearUsersCache()
         {
             _memoryCache.Remove(_allUsersInformationCacheKey);
+        }
+
+        public bool TryGetService(string serviceType, out Service service)
+        {
+            var key = $"{_servicesAddressCacheKey}#{serviceType}";
+            return _memoryCache.TryGetValue(key, out service);
+        }
+
+        public void AddService(string serviceType, Service service)
+        {
+            var key = $"{_servicesAddressCacheKey}#{serviceType}";
+
+            _memoryCache.Set(key, service,
+                new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
         }
     }
 }
