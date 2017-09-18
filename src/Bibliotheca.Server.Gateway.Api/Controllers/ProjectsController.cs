@@ -62,6 +62,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         {
             var userId = User.Identity.Name.ToLower();
             var projects = await _projectsService.GetProjectsAsync(filter, userId);
+
+            await AssignBranchesToProjects(projects);
             return projects;
         }
 
@@ -89,6 +91,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
+            await AssignBranchesToProject(projectFromStorage);
             return new ObjectResult(projectFromStorage);
         }
 
@@ -202,6 +205,24 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
             await _projectsService.DeleteProjectAsync(projectId);
             return Ok();
+        }
+
+        private async Task AssignBranchesToProjects(FilteredResutsDto<ProjectDto> projects)
+        {
+            foreach (var project in projects.Results)
+            {
+                await AssignBranchesToProject(project);
+            }
+        }
+
+        private async Task AssignBranchesToProject(ProjectDto project)
+        {
+            var branches = await _branchesService.GetBranchesAsync(project.Id);
+            project.Branches = branches;
+            foreach (var branch in project.Branches)
+            {
+                branch.MkDocsYaml = null;
+            }
         }
     }
 }

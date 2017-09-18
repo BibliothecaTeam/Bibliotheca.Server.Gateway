@@ -38,5 +38,7 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 
         [JsonIgnore]
         public List<string> Owners { get; set; }
+
+        public IList<ExtendedBranchDto> Branches { get; set; }
     }
 }
