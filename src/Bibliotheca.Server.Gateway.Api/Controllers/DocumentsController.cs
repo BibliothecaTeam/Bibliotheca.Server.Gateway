@@ -28,6 +28,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IAuthorizationService _authorizationService;
 
+        private readonly IProjectsService _projectsService;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -36,18 +38,21 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="branchService">Branch service.</param>
         /// <param name="searchService">Search service.</param>
         /// <param name="authorizationService">Authorization service.</param>
+        /// <param name="projectsService">Projects service.</param>
         public DocumentsController(
             IDocumentsService documentsService, 
             IMarkdownService markdownService, 
             IBranchesService branchService,
             ISearchService searchService,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IProjectsService projectsService)
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
             _branchService = branchService;
             _searchService = searchService;
             _authorizationService = authorizationService;
+            _projectsService = projectsService;
         }
 
         /// <summary>
@@ -227,7 +232,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
-            await _searchService.RefreshIndexAsync(projectId, branchName);
+
+            var project = await _projectsService.GetProjectAsync(projectId);
+            if(!project.IsAccessLimited) 
+            {
+                await _searchService.RefreshIndexAsync(projectId, branchName);
+            }
+
             return Ok();
         }
 
@@ -263,7 +274,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
             
             await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);
-            await _searchService.RefreshIndexAsync(projectId, branchName);
+
+            var project = await _projectsService.GetProjectAsync(projectId);
+            if(!project.IsAccessLimited) 
+            {
+                await _searchService.RefreshIndexAsync(projectId, branchName);
+            }
+
             return Ok();
         }
 

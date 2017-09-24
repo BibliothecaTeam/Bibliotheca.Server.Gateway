@@ -139,6 +139,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             await _projectsService.UpdateProjectAsync(projectId, project);
+            await RefreshSearchIndexWhenProjectVisibilityWasChanged(projectId, project, projectFromStorage);
             return Ok();
         }
 
@@ -223,6 +224,23 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             {
                 branch.MkDocsYaml = null;
             }
+        }
+
+        private async Task RefreshSearchIndexWhenProjectVisibilityWasChanged(string projectId, ProjectDto project, ProjectDto projectFromStorage)
+        {
+            if (ProjectVisibilityWasChangeToPublic(project, projectFromStorage))
+            {
+                var branches = await _branchesService.GetBranchesAsync(projectId);
+                foreach (var branch in branches)
+                {
+                    await _searchService.RefreshIndexAsync(projectId, branch.Name);
+                }
+            }
+        }
+
+        private bool ProjectVisibilityWasChangeToPublic(ProjectDto project, ProjectDto projectFromStorage)
+        {
+            return projectFromStorage.IsAccessLimited && !project.IsAccessLimited;
         }
     }
 }
