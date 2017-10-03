@@ -15,6 +15,10 @@ using Bibliotheca.Server.Gateway.Core.Services;
 using System;
 using Microsoft.Extensions.Logging;
 using Flurl;
+using Bibliotheca.Server.Gateway.Core.GraphQL;
+using GraphQL.Types;
+using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
+using GraphQL;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -32,6 +36,9 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         protected override void Load(ContainerBuilder builder)
         {
             RegisterServices(builder);
+            RegisterGraphQLSchema(builder);
+            RegisterGraphQLTypes(builder);
+            RegisterGraphQLQueries(builder);
             RegisterDepositoryClients(builder);
             RegisterIndexerClients(builder);
             RegisterCrawlerClients(builder);
@@ -47,6 +54,35 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+        }
+
+        private void RegisterGraphQLQueries(ContainerBuilder builder)
+        {
+            builder.RegisterType<DocumentExecuter>().As<IDocumentExecuter>();
+            builder.RegisterType<GraphQLQuery>().AsSelf();
+        }
+
+        private void RegisterGraphQLTypes(ContainerBuilder builder)
+        {
+            var serviceAssembly = typeof(InjectionModule).GetTypeInfo().Assembly;
+
+            builder.RegisterAssemblyTypes(serviceAssembly)
+                .Where(t => t.GetInterfaces()
+                    .Any(i => i.IsAssignableFrom(typeof (IGraphQLType))))
+                .AsSelf();
+        }
+
+        private void RegisterGraphQLSchema(ContainerBuilder builder)
+        {
+            builder.RegisterType<GraphQLSchema>().As<ISchema>();
+            builder.Register<Func<Type, GraphType>>(c => 
+            {
+                var context = c.Resolve<IComponentContext>();
+                return t => {
+                    var res = context.Resolve(t);
+                    return (GraphType)res;
+                };
+            });
         }
 
         private void RegisterAuthorizationClients(ContainerBuilder builder)

@@ -7,7 +7,6 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.DependencyInjections;
 using Bibliotheca.Server.Mvc.Middleware.Diagnostics.Exceptions;
@@ -25,7 +24,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Net.Http;
 using Neutrino.AspNetCore.Client;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
