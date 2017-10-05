@@ -181,7 +181,7 @@ namespace Bibliotheca.Server.Gateway.Api
                 RecurringJob.AddOrUpdate<IServiceDiscoveryRegistrationJob>("register-service", x => x.RegisterServiceAsync(null), Cron.Minutely);
             }
 
-            app.UseExceptionHandler();
+            app.UseErrorHandler();
 
             app.UseCors("AllowAllOrigins");
 
