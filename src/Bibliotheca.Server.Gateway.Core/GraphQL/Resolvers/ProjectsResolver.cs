@@ -27,16 +27,35 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
             graphQLQuery.Field<ProjectsResultsType>(
                 "projects",
                 arguments: new QueryArguments(
-                    new QueryArgument<ListGraphType<StringGraphType>> { Name = "groups", Description = "project's groups" },
-                    new QueryArgument<ListGraphType<StringGraphType>> { Name = "tags", Description = "project's tags" }
+                    new QueryArgument<ListGraphType<StringGraphType>> { Name = "groups", Description = "Limit projects by project group." },
+                    new QueryArgument<ListGraphType<StringGraphType>> { Name = "tags", Description = "Limit projects by project tags." },
+                    new QueryArgument<StringGraphType> { Name = "query", Description = "Search projects which contains specific query." },
+                    new QueryArgument<IntGraphType> { Name = "page", Description = "Number of page to show." },
+                    new QueryArgument<IntGraphType> { Name = "limit", Description = "Number of rows to show on page." }
                 ),
                 resolve: context => { 
                     var groups = context.GetArgument<IList<string>>("groups");
                     var tags = context.GetArgument<IList<string>>("tags");
+                    var query = context.GetArgument<string>("query");
+
+                    int page = 0;
+                    if(context.Arguments["page"] != null)
+                    {
+                        page = context.GetArgument<int>("page", 10);
+                    }
+
+                    int limit = 0;
+                    if(context.Arguments["limit"] != null)
+                    {
+                        limit = context.GetArgument<int>("limit", 10);
+                    }
+
                     var user = context.UserContext as ClaimsPrincipal;
                     groups = groups.Count == 0 ? null : groups;
                     tags = tags.Count == 0 ? null : tags;
-                    return _projectsService.GetProjectsAsync(new ProjectsFilterDto { Groups = groups, Tags = tags }, user.Identity.Name);
+                    return _projectsService.GetProjectsAsync(new ProjectsFilterDto { 
+                        Groups = groups, Tags = tags, Query = query, Page = page, Limit = limit }
+                        , user.Identity.Name);
                 }
             );
 
