@@ -40,7 +40,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GraphQLParameter query)
         {
-            var executionOptions = new ExecutionOptions { Schema = _schema, Query = query.Query };
+            var executionOptions = new ExecutionOptions { Schema = _schema, Query = query.Query, UserContext = User };
             var result = await _documentExecuter.ExecuteAsync(executionOptions).ConfigureAwait(false);
 
             if (result.Errors?.Count > 0)

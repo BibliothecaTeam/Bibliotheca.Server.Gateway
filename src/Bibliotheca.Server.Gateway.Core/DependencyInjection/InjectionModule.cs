@@ -39,6 +39,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             RegisterGraphQLSchema(builder);
             RegisterGraphQLTypes(builder);
             RegisterGraphQLQueries(builder);
+            RegisterGraphQLResolvers(builder);
             RegisterDepositoryClients(builder);
             RegisterIndexerClients(builder);
             RegisterCrawlerClients(builder);
@@ -83,6 +84,16 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     return (GraphType)res;
                 };
             });
+        }
+
+        private void RegisterGraphQLResolvers(ContainerBuilder builder)
+        {
+            var serviceAssembly = typeof(InjectionModule).GetTypeInfo().Assembly;
+
+            builder.RegisterAssemblyTypes(serviceAssembly)
+                .Where(t => t.Name.EndsWith("Resolver"))
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
 
         private void RegisterAuthorizationClients(ContainerBuilder builder)
