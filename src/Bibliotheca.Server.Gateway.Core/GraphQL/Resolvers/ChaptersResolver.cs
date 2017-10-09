@@ -16,7 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseListGraphType<ChapterItemType, ChapterItemDto>>(
+            graphQLQuery.Field<ResponseListGraphType<ChapterItemType>>(
                 "chapters",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" },

@@ -5,31 +5,31 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
     public class Resolver
     {
-        public Response<T> Response<T>(T data)
+        public Response Response(object data)
         {
-            return new Response<T>(data);
+            return new Response(data);
         }
 
-        public ResponseList<T> ResponseList<T>(IList<T> data)
+        public ResponseList ResponseList(object data)
         {
-            return new ResponseList<T>(data);
+            return new ResponseList(data);
         }
 
-        public Response<T> Error<T>(GraphQLError error)
+        public Response Error(GraphQLError error)
         {
-            return new Response<T>(error.StatusCode, error.ErrorMessage);
+            return new Response(error.StatusCode, error.ErrorMessage);
         }
 
-        public Response<T> AccessDeniedError<T>()
+        public Response AccessDeniedError()
         {
             var error = new AccessDeniedError();
-            return new Response<T>(error.StatusCode, error.ErrorMessage);
+            return new Response(error.StatusCode, error.ErrorMessage);
         }
 
-        public Response<T> NotFoundError<T>(string id)
+        public Response NotFoundError(string id)
         {
             var error = new NotFoundError(id);
-            return new Response<T>(error.StatusCode, error.ErrorMessage);
+            return new Response(error.StatusCode, error.ErrorMessage);
         }
     }
 }

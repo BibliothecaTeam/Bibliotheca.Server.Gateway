@@ -16,7 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseListGraphType<StringGraphType, string>>(
+            graphQLQuery.Field<ResponseListGraphType<StringGraphType>>(
                 "tags",
                 resolve: context => { 
                     var tags = _tagsService.GetAvailableTagsAsync().GetAwaiter().GetResult();

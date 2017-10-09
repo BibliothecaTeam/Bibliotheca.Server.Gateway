@@ -73,15 +73,15 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     .Any(i => i.IsAssignableFrom(typeof (IGraphQLType))))
                 .AsSelf();
 
-            builder.RegisterType<ResponseGraphType<ProjectType, ProjectDto>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<BranchType, ExtendedBranchDto>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<StringGraphType, string>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<ProjectsResultsType, FilteredResutsDto<ProjectDto>>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<ProjectType>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<BranchType>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<StringGraphType>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<ProjectsResultsType>>().AsSelf();
 
-            builder.RegisterType<ResponseListGraphType<BranchType, ExtendedBranchDto>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<ChapterItemType, ChapterItemDto>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<GroupType, GroupDto>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<StringGraphType, string>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<BranchType>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<ChapterItemType>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<GroupType>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<StringGraphType>>().AsSelf();
         }
 
         private void RegisterGraphQLSchema(ContainerBuilder builder)

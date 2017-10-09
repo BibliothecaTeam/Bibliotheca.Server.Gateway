@@ -17,7 +17,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseListGraphType<BranchType, ExtendedBranchDto>>(
+            graphQLQuery.Field<ResponseListGraphType<BranchType>>(
                 "branches",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" }
@@ -30,7 +30,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 }
             );
 
-            graphQLQuery.Field<ResponseGraphType<BranchType, ExtendedBranchDto>>(
+            graphQLQuery.Field<ResponseGraphType<BranchType>>(
                 "branch",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" },
@@ -43,7 +43,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
                     if(branch == null) 
                     {
-                        return NotFoundError<ExtendedBranchDto>(branchName);
+                        return NotFoundError(branchName);
                     }
 
                     return Response(branch);

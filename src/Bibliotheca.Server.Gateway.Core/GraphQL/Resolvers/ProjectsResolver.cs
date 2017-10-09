@@ -25,7 +25,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseGraphType<ProjectsResultsType, FilteredResutsDto<ProjectDto>>>(
+            graphQLQuery.Field<ResponseGraphType<ProjectsResultsType>>(
                 "projects",
                 arguments: new QueryArguments(
                     new QueryArgument<ListGraphType<StringGraphType>> { Name = "groups", Description = "Limit projects by project group." },
@@ -70,7 +70,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 }
             );
 
-            graphQLQuery.Field<ResponseGraphType<ProjectType, ProjectDto>>(
+            graphQLQuery.Field<ResponseGraphType<ProjectType>>(
                 "project",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id", Description = "id of the project" }
@@ -79,14 +79,14 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var id = context.GetArgument<string>("id");
                     var project = _projectsService.GetProjectAsync(id).GetAwaiter().GetResult();
                     if(project == null) {
-                        return NotFoundError<ProjectDto>(id);
+                        return NotFoundError(id);
                     }
 
                     var user = context.UserContext as ClaimsPrincipal;
                     var authorization = _authorizationService.AuthorizeAsync(user, project, Operations.Read).GetAwaiter().GetResult();
                     if (!authorization.Succeeded)
                     {
-                        return AccessDeniedError<ProjectDto>();
+                        return AccessDeniedError();
                     }
 
                     return Response(project);

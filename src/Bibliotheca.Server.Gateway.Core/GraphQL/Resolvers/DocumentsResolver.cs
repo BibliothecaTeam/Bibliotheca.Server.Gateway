@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseGraphType<StringGraphType, string>>(
+            graphQLQuery.Field<ResponseGraphType<StringGraphType>>(
                 "document",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" },
@@ -35,7 +35,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var document = _documentsService.GetDocumentAsync(projectId, branchName, fileUri).GetAwaiter().GetResult();
                     if(document == null) 
                     {
-                        return NotFoundError<string>(fileUri);
+                        return NotFoundError(fileUri);
                     }
 
                     byte[] content = document.Content;
@@ -52,7 +52,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                         return Response(base64Html);
                     }
 
-                    return Error<string>(new FileTypeNotSupportedError(document.ConentType));
+                    return Error(new FileTypeNotSupportedError(document.ConentType));
                 }
             );
         }

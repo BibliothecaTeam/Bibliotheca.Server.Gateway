@@ -2,15 +2,15 @@ using System.Collections.Generic;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL
 {
-    public class ResponseList<T>
+    public class ResponseList
     {
-        public IList<T> Data { get; set; }
+        public object Data { get; set; }
 
         public string StatusCode { get; set; }
 
         public string ErrorMessage { get; set; }
 
-        public ResponseList(IList<T> data)
+        public ResponseList(object data)
         {
             StatusCode = "Success";
             Data = data;

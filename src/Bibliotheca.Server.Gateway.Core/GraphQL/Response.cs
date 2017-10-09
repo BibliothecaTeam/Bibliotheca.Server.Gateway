@@ -1,14 +1,14 @@
 namespace Bibliotheca.Server.Gateway.Core.GraphQL
 {
-    public class Response<T>
+    public class Response
     {
-        public T Data { get; set; }
+        public object Data { get; set; }
 
         public string StatusCode { get; set; }
 
         public string ErrorMessage { get; set; }
 
-        public Response(T data)
+        public Response(object data)
         {
             StatusCode = "Success";
             Data = data;

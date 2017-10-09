@@ -16,7 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ResponseListGraphType<GroupType, GroupDto>>(
+            graphQLQuery.Field<ResponseListGraphType<GroupType>>(
                 "groups",
                 resolve: context => { 
                     var groups = _groupsService.GetGroupsAsync().GetAwaiter().GetResult();
