@@ -79,7 +79,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var id = context.GetArgument<string>("id");
                     var project = _projectsService.GetProjectAsync(id).GetAwaiter().GetResult();
                     if(project == null) {
-                        return NotFoundError<ProjectDto>();
+                        return NotFoundError<ProjectDto>(id);
                     }
 
                     var user = context.UserContext as ClaimsPrincipal;

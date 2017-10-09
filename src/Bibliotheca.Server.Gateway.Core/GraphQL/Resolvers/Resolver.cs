@@ -26,9 +26,9 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
             return new Response<T>(error.StatusCode, error.ErrorMessage);
         }
 
-        public Response<T> NotFoundError<T>()
+        public Response<T> NotFoundError<T>(string id)
         {
-            var error = new NotFoundError();
+            var error = new NotFoundError(id);
             return new Response<T>(error.StatusCode, error.ErrorMessage);
         }
     }

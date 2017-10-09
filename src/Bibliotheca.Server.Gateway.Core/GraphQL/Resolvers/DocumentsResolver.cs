@@ -35,7 +35,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var document = _documentsService.GetDocumentAsync(projectId, branchName, fileUri).GetAwaiter().GetResult();
                     if(document == null) 
                     {
-                        return NotFoundError<string>();
+                        return NotFoundError<string>(fileUri);
                     }
 
                     byte[] content = document.Content;

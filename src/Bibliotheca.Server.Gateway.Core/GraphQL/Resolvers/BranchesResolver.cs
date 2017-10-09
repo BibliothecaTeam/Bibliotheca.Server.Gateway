@@ -43,7 +43,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
                     if(branch == null) 
                     {
-                        return NotFoundError<ExtendedBranchDto>();
+                        return NotFoundError<ExtendedBranchDto>(branchName);
                     }
 
                     return Response(branch);
