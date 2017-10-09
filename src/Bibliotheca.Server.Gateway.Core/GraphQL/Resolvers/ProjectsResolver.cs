@@ -59,26 +59,26 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 }
             );
 
-            graphQLQuery.Field<ProjectType>(
+            graphQLQuery.Field<ProjectResponseType>(
                 "project",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id", Description = "id of the project" }
                 ),
                 resolve: context => { 
                     var id = context.GetArgument<string>("id");
-                    var project = _projectsService.GetProjectAsync(id);
+                    var project = _projectsService.GetProjectAsync(id).GetAwaiter().GetResult();
                     if(project == null) {
-                        return null;
+                        return new ResponseDto<ProjectDto>("NotFound", "Project not found.");
                     }
 
                     var user = context.UserContext as ClaimsPrincipal;
                     var authorization = _authorizationService.AuthorizeAsync(user, project, Operations.Read).GetAwaiter().GetResult();
                     if (!authorization.Succeeded)
                     {
-                        return null;
+                        return new ResponseDto<ProjectDto>("AccessDenied", "Access denied.");
                     }
 
-                    return project;
+                    return new ResponseDto<ProjectDto>(project);
                 }
             );
         }
