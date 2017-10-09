@@ -1,3 +1,4 @@
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.Services;
 using GraphQL.Types;
@@ -15,10 +16,11 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ListGraphType<GroupType>>(
+            graphQLQuery.Field<ResponseListGraphType<GroupType, GroupDto>>(
                 "groups",
                 resolve: context => { 
-                    return _groupsService.GetGroupsAsync();
+                    var groups = _groupsService.GetGroupsAsync().GetAwaiter().GetResult();
+                    return new ResponseListDto<GroupDto>(groups);
                 }
             );
         }

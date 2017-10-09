@@ -24,7 +24,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ProjectsResultsType>(
+            graphQLQuery.Field<ResponseGraphType<ProjectsResultsType, FilteredResutsDto<ProjectDto>>>(
                 "projects",
                 arguments: new QueryArguments(
                     new QueryArgument<ListGraphType<StringGraphType>> { Name = "groups", Description = "Limit projects by project group." },
@@ -53,13 +53,23 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var user = context.UserContext as ClaimsPrincipal;
                     groups = groups.Count == 0 ? null : groups;
                     tags = tags.Count == 0 ? null : tags;
-                    return _projectsService.GetProjectsAsync(new ProjectsFilterDto { 
-                        Groups = groups, Tags = tags, Query = query, Page = page, Limit = limit }
-                        , user.Identity.Name);
+                    
+                    var projects = _projectsService.GetProjectsAsync(
+                        new ProjectsFilterDto { 
+                            Groups = groups, 
+                            Tags = tags, 
+                            Query = query, 
+                            Page = page, 
+                            Limit = limit 
+                        }, 
+                        user.Identity.Name
+                    ).GetAwaiter().GetResult();
+
+                    return new ResponseDto<FilteredResutsDto<ProjectDto>>(projects);
                 }
             );
 
-            graphQLQuery.Field<ProjectResponseType>(
+            graphQLQuery.Field<ResponseGraphType<ProjectType, ProjectDto>>(
                 "project",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "id", Description = "id of the project" }

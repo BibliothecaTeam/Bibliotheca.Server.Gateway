@@ -8,7 +8,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Types
         public ChapterItemType()
         {
             Field(x => x.Name).Description("The chapter name.");
-            Field(x => x.Url).Description("The url to the chapter.");
+            Field(x => x.Url, nullable: true).Description("The url to the chapter.");
             
             Field<ListGraphType<ChapterItemType>>(
                 "children",

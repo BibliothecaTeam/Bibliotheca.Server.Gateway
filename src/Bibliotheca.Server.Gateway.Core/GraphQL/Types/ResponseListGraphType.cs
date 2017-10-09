@@ -9,16 +9,16 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Types
 {
-    public class ResponseGraphType<TGraphType, TSourceType> : ObjectGraphType<ResponseDto<TSourceType>> where TGraphType : GraphType
+    public class ResponseListGraphType<TGraphType, TSourceType> : ObjectGraphType<ResponseListDto<TSourceType>> where TGraphType : GraphType
     {
-        public ResponseGraphType()
+        public ResponseListGraphType()
         {
-            Name = $"Response{typeof(TGraphType).Name}";
+            Name = $"ResponseList{typeof(TGraphType).Name}";
 
             Field(x => x.StatusCode, nullable: true).Description("Status code of the request.");
             Field(x => x.ErrorMessage, nullable: true).Description("Error message if requests fails.");
 
-            Field<TGraphType>(
+            Field<ListGraphType<TGraphType>>(
                 "data",
                 "Project data returned by query.",
                 resolve: context => context.Source.Data

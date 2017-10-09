@@ -19,6 +19,7 @@ using Bibliotheca.Server.Gateway.Core.GraphQL;
 using GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using GraphQL;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -71,6 +72,16 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .Where(t => t.GetInterfaces()
                     .Any(i => i.IsAssignableFrom(typeof (IGraphQLType))))
                 .AsSelf();
+
+            builder.RegisterType<ResponseGraphType<ProjectType, ProjectDto>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<BranchType, BranchDto>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<StringGraphType, string>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<ProjectsResultsType, FilteredResutsDto<ProjectDto>>>().AsSelf();
+
+            builder.RegisterType<ResponseListGraphType<BranchType, ExtendedBranchDto>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<ChapterItemType, ChapterItemDto>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<GroupType, GroupDto>>().AsSelf();
+            builder.RegisterType<ResponseListGraphType<StringGraphType, string>>().AsSelf();
         }
 
         private void RegisterGraphQLSchema(ContainerBuilder builder)

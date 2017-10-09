@@ -1,3 +1,4 @@
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.Services;
 using GraphQL.Types;
@@ -15,7 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ListGraphType<ChapterItemType>>(
+            graphQLQuery.Field<ResponseListGraphType<ChapterItemType, ChapterItemDto>>(
                 "chapters",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" },
@@ -24,7 +25,9 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 resolve: context => { 
                     var projectId = context.GetArgument<string>("projectId");
                     var branchName = context.GetArgument<string>("branchName");
-                    return _tableOfContentsService.GetTableOfConents(projectId, branchName);
+                    var chapters =  _tableOfContentsService.GetTableOfConents(projectId, branchName).GetAwaiter().GetResult();
+
+                    return new ResponseListDto<ChapterItemDto>(chapters);
                 }
             );
         }

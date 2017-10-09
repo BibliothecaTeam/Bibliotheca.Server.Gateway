@@ -1,3 +1,4 @@
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.Services;
 using GraphQL.Types;
@@ -15,10 +16,11 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 
         public void Resolve(GraphQLQuery graphQLQuery)
         {
-            graphQLQuery.Field<ListGraphType<TagType>>(
+            graphQLQuery.Field<ResponseListGraphType<StringGraphType, string>>(
                 "tags",
                 resolve: context => { 
-                    return _tagsService.GetAvailableTagsAsync();
+                    var tags = _tagsService.GetAvailableTagsAsync().GetAwaiter().GetResult();
+                    return new ResponseListDto<string>(tags);
                 }
             );
         }
