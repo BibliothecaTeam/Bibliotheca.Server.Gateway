@@ -5,7 +5,7 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class GroupsResolver : IGroupsResolver
+    public class GroupsResolver : Resolver, IGroupsResolver
     {
         private readonly IGroupsService _groupsService;
 
@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 "groups",
                 resolve: context => { 
                     var groups = _groupsService.GetGroupsAsync().GetAwaiter().GetResult();
-                    return new ResponseListDto<GroupDto>(groups);
+                    return ResponseList(groups);
                 }
             );
         }

@@ -5,7 +5,7 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class ChaptersResolver : IChaptersResolver
+    public class ChaptersResolver : Resolver, IChaptersResolver
     {
         private readonly ITableOfContentsService _tableOfContentsService;
 
@@ -27,7 +27,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var branchName = context.GetArgument<string>("branchName");
                     var chapters =  _tableOfContentsService.GetTableOfConents(projectId, branchName).GetAwaiter().GetResult();
 
-                    return new ResponseListDto<ChapterItemDto>(chapters);
+                    return ResponseList(chapters);
                 }
             );
         }

@@ -6,7 +6,7 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class BranchesResolver : IBranchesResolver
+    public class BranchesResolver : Resolver, IBranchesResolver
     {
         private readonly IBranchesService _branchesService;
 
@@ -26,11 +26,11 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var projectId = context.GetArgument<string>("projectId");
                     var list = _branchesService.GetBranchesAsync(projectId).GetAwaiter().GetResult();
 
-                    return new ResponseListDto<ExtendedBranchDto>(list);
+                    return ResponseList(list);
                 }
             );
 
-            graphQLQuery.Field<ResponseGraphType<BranchType, BranchDto>>(
+            graphQLQuery.Field<ResponseGraphType<BranchType, ExtendedBranchDto>>(
                 "branch",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "projectId", Description = "id of the project" },
@@ -41,7 +41,12 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var branchName = context.GetArgument<string>("branchName");
                     var branch = _branchesService.GetBranchAsync(projectId, branchName).GetAwaiter().GetResult();
 
-                    return new ResponseDto<BranchDto>(branch);
+                    if(branch == null) 
+                    {
+                        return NotFoundError<ExtendedBranchDto>();
+                    }
+
+                    return Response(branch);
                 }
             );
         }

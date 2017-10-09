@@ -1,20 +1,22 @@
-namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
+using System.Collections.Generic;
+
+namespace Bibliotheca.Server.Gateway.Core.GraphQL
 {
-    public class ResponseDto<T>
+    public class ResponseList<T>
     {
-        public T Data { get; set; }
+        public IList<T> Data { get; set; }
 
         public string StatusCode { get; set; }
 
         public string ErrorMessage { get; set; }
 
-        public ResponseDto(T data)
+        public ResponseList(IList<T> data)
         {
             StatusCode = "Success";
             Data = data;
         }
 
-        public ResponseDto(string statusCode, string errorMessage)
+        public ResponseList(string statusCode, string errorMessage)
         {
             StatusCode = statusCode;
             ErrorMessage = errorMessage;

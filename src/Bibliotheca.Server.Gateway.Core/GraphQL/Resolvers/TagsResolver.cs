@@ -5,7 +5,7 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class TagsResolver : ITagsResolver
+    public class TagsResolver : Resolver, ITagsResolver
     {
         private readonly ITagsService _tagsService;
 
@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 "tags",
                 resolve: context => { 
                     var tags = _tagsService.GetAvailableTagsAsync().GetAwaiter().GetResult();
-                    return new ResponseListDto<string>(tags);
+                    return ResponseList(tags);
                 }
             );
         }

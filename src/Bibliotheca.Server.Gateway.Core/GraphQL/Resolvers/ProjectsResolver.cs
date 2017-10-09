@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using System;
+using Bibliotheca.Server.Gateway.Core.GraphQL.Errors;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class ProjectsResolver : IProjectsResolver
+    public class ProjectsResolver : Resolver, IProjectsResolver
     {
         private readonly IProjectsService _projectsService;
         private readonly IAuthorizationService _authorizationService;
@@ -65,7 +66,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                         user.Identity.Name
                     ).GetAwaiter().GetResult();
 
-                    return new ResponseDto<FilteredResutsDto<ProjectDto>>(projects);
+                    return Response(projects);
                 }
             );
 
@@ -78,17 +79,17 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var id = context.GetArgument<string>("id");
                     var project = _projectsService.GetProjectAsync(id).GetAwaiter().GetResult();
                     if(project == null) {
-                        return new ResponseDto<ProjectDto>("NotFound", "Project not found.");
+                        return NotFoundError<ProjectDto>();
                     }
 
                     var user = context.UserContext as ClaimsPrincipal;
                     var authorization = _authorizationService.AuthorizeAsync(user, project, Operations.Read).GetAwaiter().GetResult();
                     if (!authorization.Succeeded)
                     {
-                        return new ResponseDto<ProjectDto>("AccessDenied", "Access denied.");
+                        return AccessDeniedError<ProjectDto>();
                     }
 
-                    return new ResponseDto<ProjectDto>(project);
+                    return Response(project);
                 }
             );
         }

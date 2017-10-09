@@ -1,12 +1,13 @@
 using System;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using Bibliotheca.Server.Gateway.Core.GraphQL.Errors;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.Services;
 using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
 {
-    public class DocumentsResolver : IDocumentsResolver
+    public class DocumentsResolver : Resolver, IDocumentsResolver
     {
         private readonly IDocumentsService _documentsService;
         private readonly IMarkdownService _markdownService;
@@ -34,7 +35,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var document = _documentsService.GetDocumentAsync(projectId, branchName, fileUri).GetAwaiter().GetResult();
                     if(document == null) 
                     {
-                        return new ResponseDto<string>("DocumentNotFound", $"Document '{fileUri}' not found.");
+                        return NotFoundError<string>();
                     }
 
                     byte[] content = document.Content;
@@ -48,10 +49,10 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                         content = System.Text.Encoding.UTF8.GetBytes(html);
                         var base64Html = Convert.ToBase64String(content);
 
-                        return new ResponseDto<string>(base64Html);
+                        return Response(base64Html);
                     }
 
-                    return new ResponseDto<string>("OnlyMarkdownFilesSupported", $"Endpoint supports only markdown files.");
+                    return Error<string>(new FileTypeNotSupportedError(document.ConentType));
                 }
             );
         }

@@ -74,7 +74,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .AsSelf();
 
             builder.RegisterType<ResponseGraphType<ProjectType, ProjectDto>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<BranchType, BranchDto>>().AsSelf();
+            builder.RegisterType<ResponseGraphType<BranchType, ExtendedBranchDto>>().AsSelf();
             builder.RegisterType<ResponseGraphType<StringGraphType, string>>().AsSelf();
             builder.RegisterType<ResponseGraphType<ProjectsResultsType, FilteredResutsDto<ProjectDto>>>().AsSelf();
 
@@ -102,7 +102,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             var serviceAssembly = typeof(InjectionModule).GetTypeInfo().Assembly;
 
             builder.RegisterAssemblyTypes(serviceAssembly)
-                .Where(t => t.Name.EndsWith("Resolver"))
+                .Where(t => t.Name.EndsWith("Resolver") && t.Name != "Resolver")
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
         }
