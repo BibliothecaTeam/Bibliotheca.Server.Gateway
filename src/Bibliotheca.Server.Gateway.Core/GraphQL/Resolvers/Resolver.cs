@@ -10,11 +10,6 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
             return new Response(data);
         }
 
-        public ResponseList ResponseList(object data)
-        {
-            return new ResponseList(data);
-        }
-
         public Response Error(GraphQLError error)
         {
             return new Response(error.StatusCode, error.ErrorMessage);

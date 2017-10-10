@@ -27,7 +27,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var branchName = context.GetArgument<string>("branchName");
                     var chapters =  _tableOfContentsService.GetTableOfConents(projectId, branchName).GetAwaiter().GetResult();
 
-                    return ResponseList(chapters);
+                    return Response(chapters);
                 }
             );
         }

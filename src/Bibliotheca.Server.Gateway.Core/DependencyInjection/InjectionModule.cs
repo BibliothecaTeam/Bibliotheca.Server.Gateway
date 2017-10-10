@@ -67,21 +67,13 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
         private void RegisterGraphQLTypes(ContainerBuilder builder)
         {
             var serviceAssembly = typeof(InjectionModule).GetTypeInfo().Assembly;
-
             builder.RegisterAssemblyTypes(serviceAssembly)
                 .Where(t => t.GetInterfaces()
                     .Any(i => i.IsAssignableFrom(typeof (IGraphQLType))))
                 .AsSelf();
 
-            builder.RegisterType<ResponseGraphType<ProjectType>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<BranchType>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<StringGraphType>>().AsSelf();
-            builder.RegisterType<ResponseGraphType<ProjectsResultsType>>().AsSelf();
-
-            builder.RegisterType<ResponseListGraphType<BranchType>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<ChapterItemType>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<GroupType>>().AsSelf();
-            builder.RegisterType<ResponseListGraphType<StringGraphType>>().AsSelf();
+            builder.RegisterGeneric(typeof(ResponseGraphType<>)).AsSelf();
+            builder.RegisterGeneric(typeof(ResponseListGraphType<>)).AsSelf();
         }
 
         private void RegisterGraphQLSchema(ContainerBuilder builder)

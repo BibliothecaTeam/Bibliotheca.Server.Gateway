@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 "tags",
                 resolve: context => { 
                     var tags = _tagsService.GetAvailableTagsAsync().GetAwaiter().GetResult();
-                    return ResponseList(tags);
+                    return Response(tags);
                 }
             );
         }

@@ -26,7 +26,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                     var projectId = context.GetArgument<string>("projectId");
                     var list = _branchesService.GetBranchesAsync(projectId).GetAwaiter().GetResult();
 
-                    return ResponseList(list);
+                    return Response(list);
                 }
             );
 

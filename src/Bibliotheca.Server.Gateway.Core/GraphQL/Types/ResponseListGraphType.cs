@@ -9,7 +9,7 @@ using GraphQL.Types;
 
 namespace Bibliotheca.Server.Gateway.Core.GraphQL.Types
 {
-    public class ResponseListGraphType<TGraphType> : ObjectGraphType<ResponseList> where TGraphType : GraphType
+    public class ResponseListGraphType<TGraphType> : ObjectGraphType<Response> where TGraphType : GraphType
     {
         public ResponseListGraphType()
         {

@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Resolvers
                 "groups",
                 resolve: context => { 
                     var groups = _groupsService.GetGroupsAsync().GetAwaiter().GetResult();
-                    return ResponseList(groups);
+                    return Response(groups);
                 }
             );
         }
