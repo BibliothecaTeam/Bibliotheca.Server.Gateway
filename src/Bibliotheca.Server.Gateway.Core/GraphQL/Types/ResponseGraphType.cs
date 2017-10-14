@@ -20,7 +20,7 @@ namespace Bibliotheca.Server.Gateway.Core.GraphQL.Types
 
             Field<TGraphType>(
                 "data",
-                "Project data returned by query.",
+                "Data returned by query.",
                 resolve: context => context.Source.Data
             );
         }
