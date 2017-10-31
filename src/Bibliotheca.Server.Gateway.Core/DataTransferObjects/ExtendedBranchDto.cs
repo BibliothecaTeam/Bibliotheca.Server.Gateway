@@ -2,6 +2,10 @@ namespace Bibliotheca.Server.Gateway.Core.DataTransferObjects
 {
     public class ExtendedBranchDto : BranchDto
     {
+        public ExtendedBranchDto()
+        {
+        }
+
         public ExtendedBranchDto(BranchDto branchDto)
         {
             Name = branchDto.Name;
