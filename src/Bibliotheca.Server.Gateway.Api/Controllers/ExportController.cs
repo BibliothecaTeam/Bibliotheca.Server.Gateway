@@ -37,11 +37,28 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <returns>Pdf file.</returns>
         [HttpGet("pdf")]
         [ProducesResponseType(200, Type = typeof(FileResult))]
-        public async Task<FileResult> Get(string projectId, string branchName)
+        public async Task<FileResult> GetPdf(string projectId, string branchName)
         {
             var bytes = await _exportService.GeneratePdf(projectId, branchName);
             var fileResult = new FileContentResult(bytes, "application/pdf");
             return fileResult;
+        }
+
+        /// <summary>
+        /// Get markdown text.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint returns markdown text from specific propject and branch.
+        /// </remarks>
+        /// <param name="projectId">Project id.</param>
+        /// <param name="branchName">Branch name.</param>
+        /// <returns>Pdf file.</returns>
+        [HttpGet("markdown")]
+        [ProducesResponseType(200, Type = typeof(FileResult))]
+        public async Task<string> GetMarkdown(string projectId, string branchName)
+        {
+            var markdown = await _exportService.GenerateMarkdown(projectId, branchName);
+            return markdown;
         }
     }
 }

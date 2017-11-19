@@ -43,6 +43,21 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         public async Task<byte[]> GeneratePdf(string projectId, string branchName)
         {
+            var markdown = await GenerateMarkdown(projectId, branchName);
+            
+            var response = await _pdfExportClient.Post(markdown);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBytes = await response.Content.ReadAsByteArrayAsync();
+                return responseBytes;
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            throw new PdfExportException($"Exception during generating pdf. Status code: {response.StatusCode}. Message: {responseString}.");
+        }
+
+        public async Task<string> GenerateMarkdown(string projectId, string branchName)
+        {
             var project = await _projectsService.GetProjectAsync(projectId);
             if (project == null)
             {
@@ -63,15 +78,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             var markdown = markdownBuilder.ToString();
             markdown = await EmbedImagesToMarkdown(project.Id, branchName, imagesList, markdown);
 
-            var response = await _pdfExportClient.Post(markdown);
-            if (response.IsSuccessStatusCode)
-            {
-                var responseBytes = await response.Content.ReadAsByteArrayAsync();
-                return responseBytes;
-            }
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            throw new PdfExportException($"Exception during generating pdf. Status code: {response.StatusCode}. Message: {responseString}.");
+            return markdown;
         }
 
         private async Task<string> EmbedImagesToMarkdown(string projectId, string branchName, List<ImageUrl> imagesList, string markdown)
