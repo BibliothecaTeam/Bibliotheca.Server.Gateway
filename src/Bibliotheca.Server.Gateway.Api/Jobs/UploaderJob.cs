@@ -69,6 +69,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         {
             try
             {
+                _httpContextAccessor.HttpContext = new DefaultHttpContext();
                 _httpContextAccessor.HttpContext.Request.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
 
                 _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
