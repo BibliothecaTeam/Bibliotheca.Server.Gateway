@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Api.Jobs;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
@@ -226,7 +227,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            BackgroundJob.Enqueue<IUploaderService>(x => x.UploadBranchAsync(projectId, branchName, file.OpenReadStream()));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, file.OpenReadStream()));
             return Ok();
         }
 
@@ -255,7 +256,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            BackgroundJob.Enqueue<IUploaderService>(x => x.UploadBranchAsync(projectId, branchName, Request.Body));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, Request.Body));
             return Ok();
         }
 

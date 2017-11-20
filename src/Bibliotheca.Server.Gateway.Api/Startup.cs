@@ -133,6 +133,8 @@ namespace Bibliotheca.Server.Gateway.Api
             });
 
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
+            services.AddScoped<IUploaderJob, UploaderJob>();
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<HttpClient, HttpClient>();
 

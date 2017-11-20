@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Bibliotheca.Server.Gateway.Core.Services
+namespace Bibliotheca.Server.Gateway.Api.Jobs
 {
-    public class UploaderService : IUploaderService
+    /// <summary>
+    /// Job for uploading new documents.
+    /// </summary>
+    public class UploaderJob : IUploaderJob
     {
         private readonly IDocumentsService _documentsService;
 
@@ -17,7 +21,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly IProjectsService _projectsService;
 
-        private readonly ILogger<UploaderService> _logger;
+        private readonly ILogger<UploaderJob> _logger;
 
         /// <summary>
         /// Constructor.
@@ -26,12 +30,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         /// <param name="branchService">Branch service.</param>
         /// <param name="searchService">Search service.</param>
         /// <param name="projectsService">Projects service.</param>
-        public UploaderService(
+        /// <param name="logger">Logger service.</param>
+        public UploaderJob(
             IDocumentsService documentsService, 
             IBranchesService branchService,
             ISearchService searchService,
             IProjectsService projectsService,
-            ILogger<UploaderService> logger)
+            ILogger<UploaderJob> logger)
         {
             _documentsService = documentsService;
             _branchService = branchService;
@@ -40,6 +45,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Upload new documents to the application.
+        /// </summary>
+        /// <param name="projectId">Project Id.</param>
+        /// <param name="branchName">Branch name.</param>
+        /// <param name="body">Documents.</param>
+        /// <returns>Returns async task.</returns>
         public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
         {
             try
