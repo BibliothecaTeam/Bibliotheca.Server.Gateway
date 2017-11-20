@@ -19,7 +19,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         public RestClient(
             HttpClient httpClient,
             string resourceAddress, 
-            IDictionary<string, StringValues> customHeaders, 
+            IHttpContextHeaders customHeaders, 
             string customAction = null) : base(httpClient, customHeaders)
         {
             _resourceAddress = resourceAddress;

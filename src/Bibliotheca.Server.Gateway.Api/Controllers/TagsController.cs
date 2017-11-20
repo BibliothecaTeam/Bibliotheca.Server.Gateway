@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Api.Jobs;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +39,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         [ProducesResponseType(200, Type = typeof(IList<string>))]
         public async Task<IList<string>> Get()
         {
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync("configuration-manager", "Latest", "path"));
+            
             var tags = await _tagsService.GetAvailableTagsAsync();
             return tags;
         }

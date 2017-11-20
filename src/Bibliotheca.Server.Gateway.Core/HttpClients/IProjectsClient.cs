@@ -8,7 +8,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
     public interface IProjectsClient
     {
-        IDictionary<string, StringValues> CustomHeaders { get; }
+        IHttpContextHeaders CustomHeaders { get; }
         
         Task<IList<ProjectDto>> Get();
 

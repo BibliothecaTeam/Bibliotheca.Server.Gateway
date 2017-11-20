@@ -7,11 +7,11 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
     public class BaseHttpClient
     {
-        private readonly IDictionary<string, StringValues> _customHeaders;
+        private readonly IHttpContextHeaders _customHeaders;
 
         private readonly HttpClient _httpClient;
 
-        public BaseHttpClient(HttpClient httpClient, IDictionary<string, StringValues> customHeaders)
+        public BaseHttpClient(HttpClient httpClient, IHttpContextHeaders customHeaders)
         {
             _httpClient = httpClient;
             _customHeaders = customHeaders;
@@ -55,11 +55,11 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         protected void RewriteHeader(HttpRequestMessage requestMessage, string header)
         {
-            if (_customHeaders != null)
+            if (_customHeaders.Headers != null)
             {
-                if(_customHeaders.ContainsKey(header))
+                if(_customHeaders.Headers.ContainsKey(header))
                 {
-                    var value = _customHeaders[header];
+                    var value = _customHeaders.Headers[header];
                     requestMessage.Headers.Add(header, value as IList<string>);
                 }
             }

@@ -24,6 +24,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Net.Http;
 using Neutrino.AspNetCore.Client;
 using System.Linq;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 
 namespace Bibliotheca.Server.Gateway.Api
 {
@@ -136,6 +137,7 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddScoped<IUploaderJob, UploaderJob>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextHeaders, HttpContextHeaders>();
             services.AddSingleton<HttpClient, HttpClient>();
 
             services.AddAuthorization(options =>

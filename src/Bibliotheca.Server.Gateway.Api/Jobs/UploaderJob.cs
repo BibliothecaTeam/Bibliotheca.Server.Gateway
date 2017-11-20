@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace Bibliotheca.Server.Gateway.Api.Jobs
 {
@@ -26,7 +28,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
 
         private readonly ILogger<UploaderJob> _logger;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextHeaders _httpContextHeaders;
 
         private readonly ApplicationParameters _applicationParameters;
 
@@ -38,7 +40,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <param name="searchService">Search service.</param>
         /// <param name="projectsService">Projects service.</param>
         /// <param name="logger">Logger service.</param>
-        /// <param name="httpContextAccessor">Http context service.</param>
+        /// <param name="httpContextHeaders">Http context headers.</param>
         /// <param name="applicationParameters">Application parameters.</param>
         public UploaderJob(
             IDocumentsService documentsService, 
@@ -46,7 +48,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             ISearchService searchService,
             IProjectsService projectsService,
             ILogger<UploaderJob> logger,
-            IHttpContextAccessor httpContextAccessor,
+            IHttpContextHeaders httpContextHeaders,
             IOptions<ApplicationParameters> applicationParameters)
         {
             _documentsService = documentsService;
@@ -54,7 +56,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             _searchService = searchService;
             _projectsService = projectsService;
             _logger = logger;
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextHeaders = httpContextHeaders;
             _applicationParameters = applicationParameters.Value;
         }
 
@@ -69,8 +71,8 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         {
             try
             {
-                _httpContextAccessor.HttpContext = new DefaultHttpContext();
-                _httpContextAccessor.HttpContext.Request.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
+                _httpContextHeaders.Headers = new Dictionary<string, StringValues>();
+                _httpContextHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
 
                 _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
                 var branches = await _branchService.GetBranchesAsync(projectId);

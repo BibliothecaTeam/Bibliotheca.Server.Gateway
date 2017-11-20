@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Microsoft.Extensions.Options;
@@ -20,6 +19,7 @@ using GraphQL.Types;
 using Bibliotheca.Server.Gateway.Core.GraphQL.Types;
 using GraphQL;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
+using System.Collections.Generic;
 
 namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
 {
@@ -106,7 +106,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetServiceAddress(ctx, "authorization"));
 
             var customHeadersParameter = new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => pi.ParameterType == typeof(IHttpContextHeaders) && pi.Name == "customHeaders",
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<UsersClient>().As<IUsersClient>()
@@ -121,7 +121,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetServiceAddress(ctx, "crawler"));
 
             var customHeadersParameter = new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => pi.ParameterType == typeof(IHttpContextHeaders) && pi.Name == "customHeaders",
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<NightcrawlerClient>().As<INightcrawlerClient>()
@@ -136,7 +136,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetServiceAddress(ctx, "depository"));
 
             var customHeadersParameter = new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => pi.ParameterType == typeof(IHttpContextHeaders) && pi.Name == "customHeaders",
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<ProjectsClient>().As<IProjectsClient>()
@@ -163,7 +163,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetServiceAddress(ctx, "indexer"));
 
             var customHeadersParameter = new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => pi.ParameterType == typeof(IHttpContextHeaders) && pi.Name == "customHeaders",
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<SearchClient>().As<ISearchClient>()
@@ -178,7 +178,7 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                     (pi, ctx) => GetServiceAddress(ctx, "pdfexport"));
 
             var customHeadersParameter = new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(IDictionary<string, StringValues>) && pi.Name == "customHeaders",
+                    (pi, ctx) => pi.ParameterType == typeof(IHttpContextHeaders) && pi.Name == "customHeaders",
                     (pi, ctx) => GetHttpHeaders(ctx));
 
             builder.RegisterType<PdfExportClient>().As<IPdfExportClient>()
@@ -186,9 +186,10 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 .WithParameter(customHeadersParameter);
         }
 
-        private static IDictionary<string, StringValues> GetHttpHeaders(IComponentContext c)
+        private static IHttpContextHeaders GetHttpHeaders(IComponentContext c)
         {
             var httpContextAccessor = c.Resolve<IHttpContextAccessor>();
+            var httpHeaders = c.Resolve<IHttpContextHeaders>();
             var httpContext = httpContextAccessor.HttpContext;
 
             IDictionary<string, StringValues> headers = null;
@@ -197,7 +198,8 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
                 headers = httpContext.Request.Headers as IDictionary<string, StringValues>;
             }
 
-            return headers;
+            httpHeaders.Headers = headers;
+            return httpHeaders;
         }
 
         private static string GetServiceAddress(IComponentContext c, string serviceTag)

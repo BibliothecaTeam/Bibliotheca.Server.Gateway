@@ -15,7 +15,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
     {
         private readonly string _baseAddress;
 
-        private readonly IDictionary<string, StringValues> _customHeaders;
+        private readonly IHttpContextHeaders _customHeaders;
 
         private readonly ILogger _logger;
 
@@ -23,7 +23,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         public NightcrawlerClient(
             string baseAddress, 
-            IDictionary<string, StringValues> customHeaders, 
+            IHttpContextHeaders customHeaders, 
             ILogger<NightcrawlerClient> logger,
             HttpClient httpClient) 
         {

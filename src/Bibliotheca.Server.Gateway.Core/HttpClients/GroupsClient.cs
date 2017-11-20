@@ -15,11 +15,11 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         private readonly string _baseAddress;
 
-        private readonly IDictionary<string, StringValues> _customHeaders;
+        private readonly IHttpContextHeaders _customHeaders;
 
         private HttpClient _httpClient;
 
-        public GroupsClient(string baseAddress, IDictionary<string, StringValues> customHeaders, HttpClient HttpClient)
+        public GroupsClient(string baseAddress, IHttpContextHeaders customHeaders, HttpClient HttpClient)
         {
             _baseAddress = baseAddress;
             _customHeaders = customHeaders;

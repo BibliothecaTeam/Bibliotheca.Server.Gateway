@@ -52,8 +52,8 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         private BaseHttpClient GetClient()
         {
-            var customHeaders = new Dictionary<string, StringValues>();
-            customHeaders.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
+            var customHeaders = new HttpContextHeaders();
+            customHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
 
             var baseClient = new BaseHttpClient(_httpClient, customHeaders);
             return baseClient;

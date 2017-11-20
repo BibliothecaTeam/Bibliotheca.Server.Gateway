@@ -44,8 +44,8 @@ namespace Bibliotheca.Server.Gateway.Core.Policies
                 {
                     var projectToken = authorizationParts[1];
 
-                    _projectsClient.CustomHeaders.Remove("Authorization");
-                    _projectsClient.CustomHeaders.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
+                    _projectsClient.CustomHeaders.Headers.Remove("Authorization");
+                    _projectsClient.CustomHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
                     
                     var existingProject = await _projectsClient.Get(project.Id);
                     if(existingProject != null && !string.IsNullOrWhiteSpace(existingProject.AccessToken))

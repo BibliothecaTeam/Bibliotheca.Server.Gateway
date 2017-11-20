@@ -16,7 +16,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
     {
         private readonly string _baseAddress;
 
-        private readonly IDictionary<string, StringValues> _customHeaders;
+        private readonly IHttpContextHeaders _customHeaders;
 
         private readonly ILogger _logger;
 
@@ -24,7 +24,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 
         public SearchClient(
             string baseAddress, 
-            IDictionary<string, StringValues> customHeaders, 
+            IHttpContextHeaders customHeaders, 
             ILogger<SearchClient> logger,
             HttpClient httpClient)
         {
