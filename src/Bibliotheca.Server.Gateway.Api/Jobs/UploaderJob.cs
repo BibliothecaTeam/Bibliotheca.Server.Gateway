@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Bibliotheca.Server.Gateway.Api.Jobs
@@ -23,6 +25,10 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
 
         private readonly ILogger<UploaderJob> _logger;
 
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly ApplicationParameters _applicationParameters;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -31,18 +37,24 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <param name="searchService">Search service.</param>
         /// <param name="projectsService">Projects service.</param>
         /// <param name="logger">Logger service.</param>
+        /// <param name="httpContextAccessor">Http context service.</param>
+        /// <param name="applicationParameters">Application parameters.</param>
         public UploaderJob(
             IDocumentsService documentsService, 
             IBranchesService branchService,
             ISearchService searchService,
             IProjectsService projectsService,
-            ILogger<UploaderJob> logger)
+            ILogger<UploaderJob> logger,
+            IHttpContextAccessor httpContextAccessor,
+            ApplicationParameters applicationParameters)
         {
             _documentsService = documentsService;
             _branchService = branchService;
             _searchService = searchService;
             _projectsService = projectsService;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+            _applicationParameters = applicationParameters;
         }
 
         /// <summary>
@@ -56,6 +68,8 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         {
             try
             {
+                _httpContextAccessor.HttpContext.Request.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
+
                 _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
                 var branches = await _branchService.GetBranchesAsync(projectId);
 
@@ -71,7 +85,6 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 {
                     await _documentsService.UploadBranchAsync(projectId, branchName, fileStream);
                 }
-                File.Delete(filePath);
                 _logger.LogInformation($"[Uploading] Branch uploaded ({projectId}/{branchName}).");
 
                 _logger.LogInformation($"[Uploading] Getting project information ({projectId}/{branchName}).");
@@ -87,7 +100,21 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             catch(Exception exception)
             {
                 _logger.LogError($"[Uploading] During uploadind exception occurs ({projectId}/{branchName}).");
-                _logger.LogError($"[Uploading] Exception: {exception.ToString()}, message: {exception.Message}, stacktrace: {exception.StackTrace}.");
+                _logger.LogError($"[Uploading] Exception: {exception.ToString()}.");
+                _logger.LogError($"[Uploading] Message: {exception.Message}.");
+                _logger.LogError($"[Uploading] Stack trace: {exception.StackTrace}.");
+
+                if(exception.InnerException != null)
+                {
+                    _logger.LogError($"[Uploading] Inner exception: {exception.InnerException.ToString()}.");
+                    _logger.LogError($"[Uploading] Inner exception message: {exception.InnerException.Message}.");
+                    _logger.LogError($"[Uploading] Inner exception stack trace: {exception.InnerException.StackTrace}.");
+                }
+                
+            }
+            finally
+            {
+                File.Delete(filePath);
             }
         }
     }
