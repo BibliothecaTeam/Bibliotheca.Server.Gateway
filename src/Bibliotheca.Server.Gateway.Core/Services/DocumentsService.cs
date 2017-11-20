@@ -8,6 +8,7 @@ using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Exceptions;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Bibliotheca.Server.Gateway.Core.Services
 {
@@ -21,16 +22,20 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private readonly ICacheService _cacheService;
 
+        private readonly ILogger<DocumentsService> _logger;
+
         public DocumentsService(
             IDocumentsClient documentsClient, 
             IBranchesService branchService, 
             IProjectsService projectsService,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            ILogger<DocumentsService> logger)
         {
             _documentsClient = documentsClient;
             _branchService = branchService;
             _projectsService = projectsService;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
         public async Task<IList<BaseDocumentDto>> GetDocumentsAsync(string projectId, string branchName)
@@ -127,8 +132,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             }
 
             await CreateBranchAsync(projectId, branchName, mkdocsContent);
+
+            int counter = 0;
             foreach(var item in filesContent)
             {
+                counter++;
+                _logger.LogInformation($"[Uploading] Uploading file '{item.Key}' ({counter}/{filesContent.Count}).");
                 await UploadDocumnentAsync(projectId, branchName, item.Key, item.Value);
             }
         }

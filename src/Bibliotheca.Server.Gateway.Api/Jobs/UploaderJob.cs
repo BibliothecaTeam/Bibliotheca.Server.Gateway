@@ -84,7 +84,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                     _logger.LogInformation($"[Uploading] Branch deleted ({projectId}/{branchName}).");
                 }
                 
-                _logger.LogInformation($"[Uploading] Upload branch to storage ({projectId}/{branchName}).");
+                _logger.LogInformation($"[Uploading] Uploading branch to storage ({projectId}/{branchName}).");
                 using(FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     await _documentsService.UploadBranchAsync(projectId, branchName, fileStream);
