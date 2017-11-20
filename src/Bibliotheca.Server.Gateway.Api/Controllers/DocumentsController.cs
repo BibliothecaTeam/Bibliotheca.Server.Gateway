@@ -231,7 +231,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             var stream = file.OpenReadStream();
             byte[] bytes = ReadStream(stream);
 
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, bytes));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName));
             return Ok();
         }
 
@@ -261,7 +261,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             byte[] bytes = ReadStream(Request.Body);
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, bytes));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName));
             return Ok();
         }
 

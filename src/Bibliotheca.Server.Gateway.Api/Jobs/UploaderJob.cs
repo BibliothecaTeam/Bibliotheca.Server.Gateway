@@ -50,6 +50,18 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// </summary>
         /// <param name="projectId">Project Id.</param>
         /// <param name="branchName">Branch name.</param>
+        /// <returns>Returns async task.</returns>
+        public Task UploadBranchAsync(string projectId, string branchName)
+        {
+            _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Upload new documents to the application.
+        /// </summary>
+        /// <param name="projectId">Project Id.</param>
+        /// <param name="branchName">Branch name.</param>
         /// <param name="body">Documents.</param>
         /// <returns>Returns async task.</returns>
         public async Task UploadBranchAsync(string projectId, string branchName, byte[] body)
