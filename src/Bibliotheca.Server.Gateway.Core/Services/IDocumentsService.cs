@@ -15,7 +15,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         Task UpdateDocumentAsync(string projectId, string branchName, string fileUri, DocumentDto document);
 
-        Task UploadBranchAsync(string projectId, string branchName, byte[] body);
+        Task UploadBranchAsync(string projectId, string branchName, Stream body);
 
         Task DeleteDocumentAsync(string projectId, string branchName, string fileUri);
     }

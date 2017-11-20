@@ -50,21 +50,9 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// </summary>
         /// <param name="projectId">Project Id.</param>
         /// <param name="branchName">Branch name.</param>
+        /// <param name="filePath">File path.</param>
         /// <returns>Returns async task.</returns>
-        public Task UploadBranchAsync(string projectId, string branchName)
-        {
-            _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
-            return Task.FromResult(0);
-        }
-
-        /// <summary>
-        /// Upload new documents to the application.
-        /// </summary>
-        /// <param name="projectId">Project Id.</param>
-        /// <param name="branchName">Branch name.</param>
-        /// <param name="body">Documents.</param>
-        /// <returns>Returns async task.</returns>
-        public async Task UploadBranchAsync(string projectId, string branchName, byte[] body)
+        public async Task UploadBranchAsync(string projectId, string branchName, string filePath)
         {
             try
             {
@@ -79,7 +67,11 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 }
                 
                 _logger.LogInformation($"[Uploading] Upload branch to storage ({projectId}/{branchName}).");
-                await _documentsService.UploadBranchAsync(projectId, branchName, body);
+                using(FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    await _documentsService.UploadBranchAsync(projectId, branchName, fileStream);
+                }
+                File.Delete(filePath);
                 _logger.LogInformation($"[Uploading] Branch uploaded ({projectId}/{branchName}).");
 
                 _logger.LogInformation($"[Uploading] Getting project information ({projectId}/{branchName}).");

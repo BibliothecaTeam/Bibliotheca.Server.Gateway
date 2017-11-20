@@ -87,13 +87,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             _cacheService.ClearDocumentCache(projectId, branchName, fileUri);
         }
 
-        public async Task UploadBranchAsync(string projectId, string branchName, byte[] body)
+        public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
         {
             byte[] mkdocsContent = null;
             Dictionary<string, byte[]> filesContent = new Dictionary<string, byte[]>();
 
-            using(Stream bodyStream = new MemoryStream(body))
-            using (var zipArchive = new ZipArchive(bodyStream))
+            using (var zipArchive = new ZipArchive(body))
             {
                 var entries = zipArchive.Entries;
                 foreach (var entry in entries)

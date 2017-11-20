@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -229,9 +230,9 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             }
 
             var stream = file.OpenReadStream();
-            byte[] bytes = ReadStream(stream);
+            string filePath = SaveDocumentsToTempFile(stream);
 
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, filePath));
             return Ok();
         }
 
@@ -260,8 +261,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            byte[] bytes = ReadStream(Request.Body);
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName));
+            string filePath = SaveDocumentsToTempFile(Request.Body);
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, filePath));
             return Ok();
         }
 
@@ -292,18 +293,16 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
-        private byte[] ReadStream(Stream input)
+        private string SaveDocumentsToTempFile(Stream bodyStream)
         {
-            byte[] buffer = new byte[16*1024];
-            using (MemoryStream ms = new MemoryStream())
+            string pathToFile = System.IO.Path.GetTempFileName();
+
+            using (var fileStream = new FileStream(pathToFile, FileMode.Create, FileAccess.Write))
             {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
+                bodyStream.CopyTo(fileStream);
             }
+
+            return pathToFile;
         }
     }
 }
