@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Api.Jobs;
@@ -227,7 +228,10 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, file.OpenReadStream()));
+            var stream = file.OpenReadStream();
+            byte[] bytes = ReadStream(stream);
+
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, bytes));
             return Ok();
         }
 
@@ -256,7 +260,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, Request.Body));
+            byte[] bytes = ReadStream(Request.Body);
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, bytes));
             return Ok();
         }
 
@@ -285,6 +290,20 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
             await _documentsService.DeleteDocumentAsync(projectId, branchName, fileUri);
             return Ok();
+        }
+
+        private byte[] ReadStream(Stream input)
+        {
+            byte[] buffer = new byte[16*1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
     }
 }

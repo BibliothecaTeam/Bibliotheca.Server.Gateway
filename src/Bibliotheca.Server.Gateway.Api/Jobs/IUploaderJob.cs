@@ -16,6 +16,6 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <param name="branchName">Branch name.</param>
         /// <param name="body">Documents.</param>
         /// <returns>Returns async task.</returns>
-        Task UploadBranchAsync(string projectId, string branchName, Stream body);
+        Task UploadBranchAsync(string projectId, string branchName, byte[] body);
     }
 }
