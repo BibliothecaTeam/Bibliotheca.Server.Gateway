@@ -7,6 +7,7 @@ using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bibliotheca.Server.Gateway.Api.Jobs
 {
@@ -46,7 +47,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             IProjectsService projectsService,
             ILogger<UploaderJob> logger,
             IHttpContextAccessor httpContextAccessor,
-            ApplicationParameters applicationParameters)
+            IOptions<ApplicationParameters> applicationParameters)
         {
             _documentsService = documentsService;
             _branchService = branchService;
@@ -54,7 +55,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             _projectsService = projectsService;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
-            _applicationParameters = applicationParameters;
+            _applicationParameters = applicationParameters.Value;
         }
 
         /// <summary>
