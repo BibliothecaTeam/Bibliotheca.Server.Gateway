@@ -5,6 +5,7 @@ using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
 using Bibliotheca.Server.Mvc.Middleware.Authorization;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -225,20 +226,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            var branches = await _branchService.GetBranchesAsync(projectId);
-            if(branches.Any(x => x.Name == branchName))
-            {
-                await _branchService.DeleteBranchAsync(projectId, branchName);
-            }
-
-            await _documentsService.UploadBranchAsync(projectId, branchName, file.OpenReadStream());
-
-            var project = await _projectsService.GetProjectAsync(projectId);
-            if(!project.IsAccessLimited) 
-            {
-                await _searchService.RefreshIndexAsync(projectId, branchName);
-            }
-
+            BackgroundJob.Enqueue<IUploaderService>(x => x.UploadBranchAsync(projectId, branchName, file.OpenReadStream()));
             return Ok();
         }
 
@@ -267,20 +255,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            var branches = await _branchService.GetBranchesAsync(projectId);
-            if(branches.Any(x => x.Name == branchName))
-            {
-                await _branchService.DeleteBranchAsync(projectId, branchName);
-            }
-            
-            await _documentsService.UploadBranchAsync(projectId, branchName, Request.Body);
-
-            var project = await _projectsService.GetProjectAsync(projectId);
-            if(!project.IsAccessLimited) 
-            {
-                await _searchService.RefreshIndexAsync(projectId, branchName);
-            }
-
+            BackgroundJob.Enqueue<IUploaderService>(x => x.UploadBranchAsync(projectId, branchName, Request.Body));
             return Ok();
         }
 
