@@ -136,8 +136,8 @@ namespace Bibliotheca.Server.Gateway.Api
             services.AddScoped<IServiceDiscoveryRegistrationJob, ServiceDiscoveryRegistrationJob>();
             services.AddScoped<IUploaderJob, UploaderJob>();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IHttpContextHeaders, HttpContextHeaders>();
+            services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IHttpContextHeaders, HttpContextHeaders>();
             services.AddSingleton<HttpClient, HttpClient>();
 
             services.AddAuthorization(options =>

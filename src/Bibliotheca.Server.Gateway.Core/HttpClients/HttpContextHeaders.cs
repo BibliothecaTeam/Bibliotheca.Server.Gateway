@@ -6,17 +6,17 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
     public class HttpContextHeaders : IHttpContextHeaders
     {
-        private static AsyncLocal<IDictionary<string, StringValues>> _headers = new AsyncLocal<IDictionary<string, StringValues>>();
+        private IDictionary<string, StringValues> _headers = new Dictionary<string, StringValues>();
 
         public IDictionary<string, StringValues> Headers
         {
             get
             {
-                return _headers.Value;
+                return _headers;
             }
             set
             {
-                _headers.Value = value;
+                _headers = value;
             }
         }
     }
