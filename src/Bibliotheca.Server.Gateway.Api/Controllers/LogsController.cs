@@ -80,7 +80,7 @@ namespace Bibliotheca.Server.Gateway.Api
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
-        public async Task<IActionResult> Put(string projectId, LogsDto logs)
+        public async Task<IActionResult> Put(string projectId, [FromBody] LogsDto logs)
         {
             var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
             if (projectFromStorage == null)
