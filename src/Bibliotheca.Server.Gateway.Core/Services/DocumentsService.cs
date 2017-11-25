@@ -223,8 +223,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
 
         private void LogInformation(StringBuilder stringBuilder, string message)
         {
-            DateTime dateTime = new DateTime();
-            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] {message}");
             _logger.LogInformation($"[Uploading] {message}.");
         }
     }

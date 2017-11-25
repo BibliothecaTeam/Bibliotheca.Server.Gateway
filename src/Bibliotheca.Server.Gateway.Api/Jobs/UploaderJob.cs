@@ -144,15 +144,13 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
 
         private void LogInformation(StringBuilder stringBuilder, string message)
         {
-            DateTime dateTime = new DateTime();
-            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] {message}");
             _logger.LogInformation($"[Uploading] {message}.");
         }
 
         private void LogError(StringBuilder stringBuilder, string message)
         {
-            DateTime dateTime = new DateTime();
-            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] {message}");
             _logger.LogError($"[Uploading] {message}.");
         }
     }
