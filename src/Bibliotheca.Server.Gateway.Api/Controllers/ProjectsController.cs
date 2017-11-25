@@ -219,10 +219,13 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         private async Task AssignBranchesToProject(ProjectDto project)
         {
             var branches = await _branchesService.GetBranchesAsync(project.Id);
-            project.Branches = branches;
-            foreach (var branch in project.Branches)
+            if(branches != null)
             {
-                branch.MkDocsYaml = null;
+                project.Branches = branches;
+                foreach (var branch in project.Branches)
+                {
+                    branch.MkDocsYaml = null;
+                }
             }
         }
 
