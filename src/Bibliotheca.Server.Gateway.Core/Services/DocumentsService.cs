@@ -92,11 +92,12 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             _cacheService.ClearDocumentCache(projectId, branchName, fileUri);
         }
 
-        public async Task UploadBranchAsync(string projectId, string branchName, Stream body)
+        public async Task UploadBranchAsync(string projectId, string branchName, Stream body, StringBuilder logs)
         {
             byte[] mkdocsContent = null;
             Dictionary<string, byte[]> filesContent = new Dictionary<string, byte[]>();
 
+            LogInformation(logs, $"Unzipping file ({projectId}/{branchName}).");
             using (var zipArchive = new ZipArchive(body))
             {
                 var entries = zipArchive.Entries;
@@ -105,6 +106,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                     bool isDirectory = entry.FullName.EndsWith("/");
                     if (!isDirectory)
                     {
+                        LogInformation(logs, $"Reading file: '{entry.FullName}'.");
                         byte[] content = null;
                         using (var stream = entry.Open())
                         using (MemoryStream ms = new MemoryStream())
@@ -116,6 +118,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                         var fileUri = GetPathWithoutRootDirectory(entry.FullName);
                         if(fileUri == "mkdocs.yml")
                         {
+                            LogInformation(logs, $"mkdocs.yml file was founded.");
                             mkdocsContent = content;
                         }
                         else
@@ -131,14 +134,17 @@ namespace Bibliotheca.Server.Gateway.Core.Services
                 throw new BranchConfigurationFileNotExistsException("Zip file have to contains mkdocs.yml file.");
             }
 
+            LogInformation(logs, $"Creating folder for branch ({projectId}/{branchName}).");
             await CreateBranchAsync(projectId, branchName, mkdocsContent);
+            LogInformation(logs, $"Folder for branch was created ({projectId}/{branchName}).");
 
             int counter = 0;
             foreach(var item in filesContent)
             {
                 counter++;
-                _logger.LogInformation($"[Uploading] Uploading file '{item.Key}' ({counter}/{filesContent.Count}).");
+                LogInformation(logs, $"Uploading file '{item.Key}' ({counter}/{filesContent.Count}).");
                 await UploadDocumnentAsync(projectId, branchName, item.Key, item.Value);
+                LogInformation(logs, $"File was uploaded '{item.Key}' ({counter}/{filesContent.Count}).");
             }
         }
 
@@ -213,6 +219,13 @@ namespace Bibliotheca.Server.Gateway.Core.Services
             
             var fileUri = $"{branch.DocsDir}:index.md";
             return fileUri;
+        }
+
+        private void LogInformation(StringBuilder stringBuilder, string message)
+        {
+            DateTime dateTime = new DateTime();
+            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            _logger.LogInformation($"[Uploading] {message}.");
         }
     }
 }

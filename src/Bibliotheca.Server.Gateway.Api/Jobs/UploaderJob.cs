@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.HttpClients;
 using Bibliotheca.Server.Gateway.Core.Parameters;
 using Bibliotheca.Server.Gateway.Core.Services;
@@ -25,6 +27,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         private readonly ISearchService _searchService;
 
         private readonly IProjectsService _projectsService;
+        private readonly ILogsService _logsService;
 
         private readonly ILogger<UploaderJob> _logger;
 
@@ -39,6 +42,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <param name="branchService">Branch service.</param>
         /// <param name="searchService">Search service.</param>
         /// <param name="projectsService">Projects service.</param>
+        /// <param name="logsService">Logs service.</param>
         /// <param name="logger">Logger service.</param>
         /// <param name="httpContextHeaders">Http context headers.</param>
         /// <param name="applicationParameters">Application parameters.</param>
@@ -47,6 +51,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             IBranchesService branchService,
             ISearchService searchService,
             IProjectsService projectsService,
+            ILogsService logsService,
             ILogger<UploaderJob> logger,
             IHttpContextHeaders httpContextHeaders,
             IOptions<ApplicationParameters> applicationParameters)
@@ -55,6 +60,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             _branchService = branchService;
             _searchService = searchService;
             _projectsService = projectsService;
+            _logsService = logsService;
             _logger = logger;
             _httpContextHeaders = httpContextHeaders;
             _applicationParameters = applicationParameters.Value;
@@ -69,57 +75,85 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <returns>Returns async task.</returns>
         public async Task UploadBranchAsync(string projectId, string branchName, string filePath)
         {
+            StringBuilder logs = new StringBuilder();
+
             try
             {
+                LogInformation(logs, $"Starting uploading project ({projectId}/{branchName}). Temporary file name: {filePath}.");
+
                 _httpContextHeaders.Headers = new Dictionary<string, StringValues>();
                 _httpContextHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
 
-                _logger.LogInformation($"[Uploading] Getting branch information ({projectId}/{branchName}).");
+                LogInformation(logs, $"Getting branch information ({projectId}/{branchName}).");
                 var branches = await _branchService.GetBranchesAsync(projectId);
 
                 if(branches.Any(x => x.Name == branchName))
                 {
-                    _logger.LogInformation($"[Uploading] Deleting branch from storage ({projectId}/{branchName}).");
+                    LogInformation(logs, $"Deleting branch from storage ({projectId}/{branchName}).");
                     await _branchService.DeleteBranchAsync(projectId, branchName);
-                    _logger.LogInformation($"[Uploading] Branch deleted ({projectId}/{branchName}).");
+                    LogInformation(logs, $"Branch was deleted ({projectId}/{branchName}).");
                 }
                 
-                _logger.LogInformation($"[Uploading] Uploading branch to storage ({projectId}/{branchName}).");
+                LogInformation(logs, $"Uploading branch to storage ({projectId}/{branchName}).");
+                LogInformation(logs, $"Reading temporary file ({projectId}/{branchName}) from path: '{filePath}'.");
                 using(FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    await _documentsService.UploadBranchAsync(projectId, branchName, fileStream);
+                    LogInformation(logs, $"File '{filePath}' exists and was readed.");
+                    await _documentsService.UploadBranchAsync(projectId, branchName, fileStream, logs);
                 }
-                _logger.LogInformation($"[Uploading] Branch uploaded ({projectId}/{branchName}).");
+                LogInformation(logs, $"Branch uploaded ({projectId}/{branchName}).");
 
-                _logger.LogInformation($"[Uploading] Getting project information ({projectId}/{branchName}).");
+                LogInformation(logs, $"Getting project information ({projectId}/{branchName}).");
                 var project = await _projectsService.GetProjectAsync(projectId);
 
                 if(!project.IsAccessLimited) 
                 {
-                    _logger.LogInformation($"[Uploading] Ordering index refresh ({projectId}/{branchName}).");
+                    LogInformation(logs, $"Ordering index refresh ({projectId}/{branchName}).");
                     await _searchService.RefreshIndexAsync(projectId, branchName);
-                    _logger.LogInformation($"[Uploading] Index refresh ordered ({projectId}/{branchName}).");
+                    LogInformation(logs, $"Index refresh ordered ({projectId}/{branchName}).");
                 }
+
+                LogInformation(logs, $"Uploading project ({projectId}/{branchName}) finished successfully.");
             }
             catch(Exception exception)
             {
-                _logger.LogError($"[Uploading] During uploadind exception occurs ({projectId}/{branchName}).");
-                _logger.LogError($"[Uploading] Exception: {exception.ToString()}.");
-                _logger.LogError($"[Uploading] Message: {exception.Message}.");
-                _logger.LogError($"[Uploading] Stack trace: {exception.StackTrace}.");
+                LogError(logs, $"During uploadind exception occurs ({projectId}/{branchName}).");
+                LogError(logs, $"Exception: {exception.ToString()}.");
+                LogError(logs, $"Message: {exception.Message}.");
+                LogError(logs, $"Stack trace: {exception.StackTrace}.");
 
                 if(exception.InnerException != null)
                 {
-                    _logger.LogError($"[Uploading] Inner exception: {exception.InnerException.ToString()}.");
-                    _logger.LogError($"[Uploading] Inner exception message: {exception.InnerException.Message}.");
-                    _logger.LogError($"[Uploading] Inner exception stack trace: {exception.InnerException.StackTrace}.");
+                    LogError(logs, $"Inner exception: {exception.InnerException.ToString()}.");
+                    LogError(logs, $"Inner exception message: {exception.InnerException.Message}.");
+                    LogError(logs, $"Inner exception stack trace: {exception.InnerException.StackTrace}.");
                 }
                 
+                LogError(logs, $"Uploading project ({projectId}/{branchName}) failed.");
             }
             finally
             {
+                LogInformation(logs, $"Deleting temporary file: '{filePath}'.");
                 File.Delete(filePath);
+                LogInformation(logs, $"Temporary file '{filePath}' was deleted.");
             }
+
+            var logsDto = new LogsDto { Message = logs.ToString() };
+            await _logsService.AppendLogsAsync(projectId, logsDto);
+        }
+
+        private void LogInformation(StringBuilder stringBuilder, string message)
+        {
+            DateTime dateTime = new DateTime();
+            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            _logger.LogInformation($"[Uploading] {message}.");
+        }
+
+        private void LogError(StringBuilder stringBuilder, string message)
+        {
+            DateTime dateTime = new DateTime();
+            stringBuilder.AppendLine($"[{dateTime}] {message}");
+            _logger.LogError($"[Uploading] {message}.");
         }
     }
 }

@@ -154,6 +154,10 @@ namespace Bibliotheca.Server.Gateway.Core.DependencyInjection
             builder.RegisterType<GroupsClient>().As<IGroupsClient>()
                 .WithParameter(baseAddressParameter)
                 .WithParameter(customHeadersParameter);
+
+            builder.RegisterType<LogsClient>().As<ILogsClient>()
+                .WithParameter(baseAddressParameter)
+                .WithParameter(customHeadersParameter);
         }
 
         private void RegisterIndexerClients(ContainerBuilder builder)
