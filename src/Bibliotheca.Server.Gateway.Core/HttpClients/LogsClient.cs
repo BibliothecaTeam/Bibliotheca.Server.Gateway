@@ -9,7 +9,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
 {
     public class LogsClient : ILogsClient
     {
-        private const string _resourceUri = "logs/{0}";
+        private const string _resourceUri = "logs";
 
         private readonly string _baseAddress;
 
@@ -31,7 +31,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
                 return new LogsDto();
             }
 
-            RestClient<LogsDto> baseClient = GetRestClient(projectId);
+            RestClient<LogsDto> baseClient = GetRestClient();
             return await baseClient.Get(projectId);
         }
 
@@ -39,7 +39,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         {
             AssertIfServiceNotAlive();
 
-            RestClient<LogsDto> baseClient = GetRestClient(projectId);
+            RestClient<LogsDto> baseClient = GetRestClient();
             return await baseClient.Put(projectId, logs);
         }
 
@@ -56,11 +56,9 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             return !string.IsNullOrWhiteSpace(_baseAddress);
         }
 
-        private RestClient<LogsDto> GetRestClient(string projectId)
+        private RestClient<LogsDto> GetRestClient()
         {            
-            var uri = string.Format(_resourceUri, projectId);
-            string resourceAddress = Path.Combine(_baseAddress, uri);
-
+            string resourceAddress = Path.Combine(_baseAddress, _resourceUri);
             var baseClient = new RestClient<LogsDto>(_httpClient, resourceAddress, _customHeaders);
             return baseClient;
         }
