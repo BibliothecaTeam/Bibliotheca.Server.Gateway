@@ -295,8 +295,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private string SaveDocumentsToTempFile(Stream bodyStream)
         {
-            string pathToFile = System.IO.Path.GetTempFileName();
-
+            string pathToFile = Path.GetTempFileName();
             using (var fileStream = new FileStream(pathToFile, FileMode.Create, FileAccess.Write))
             {
                 bodyStream.CopyTo(fileStream);

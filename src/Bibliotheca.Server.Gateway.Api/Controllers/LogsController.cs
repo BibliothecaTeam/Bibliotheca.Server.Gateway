@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
 using Bibliotheca.Server.Gateway.Core.Policies;
 using Bibliotheca.Server.Gateway.Core.Services;
+using Bibliotheca.Server.Mvc.Middleware.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace Bibliotheca.Server.Gateway.Api
     /// Logs controller.
     /// </summary>
     [ApiVersion("1.0")]
+    [UserAuthorize]
     [Route("api/logs/{projectId}")]
     public class LogsController : Controller
     {
@@ -57,7 +59,7 @@ namespace Bibliotheca.Server.Gateway.Api
                 return NotFound();
             }
 
-            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Read);
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
             if (!authorization.Succeeded)
             {
                 return Forbid();
