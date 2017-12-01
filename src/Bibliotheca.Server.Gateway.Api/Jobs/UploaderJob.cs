@@ -84,8 +84,9 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 _httpContextHeaders.Headers = new Dictionary<string, StringValues>();
                 _httpContextHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
 
-                LogInformation(logs, $"Getting branch information ({projectId}/{branchName}).");
+                LogInformation(logs, $"Getting branches information ({projectId}/{branchName}).");
                 var branches = await _branchService.GetBranchesAsync(projectId);
+                LogInformation(logs, $"Branches information retrieved ({projectId}/{branchName}).");
 
                 if(branches.Any(x => x.Name == branchName))
                 {

@@ -300,8 +300,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         private string GetTempFilePath()
         {
             string tempDirectory = Path.GetTempPath();
-            string tempFileName = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            string pathToFile = Path.Combine(tempDirectory, tempFileName, ".zip");
+            string tempFileName = Guid.NewGuid().ToString().Replace("-", string.Empty) + ".zip";
+            string pathToFile = Path.Combine(tempDirectory, tempFileName);
 
             return pathToFile;
         }
