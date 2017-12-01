@@ -229,10 +229,12 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
+            string pathToFile = GetTempFilePath();
+            
             var stream = file.OpenReadStream();
-            string filePath = SaveDocumentsToTempFile(stream);
+            SaveDocumentsToTempFile(pathToFile, stream);
 
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, filePath));
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
             return Ok();
         }
 
@@ -261,8 +263,10 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            string filePath = SaveDocumentsToTempFile(Request.Body);
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, filePath));
+            string pathToFile = GetTempFilePath();
+            SaveDocumentsToTempFile(pathToFile, Request.Body);
+
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
             return Ok();
         }
 
@@ -293,15 +297,21 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             return Ok();
         }
 
-        private string SaveDocumentsToTempFile(Stream bodyStream)
+        private string GetTempFilePath()
         {
-            string pathToFile = Path.GetTempFileName();
+            string tempDirectory = Path.GetTempPath();
+            string tempFileName = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            string pathToFile = Path.Combine(tempDirectory, tempFileName, ".zip");
+
+            return pathToFile;
+        }
+
+        private void SaveDocumentsToTempFile(string pathToFile, Stream bodyStream)
+        {
             using (var fileStream = new FileStream(pathToFile, FileMode.Create, FileAccess.Write))
             {
                 bodyStream.CopyTo(fileStream);
             }
-
-            return pathToFile;
         }
     }
 }
