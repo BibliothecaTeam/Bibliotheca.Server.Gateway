@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Bibliotheca.Server.Gateway.Api.Jobs;
 using Bibliotheca.Server.Gateway.Core.DataTransferObjects;
@@ -34,6 +35,8 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
         private readonly IProjectsService _projectsService;
 
+        private readonly ILogsService _logsService;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -43,13 +46,15 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
         /// <param name="searchService">Search service.</param>
         /// <param name="authorizationService">Authorization service.</param>
         /// <param name="projectsService">Projects service.</param>
+        /// <param name="logsService">Logs service.</param>
         public DocumentsController(
             IDocumentsService documentsService, 
             IMarkdownService markdownService, 
             IBranchesService branchService,
             ISearchService searchService,
             IAuthorizationService authorizationService,
-            IProjectsService projectsService)
+            IProjectsService projectsService,
+            ILogsService logsService)
         {
             _documentsService = documentsService;
             _markdownService = markdownService;
@@ -57,6 +62,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             _searchService = searchService;
             _authorizationService = authorizationService;
             _projectsService = projectsService;
+            _logsService = logsService;
         }
 
         /// <summary>
@@ -229,12 +235,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            string pathToFile = GetTempFilePath();
-            
-            var stream = file.OpenReadStream();
-            SaveDocumentsToTempFile(pathToFile, stream);
-
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
+            await SaveDocumentsAsync(projectId, branchName, file.OpenReadStream());
             return Ok();
         }
 
@@ -263,10 +264,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
                 return Forbid();
             }
 
-            string pathToFile = GetTempFilePath();
-            SaveDocumentsToTempFile(pathToFile, Request.Body);
-
-            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
+            await SaveDocumentsAsync(projectId, branchName, Request.Body);
             return Ok();
         }
 
@@ -295,6 +293,22 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
 
             await _documentsService.DeleteDocumentAsync(projectId, branchName, fileUri);
             return Ok();
+        }
+
+        private async Task SaveDocumentsAsync(string projectId, string branchName, Stream stream)
+        {
+            var stringBuilder = new StringBuilder();
+            string pathToFile = GetTempFilePath();
+
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] Saving documentation ({projectId}/{branchName}) to file: {pathToFile}.");
+            SaveDocumentsToTempFile(pathToFile, stream);
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] Documentation saved ({projectId}/{branchName}) to file: {pathToFile}.");
+
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] Enqueueing uploading documentation job ({projectId}/{branchName}/{pathToFile}).");
+            BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
+            stringBuilder.AppendLine($"[{DateTime.UtcNow}] Uploading docuumentation job enqueued ({projectId}/{branchName}/{pathToFile}).");
+
+            await _logsService.AppendLogsAsync(projectId, new LogsDto { Message = stringBuilder.ToString() });
         }
 
         private string GetTempFilePath()
