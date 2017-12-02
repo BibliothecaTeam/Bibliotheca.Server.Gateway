@@ -80,6 +80,10 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
             try
             {
                 LogInformation(logs, $"Starting uploading project ({projectId}/{branchName}). Temporary file name: {filePath}.");
+                if(!File.Exists(filePath))
+                {
+                    LogInformation(logs, $"Uploading project stopped ({projectId}/{branchName}). File '{filePath}' not exists.");
+                }
 
                 _httpContextHeaders.Headers = new Dictionary<string, StringValues>();
                 _httpContextHeaders.Headers.Add("Authorization", $"SecureToken {_applicationParameters.SecureToken}");
