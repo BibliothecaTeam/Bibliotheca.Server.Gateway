@@ -75,7 +75,8 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <returns>Returns async task.</returns>
         public async Task UploadBranchAsync(string projectId, string branchName, string filePath)
         {
-            StringBuilder logs = new StringBuilder();
+            var logs = new StringBuilder();
+            var logsDto = new LogsDto();
 
             try
             {
@@ -83,6 +84,10 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 if(!File.Exists(filePath))
                 {
                     LogInformation(logs, $"Uploading project stopped ({projectId}/{branchName}). File '{filePath}' not exists.");
+                    
+                    logsDto.Message = logs.ToString();
+                    await _logsService.AppendLogsAsync(projectId, logsDto);
+                    return;
                 }
 
                 _httpContextHeaders.Headers = new Dictionary<string, StringValues>();
@@ -143,7 +148,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 LogInformation(logs, $"Temporary file '{filePath}' was deleted.");
             }
 
-            var logsDto = new LogsDto { Message = logs.ToString() };
+            logsDto.Message = logs.ToString();
             await _logsService.AppendLogsAsync(projectId, logsDto);
         }
 
