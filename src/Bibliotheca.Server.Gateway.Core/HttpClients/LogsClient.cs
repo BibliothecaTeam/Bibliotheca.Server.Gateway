@@ -43,6 +43,14 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
             return await baseClient.Put(projectId, logs);
         }
 
+        public async Task<HttpResponseMessage> Delete(string projectId)
+        {
+            AssertIfServiceNotAlive();
+
+            RestClient<LogsDto> baseClient = GetRestClient();
+            return await baseClient.Delete(projectId);
+        }
+
         private void AssertIfServiceNotAlive()
         {
             if(!IsServiceAlive()) 

@@ -77,7 +77,7 @@ namespace Bibliotheca.Server.Gateway.Api
         /// </remarks>
         /// <param name="projectId">Project id.</param>
         /// <param name="logs">Logs for project.</param>
-        /// <returns>Information abouth health.</returns>
+        /// <returns>Information abouth appending result.</returns>
         [HttpPut]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -97,6 +97,36 @@ namespace Bibliotheca.Server.Gateway.Api
             }
 
             await _logsService.AppendLogsAsync(projectId, logs);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete logs for specific project.
+        /// </summary>
+        /// <remarks>
+        /// Endpoint deletes logs information for specific prpoject.
+        /// </remarks>
+        /// <param name="projectId">Project id.</param>
+        /// <returns>Information abouth deleting result.</returns>
+        [HttpDelete]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        public async Task<IActionResult> Delete(string projectId)
+        {
+            var projectFromStorage = await _projectsService.GetProjectAsync(projectId);
+            if (projectFromStorage == null)
+            {
+                return NotFound();
+            }
+
+            var authorization = await _authorizationService.AuthorizeAsync(User, projectFromStorage, Operations.Update);
+            if (!authorization.Succeeded)
+            {
+                return Forbid();
+            }
+
+            await _logsService.DeleteLogsAsync(projectId);
             return Ok();
         }
     }

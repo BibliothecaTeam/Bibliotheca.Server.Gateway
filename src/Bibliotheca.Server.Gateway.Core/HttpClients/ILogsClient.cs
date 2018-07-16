@@ -10,5 +10,7 @@ namespace Bibliotheca.Server.Gateway.Core.HttpClients
         Task<LogsDto> Get(string projectId);
 
         Task<HttpResponseMessage> Put(string projectId, LogsDto logs);
+
+        Task<HttpResponseMessage> Delete(string projectId);
     }
 }

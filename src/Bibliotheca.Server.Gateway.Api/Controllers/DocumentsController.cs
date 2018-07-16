@@ -308,6 +308,7 @@ namespace Bibliotheca.Server.Gateway.Api.Controllers
             BackgroundJob.Enqueue<IUploaderJob>(x => x.UploadBranchAsync(projectId, branchName, pathToFile));
             stringBuilder.AppendLine($"[{DateTime.UtcNow}] Uploading docuumentation job enqueued ({projectId}/{branchName}/{pathToFile}).");
 
+            await _logsService.DeleteLogsAsync(projectId);
             await _logsService.AppendLogsAsync(projectId, new LogsDto { Message = stringBuilder.ToString() });
         }
 

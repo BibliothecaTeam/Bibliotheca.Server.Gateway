@@ -23,5 +23,10 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         {
             await _logsClient.Put(projectId, logs);
         }
+
+        public async Task DeleteLogsAsync(string projectId)
+        {
+            await _logsClient.Delete(projectId);
+        }
     }
 }

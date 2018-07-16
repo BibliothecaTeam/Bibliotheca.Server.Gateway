@@ -97,7 +97,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
                 var branches = await _branchService.GetBranchesAsync(projectId);
                 LogInformation(logs, $"Branches information retrieved ({projectId}/{branchName}).");
 
-                if(branches.Any(x => x.Name == branchName))
+                if(branchName != null && branches.Any(x => x.Name == branchName))
                 {
                     LogInformation(logs, $"Deleting branch from storage ({projectId}/{branchName}).");
                     await _branchService.DeleteBranchAsync(projectId, branchName);

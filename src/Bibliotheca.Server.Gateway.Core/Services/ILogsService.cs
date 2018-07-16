@@ -8,5 +8,7 @@ namespace Bibliotheca.Server.Gateway.Core.Services
         Task<LogsDto> GetLogsAsync(string projectId);
 
         Task AppendLogsAsync(string projectId, LogsDto logs);
+
+        Task DeleteLogsAsync(string projectId);
     }
 }
