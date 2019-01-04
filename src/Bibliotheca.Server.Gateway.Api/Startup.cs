@@ -181,7 +181,7 @@ namespace Bibliotheca.Server.Gateway.Api
 
             if (UseServiceDiscovery)
             {
-                app.UseHangfireServer();
+                app.UseHangfireServer(new BackgroundJobServerOptions { WorkerCount = 1});
                 RecurringJob.AddOrUpdate<IServiceDiscoveryRegistrationJob>("register-service", x => x.RegisterServiceAsync(null), Cron.Minutely);
             }
 
