@@ -7,6 +7,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
     /// <summary>
     /// Job for uploading new documents.
     /// </summary>
+    [Hangfire.Queue("upload")]
     public interface IUploaderJob
     {
         /// <summary>
