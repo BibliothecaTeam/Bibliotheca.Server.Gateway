@@ -73,6 +73,7 @@ namespace Bibliotheca.Server.Gateway.Api.Jobs
         /// <param name="branchName">Branch name.</param>
         /// <param name="filePath">File path.</param>
         /// <returns>Returns async task.</returns>
+        [Hangfire.Queue("upload")]
         public async Task UploadBranchAsync(string projectId, string branchName, string filePath)
         {
             var logs = new StringBuilder();

@@ -179,9 +179,22 @@ namespace Bibliotheca.Server.Gateway.Api
                 loggerFactory.AddAzureWebAppDiagnostics();
             }
 
+            var uploadServerOptions = new BackgroundJobServerOptions
+            {
+                Queues = new [] { "upload" },
+                WorkerCount = 1
+            };
+
+            app.UseHangfireServer(uploadServerOptions);
+
             if (UseServiceDiscovery)
             {
-                app.UseHangfireServer();
+                var defaultServerOptions = new BackgroundJobServerOptions
+                {
+                    Queues = new [] {"default"}
+                };
+
+                app.UseHangfireServer(defaultServerOptions);
                 RecurringJob.AddOrUpdate<IServiceDiscoveryRegistrationJob>("register-service", x => x.RegisterServiceAsync(null), Cron.Minutely);
             }
 
