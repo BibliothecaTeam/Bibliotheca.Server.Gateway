@@ -24,7 +24,4 @@
     <PackageReference Include="Flurl" Version="2.5.1" />
     <PackageReference Include="GraphQL" Version="0.17.3" />
   </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="libyear" Version="*" />
-  </ItemGroup>
 </Project>

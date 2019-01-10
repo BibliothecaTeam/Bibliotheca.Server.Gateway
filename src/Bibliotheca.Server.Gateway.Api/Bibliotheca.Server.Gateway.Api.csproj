@@ -25,9 +25,6 @@
     <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Authorization" Version="1.1.8" />
     <PackageReference Include="Bibliotheca.Server.Mvc.Middleware.Diagnostics" Version="1.1.5" />
   </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="libyear" Version="*" />
-  </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <ItemGroup>
       <DocFile Include="bin\*\*\Bibliotheca.Server.Gateway.Api.xml" />
